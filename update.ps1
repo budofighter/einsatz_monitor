@@ -2,7 +2,7 @@
 
 # 1. Update von GitHub herunterladen
 try{
-    Invoke-WebRequest "https://github.com/budofighter/EM_Statusplugin/archive/refs/heads/main.zip" -outfile "./EM_update.zip"
+    Invoke-WebRequest "https://github.com/budofighter/einsatz_monitor/archive/refs/heads/main.zip" -outfile "./EM_update.zip"
     "Update erfolgreich heruntergeladen..."
 }
 catch{
