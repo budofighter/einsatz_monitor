@@ -1,6 +1,8 @@
 #### einsatz_monitor
 #### copyright by Christian Siebold
 
+Version: 0.9
+
 Voraussetzungen:
 - Windows 10
 - Python > 3.8

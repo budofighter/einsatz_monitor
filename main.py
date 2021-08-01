@@ -1,15 +1,18 @@
 import sys, os, subprocess, psutil, shutil, time, logging, ctypes, re
 
-from PyQt5 import QtGui, QtCore
+from PyQt5 import QtGui
 from qtpy import QtWidgets
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-from PyQt5.QtWidgets import QFileDialog, qApp, QAction, QStyle, QLabel, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QFileDialog, qApp, QAction, QStyle, QWidget
 
 from ui.mainwindow import Ui_MainWindow
 from ui.logs import Ui_Logfile
 from bin.einsatz_monitor_modules import init,  close_methode, database_class, gennerate_cookie_module  # init wird benötigt!
 from bin.einsatz_monitor_modules.help_settings_methoden import *
+
+# Version Nummer wird hier gesetzt:
+version_nr = "0.9"
 
 # Konfigurationen importieren:
 # config = config_class.Config()
@@ -75,6 +78,9 @@ class MainWindow(QtWidgets.QMainWindow):
         # Fwbs Logo einbinden:
         logo_fwbs = QPixmap(resources + "/logo_fwbs.png")
         self.ui.logo_fwbs.setPixmap(logo_fwbs)
+
+        # Version anzeiegn:
+        self.ui.label_status_versionnr.setText(version_nr)
 
         # Hintergrundfarbe der Logs anpassen:
         self.ui.textEdit_log_main.setStyleSheet("background-color: rgb(240, 240,240)")
