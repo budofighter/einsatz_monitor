@@ -12,7 +12,7 @@ from bin.einsatz_monitor_modules import init,  close_methode, database_class, ge
 from bin.einsatz_monitor_modules.help_settings_methoden import *
 
 # Version Nummer wird hier gesetzt:
-version_nr = "0.9"
+version_nr = "0.9.1"
 
 # Konfigurationen importieren:
 # config = config_class.Config()
@@ -111,9 +111,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.lineEdit_settings_token_abt2.setText(database.select_config("token_abt2"))
         self.ui.lineEdit_settings_token_abt3.setText(database.select_config("token_abt3"))
         self.ui.lineEdit_settings_token_abt4.setText(database.select_config("token_abt4"))
+        self.ui.lineEdit_settings_token_abt5.setText(database.select_config("token_abt5"))
+        self.ui.lineEdit_settings_token_abt6.setText(database.select_config("token_abt6"))
         self.ui.lineEdit_settings_fahrzeuge_abt2.setText(database.select_config("fahrzeuge_abt2"))
         self.ui.lineEdit_settings_fahrzeuge_abt3.setText(database.select_config("fahrzeuge_abt3"))
         self.ui.lineEdit_settings_fahrzeuge_abt4.setText(database.select_config("fahrzeuge_abt4"))
+        self.ui.lineEdit_settings_fahrzeuge_abt5.setText(database.select_config("fahrzeuge_abt5"))
+        self.ui.lineEdit_settings_fahrzeuge_abt6.setText(database.select_config("fahrzeuge_abt6"))
 
         # Autostart:
         if self.ui.comboBox.currentText() == "Ja":
@@ -184,6 +188,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.pushButton_safe_settings_token_abt2.clicked.connect(self.safe_settings_token_abt2)
         self.ui.pushButton_safe_settings_token_abt3.clicked.connect(self.safe_settings_token_abt3)
         self.ui.pushButton_safe_settings_token_abt4.clicked.connect(self.safe_settings_token_abt4)
+        self.ui.pushButton_safe_settings_token_abt5.clicked.connect(self.safe_settings_token_abt5)
+        self.ui.pushButton_safe_settings_token_abt6.clicked.connect(self.safe_settings_token_abt6)
 
         self.ui.pushButton_browse_settings_vpn_path_to_exe.clicked.connect(self.browse_settings_vpn_path_to_exe)
         self.ui.pushButton_browse_settings_vpn_config.clicked.connect(self.browse_settings_vpn_config)
@@ -468,6 +474,20 @@ class MainWindow(QtWidgets.QMainWindow):
         database.update_config("token_abt4", input_to_safe.strip())
         input_to_safe_fahrzeuge = self.ui.lineEdit_settings_fahrzeuge_abt4.text()
         database.update_config("fahrzeuge_abt4", input_to_safe_fahrzeuge.strip())
+        self.safe_success("")
+
+    def safe_settings_token_abt5(self):
+        input_to_safe = self.ui.lineEdit_settings_token_abt5.text()
+        database.update_config("token_abt5", input_to_safe.strip())
+        input_to_safe_fahrzeuge = self.ui.lineEdit_settings_fahrzeuge_abt5.text()
+        database.update_config("fahrzeuge_abt5", input_to_safe_fahrzeuge.strip())
+        self.safe_success("")
+
+    def safe_settings_token_abt6(self):
+        input_to_safe = self.ui.lineEdit_settings_token_abt6.text()
+        database.update_config("token_abt6", input_to_safe.strip())
+        input_to_safe_fahrzeuge = self.ui.lineEdit_settings_fahrzeuge_abt6.text()
+        database.update_config("fahrzeuge_abt6", input_to_safe_fahrzeuge.strip())
         self.safe_success("")
 
     def browse_settings_vpn_path_to_exe(self):

@@ -35,8 +35,8 @@ class Database:
             ("path_to_openvpn.exe", ""),("openvpn_config", ""),("autostart", ""), ("testmode", "False"), 
             ("dag_alternativ", ""), ("fw_kurz",""), ("kdo_alarm",""), ("email_username", "") , ("email_password", 
             ""), ("email_server",""), ("token_test", ""), ("token_abt1", ""), ("token_abt2", ""), ("token_abt3", ""), 
-            ("token_abt4", ""), ("fahrzeuge_abt2", ""), ("fahrzeuge_abt3", ""), ("fahrzeuge_abt4", ""), 
-            ("headless_browser","Ja"), ("path_to_pdftotext.exe", "");  """)
+            ("token_abt4", ""), ("token_abt5", ""), ("token_abt6", ""), ("fahrzeuge_abt2", ""), ("fahrzeuge_abt3", ""), 
+            ("fahrzeuge_abt4", ""), ("fahrzeuge_abt5", ""), ("fahrzeuge_abt6", ""), ("headless_browser","Ja"), ("path_to_pdftotext.exe", "");  """)
 
             self.cursor_obj.execute("""INSERT or IGNORE INTO error_db(prozess, error) VALUES ("vpn", "1"),
             ("wachendisplay", "1"),("statusauswertung","1"),("alarm_server", "1"),("testmode", "1"), 
