@@ -12,7 +12,7 @@ from bin.einsatz_monitor_modules import init,  close_methode, database_class, ge
 from bin.einsatz_monitor_modules.help_settings_methoden import *
 
 # Version Nummer wird hier gesetzt:
-version_nr = "0.9.1"
+version_nr = "0.9.2"
 
 # Konfigurationen importieren:
 # config = config_class.Config()
