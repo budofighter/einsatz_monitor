@@ -103,6 +103,22 @@ while database.select_aktiv_flag("auswertung") == 1:
                             logger.info("Abteilung 4 wird mit alarmiert.")
                             token_list.append(database.select_config("token_abt4"))
 
+                if not database.select_config("fahrzeuge_abt5") == "":
+                    list_abt_5 = database.select_config("fahrzeuge_abt5").split(";")
+                    for fahrzeug in list_abt_5:
+                        funkrufname = fahrzeug.strip().upper().replace(" ", "-").replace(".", "-")
+                        if funkrufname in einsatz.alarm_ric:
+                            logger.info("Abteilung 5 wird mit alarmiert.")
+                            token_list.append(database.select_config("token_abt5"))
+
+                if not database.select_config("fahrzeuge_abt6") == "":
+                    list_abt_6 = database.select_config("fahrzeuge_abt6").split(";")
+                    for fahrzeug in list_abt_6:
+                        funkrufname = fahrzeug.strip().upper().replace(" ", "-").replace(".", "-")
+                        if funkrufname in einsatz.alarm_ric:
+                            logger.info("Abteilung 6 wird mit alarmiert.")
+                            token_list.append(database.select_config("token_abt6"))
+
             # Prüfen ob GEO oder nicht
             if einsatz.geo_lw == "":
                 for token in token_list:
