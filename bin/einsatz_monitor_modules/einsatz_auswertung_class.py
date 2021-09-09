@@ -165,9 +165,14 @@ class Einsatz:
     # Methode um die AAO auszuwerten:
     def parse_aao(self, inhalt):
         for line in inhalt:
-            if re.match("((FL[.-]" + database.select_config("fw_kurz") + ")|" + database.select_config(
-                    "kdo_alarm") + ").*(DAG|" + database.select_config("dag_alternativ") + ").*", line):
-                self.rics.append(line.strip().split("  ")[0])
+            if not database.select_config("dag_alternativ") == "":
+                if re.match("((FL[.-]" + database.select_config("fw_kurz") + ")|" + database.select_config(
+                        "kdo_alarm") + ").*(DAG|" + database.select_config("dag_alternativ") + ").*", line):
+                    self.rics.append(line.strip().split("  ")[0])
+            else:
+                if re.match("((FL[.-]" + database.select_config("fw_kurz") + ")|" + database.select_config(
+                        "kdo_alarm") + ").*(DAG).*", line):
+                    self.rics.append(line.strip().split("  ")[0])
         for ric in self.rics:
             # Alle DAG, KLEIN, leerzeichen und Punkte durch - ersetzen.
             clean_ric = re.sub("(([ -]?DAG)|([ -]KLEIN))", "", ric).strip().upper().replace(" ", "-").replace(".", "-")
