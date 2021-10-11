@@ -64,9 +64,10 @@ while True:
     # 6. Überprüfen ob der Einsatz-Auswertescript läuft
     if database.select_aktiv_flag("auswertung") == 1:
         database.update_error("alarm_auswertung", "0")
+    elif database.select_aktiv_flag("auswertung") == 2:
+        database.update_error("alarm_auswertung", "2")
     else:
         database.update_error("alarm_auswertung", "1")
-
 
 
     time.sleep(3)

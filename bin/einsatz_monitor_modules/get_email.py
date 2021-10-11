@@ -21,7 +21,9 @@ def pull_mails():
             imap.login(database.select_config("email_username"), database.select_config("email_password"))
             imap.select("INBOX")
         except:
-            logger.error("Error beim Aufbau der IMAP Verbindung")
+            #logger.error("Error beim Aufbau der IMAP Verbindung")
+            logger.exception("Error beim Aufbau der IMAP Verbindung")
+            database.update_aktiv_flag("auswertung", "2")
 
         # Liste aller ungelesenen E-Mails gennerieren:
         typ, msgnums = imap.search(None, 'UNSEEN')

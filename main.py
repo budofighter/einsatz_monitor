@@ -12,7 +12,7 @@ from bin.einsatz_monitor_modules import init,  close_methode, database_class, ge
 from bin.einsatz_monitor_modules.help_settings_methoden import *
 
 # Version Nummer wird hier gesetzt:
-version_nr = "0.9.2"
+version_nr = "0.9.3"
 
 # Konfigurationen importieren:
 # config = config_class.Config()
@@ -61,7 +61,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # timer um die Statusanzeige zu aktualisieren:
         timer_status = QTimer(self)
-        timer_status.timeout.connect(self.monitoring_anzeige)
+        timer_status.timeout.connect(self.monitoring)
         timer_status.start(1000)
 
         # # timer um die Logs anzuzeigen
@@ -645,8 +645,8 @@ class MainWindow(QtWidgets.QMainWindow):
         button_attention = QPixmap(resources + "/attention_small.png")
         button.setPixmap(button_attention)
 
-    # Methode um die Error-Datenbank auszulesen und die statusanzeigen zu aktualisieren:
-    def monitoring_anzeige(self):
+    # Methode um die Error-Datenbank auszulesen und die statusanzeigen zu aktualisieren, bzw. einen Neustart zu gennerieren:
+    def monitoring(self):
         try:
             if database.select_error("vpn") == 0:
                 self.set_led_green(self.ui.status_vpn)
@@ -675,6 +675,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
             if database.select_error("alarm_auswertung") == 0:
                 self.set_led_green(self.ui.status_alarmscript)
+            elif database.select_error("alarm_auswertung") == 2:
+                database.update_aktiv_flag("auswertung", "1")
+                time.sleep(3)
+                self.start_einsatzauswertung()
+                time.sleep(5)
+                database.update_aktiv_flag("auswertung", "0")
+                self.start_einsatzauswertung()
             else:
                 self.set_led_red(self.ui.status_alarmscript)
         except:
