@@ -89,9 +89,9 @@ Catch{
 
 Try
 {
-    Move-Item -Path "./EM_Statusplugin-main/*" -Destination "./" -Force
+    Move-Item -Path "./einsatz_monitor-main/*" -Destination "./" -Force
     Remove-Item "./EM_update.zip" -Recurse -Force -Confirm:$false
-    Remove-Item "./EM_Statusplugin-main" -Recurse -Force -Confirm:$false
+    Remove-Item "./insatz_monitor-main" -Recurse -Force -Confirm:$false
     "Dateien erfolgrich verschoben und TMP-Dateien geloescht"
 }
 Catch{
