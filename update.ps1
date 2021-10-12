@@ -67,19 +67,19 @@ else {
     "./README.md ist nicht vorhanden!"
 }
 
+if(Test-Path ./main.py) {
+    Remove-Item "./main.py" -Recurse -Force -Confirm:$false
+    " ./README.md erfolgreich geloescht..."
+}
+else {
+    "./README.md ist nicht vorhanden!"
+}
+
 "Loeschung der alten Dateien erfolgreich abgeschlossen..."
 
 
-Add-Type -AssemblyName System.IO.Compression.FileSystem
-function Unzip
-{
-    param([string]$zipfile, [string]$outpath)
-
-    [System.IO.Compression.ZipFile]::ExtractToDirectory($zipfile, $outpath)
-}
-
 Try{
-    Unzip "./EM_update.zip" "./"
+    Expand-Archive "./EM_update.zip" "./"
     "Unzip erfolgreich durchgeführt..."
 }
 Catch{
@@ -99,5 +99,4 @@ Catch{
 }
 
 "Update erfolgreich abgeschlossen!"
-"blablabla"
 Start-Sleep(30)
