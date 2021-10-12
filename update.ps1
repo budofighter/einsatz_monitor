@@ -91,7 +91,7 @@ Try
 {
     Move-Item -Path "./einsatz_monitor-main/*" -Destination "./" -Force
     Remove-Item "./EM_update.zip" -Recurse -Force -Confirm:$false
-    Remove-Item "./insatz_monitor-main" -Recurse -Force -Confirm:$false
+    Remove-Item "./einsatz_monitor-main" -Recurse -Force -Confirm:$false
     "Dateien erfolgrich verschoben und TMP-Dateien geloescht"
 }
 Catch{
