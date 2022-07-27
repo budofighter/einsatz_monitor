@@ -59,7 +59,7 @@ try:
             # klick durchführen, warten bis das Element da ist und dann ausführen
             driver.find_element(By.XPATH, "//*[contains(text(),'Ruhedarstellung')]").click()
             wait.until(expected_conditions.visibility_of_element_located((By.ID, database.select_config("wachendisplay_content_id"))))
-            output_wachendisplay_webelement = driver.find_element_by_id(database.select_config("wachendisplay_content_id"))
+            output_wachendisplay_webelement = driver.find_element(database.select_config("wachendisplay_content_id"))
 
             # Webelement in String auszulesen und alle Zeilenumbrüche entfernen
             try:
