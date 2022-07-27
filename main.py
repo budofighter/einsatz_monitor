@@ -1,18 +1,22 @@
 import sys, os, subprocess, psutil, shutil, time, logging, ctypes, re
 
-from PyQt5 import QtGui
-from qtpy import QtWidgets
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import QFileDialog, qApp, QAction, QStyle, QWidget
+from PyQt5 import QtWidgets, QtCore, QtGui
 
 from ui.mainwindow import Ui_MainWindow
 from ui.logs import Ui_Logfile
 from bin.einsatz_monitor_modules import init,  close_methode, database_class, gennerate_cookie_module  # init wird benötigt!
 from bin.einsatz_monitor_modules.help_settings_methoden import *
 
+# Einstelungen für High Resolution
+QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True) #enable highdpi scaling
+QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True) #use highdpi icons
+
+
 # Version Nummer wird hier gesetzt:
-version_nr = "0.9.3"
+version_nr = "0.9.4"
 
 # Konfigurationen importieren:
 # config = config_class.Config()
