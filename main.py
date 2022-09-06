@@ -16,7 +16,7 @@ QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True) #use h
 
 
 # Version Nummer wird hier gesetzt:
-version_nr = "0.9.4"
+version_nr = "0.9.5"
 
 # Konfigurationen importieren:
 # config = config_class.Config()
