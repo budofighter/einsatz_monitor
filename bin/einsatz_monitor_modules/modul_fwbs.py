@@ -1,7 +1,7 @@
 import urllib.parse
 import requests
 
-
+# Vorlage für API Übergabe
 def modul_fwbs(stichwort, sachverhalt, strasse, ort):
     try:
         value = urllib.parse.quote_plus(stichwort + "," + strasse + "," + ort + "," + sachverhalt)
