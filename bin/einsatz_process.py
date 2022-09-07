@@ -166,11 +166,14 @@ while database.select_aktiv_flag("auswertung") == 1:
 
             # Modul FWBS übergabe
             if testmode:
-                logger.info("Testmode, daher keine Übergabe an Modul FWBS")
+                # logger.info("Testmode, daher keine Übergabe an Modul FWBS")
+
+                print(einsatz.stichwort + einsatz.meldebild + einsatz.strasse + einsatz.ort)
+                x= modul_fwbs(einsatz.stichwort, einsatz.meldebild, einsatz.strasse, einsatz.ort)
+                logger.info("Übergabe an Modul FWBS:  " + x)
             else:
                 x = modul_fwbs(einsatz.stichwort, einsatz.meldebild, einsatz.strasse, einsatz.ort)
-                logger.info("Übergabe an Modul FWBS" + x)
-
+                logger.info("Übergabe an Modul FWBS:  " + x)
 
         logger.info("\n####################################################\n\n")
 
