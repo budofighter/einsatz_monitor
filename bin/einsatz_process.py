@@ -169,7 +169,7 @@ while database.select_aktiv_flag("auswertung") == 1:
                 logger.info("Testmode, daher keine Übergabe an Modul FWBS")
             else:
                 x = config.modul_fwbs.modul_fwbs(einsatz.stichwort, einsatz.meldebild, einsatz.strasse, einsatz.ort, einsatz.alarm_ric)
-                logger.info("Übergabe an Modul FWBS:  " + x)
+                logger.info("Übergabe an Modul FWBS:  " + str(x))
 
         logger.info("\n####################################################\n\n")
 
