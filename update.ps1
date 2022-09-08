@@ -98,5 +98,14 @@ Catch{
     "==> Verschieben und Löschen der Dateien hat nicht funktioniert. Bitte manuell durchführen."
 }
 
+Try
+{
+        Copy-Item -Path "./config/modul_fwbs.py" -Destination "./bin/einsatz_monitor_modules" -Force
+        "Verschieben der modul_fwbs erfolgreich."
+}
+Catch{
+    "==> Verschieben der modul_fwbs fehlgeschlagen. Bitte manuell durchführen."
+}
+
 "Update erfolgreich abgeschlossen!"
 Start-Sleep(30)
