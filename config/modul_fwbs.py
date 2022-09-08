@@ -3,6 +3,6 @@
 
 def modul_fwbs(stichwort, sachverhalt, strasse, ort, ric):
     try:
-		print("ok")
+	print("ok")
     except:
         print("not ok")
