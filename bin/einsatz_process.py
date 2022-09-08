@@ -4,7 +4,7 @@ from einsatz_monitor_modules import get_email
 from einsatz_monitor_modules.api_class import *
 from einsatz_monitor_modules.einsatz_auswertung_class import *
 from einsatz_monitor_modules.database_class import *
-from config.modul_fwbs import *
+import config.modul_fwbs
 
 
 # Zugangsdaten:
@@ -168,7 +168,7 @@ while database.select_aktiv_flag("auswertung") == 1:
             if testmode:
                 logger.info("Testmode, daher keine Übergabe an Modul FWBS")
             else:
-                x = modul_fwbs(einsatz.stichwort, einsatz.meldebild, einsatz.strasse, einsatz.ort, einsatz.alarm_ric)
+                x = config.modul_fwbs(einsatz.stichwort, einsatz.meldebild, einsatz.strasse, einsatz.ort, einsatz.alarm_ric)
                 logger.info("Übergabe an Modul FWBS:  " + x)
 
         logger.info("\n####################################################\n\n")
