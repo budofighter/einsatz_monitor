@@ -19,7 +19,6 @@ QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True) #use h
 version_nr = "0.9.5"
 
 # Konfigurationen importieren:
-# config = config_class.Config()
 app = QtWidgets.QApplication(sys.argv)
 database = database_class.Database()
 
