@@ -23,7 +23,7 @@ QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True) #en
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True) #use highdpi icons
 
 # Version Nummer wird hier gesetzt:
-version_nr = "0.9.9"
+version_nr = "0.9.9.1"
 
 # Konfigurationen importieren:
 app = QtWidgets.QApplication(sys.argv)
