@@ -8,8 +8,10 @@ import pickle
 from contextlib import contextmanager
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service as ChromeDriverService
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.expected_conditions import visibility_of_element_located
 from selenium.common.exceptions import (
     NoSuchElementException,
     TimeoutException,
@@ -17,9 +19,10 @@ from selenium.common.exceptions import (
     InvalidCookieDomainException,
     WebDriverException,
 )
-from einsatz_monitor_modules import api_class, database_class
-from selenium.webdriver.support.expected_conditions import visibility_of_element_located
+from einsatz_monitor_modules import api_class, database_class, chromedriver
 
+
+chromedriver_path = os.path.join(os.path.dirname(__file__), "..", "resources", "chromedriver.exe")
 
 
 logger = logging.getLogger(__name__)
@@ -137,7 +140,11 @@ def main():
         chrome_options.add_argument("--headless")  # Kein GUI Popup
 
     try:
-        driver = webdriver.Chrome(options=chrome_options)
+        # überprüfen, ob der Chromedriver da und aktuell ist:
+        chromedriver.is_chromedriver_current()
+
+        service = ChromeDriverService(executable_path=chromedriver_path)
+        driver = webdriver.Chrome(service=service, options=chrome_options)
 
         # erst die Webseite aufrufen:
         try:
@@ -166,9 +173,6 @@ def main():
                 time.sleep(10)  # Warten Sie 10 Sekunden, bevor Sie erneut versuchen
 
     except WebDriverException as e:
-        if 'chromedriver' in str(e):
-            logger.error("Es wurde kein Chromedriver gefunden. Bitte stellen Sie sicher, dass der Chromedriver in Ihrem Systempfad enthalten ist.")
-        else:
             logger.error("Ein unbekannter Fehler ist aufgetreten:", e)
 
     finally:
