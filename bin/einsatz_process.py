@@ -1,4 +1,6 @@
-import time, subprocess
+# Optimiert 30.03.23
+import subprocess
+import time
 from datetime import datetime as dt
 from einsatz_monitor_modules import get_email
 from einsatz_monitor_modules.api_class import *
@@ -6,11 +8,9 @@ from einsatz_monitor_modules.einsatz_auswertung_class import *
 from einsatz_monitor_modules.database_class import *
 from einsatz_monitor_modules.modul_fwbs import *
 
-
 # Zugangsdaten:
 database = database_class.Database()
 tmp_path = os.path.join(os.path.dirname(__file__), ".." , "tmp")
-
 
 # Logginginformationen
 logger = logging.getLogger(__name__)
@@ -19,11 +19,36 @@ file_handler = logging.FileHandler(os.path.join(os.path.dirname(__file__),"..", 
 file_handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(message)s'))
 logger.addHandler(file_handler)
 
-while database.select_aktiv_flag("auswertung") == 1:
-    if database.select_config("testmode") == "False":
-        testmode = False
+
+def get_token_list(einsatz, testmode):
+    token_list = []
+    if testmode:
+        token_list.append(database.select_config("token_test"))
+        logger.info("Testmodus ist an, daher keine Alarmierung zur Live-Api")
     else:
-        testmode = True
+        token_list += get_tokens_for_departments(database, einsatz.alarm_ric)
+    return token_list
+
+
+def get_tokens_for_departments(database, alarm_ric):
+    tokens = [database.select_config("token_abt1")]
+    for abt in range(2, 7):
+        fahrzeuge_key = f"fahrzeuge_abt{abt}"
+        token_key = f"token_abt{abt}"
+        fahrzeuge = database.select_config(fahrzeuge_key)
+        if not fahrzeuge:
+            continue
+        for fahrzeug in fahrzeuge.split(";"):
+            funkrufname = fahrzeug.strip().upper().replace(" ", "-").replace(".", "-")
+            if funkrufname in alarm_ric:
+                logger.info(f"Abteilung {abt} wird mit alarmiert.")
+                tokens.append(database.select_config(token_key))
+                break
+    return tokens
+
+
+while database.select_aktiv_flag("auswertung") == 1:
+    testmode = database.select_config("testmode") != "False"
 
     # E-Mails abholen
     pdfs = get_email.pull_mails()
@@ -58,119 +83,54 @@ while database.select_aktiv_flag("auswertung") == 1:
             alarminhalt = [einsatz.meldebild, einsatz.stichwort, einsatz.objekt, einsatz.bemerkung1, einsatz.bemerkung2,
                            einsatz.sondersignal, einsatz.ort, einsatz.plz, einsatz.strasse, einsatz.ortsteil,
                            einsatz.geo_bw, einsatz.geo_lw, einsatz.alarm_ric]
-            logger.info("Neuer Alarm: " + alarm_number + "\n\tStichwort: " + einsatz.stichwort + "\n\tMeldebild: " +
-                        einsatz.meldebild + "\n\tObjekt: " + einsatz.objekt + "\n\tSondersignal: " + einsatz.sondersignal +
-                        "\n\tAdresse: " + einsatz.strasse + ", " + einsatz.ort + " - " + einsatz.ortsteil + " [" +
-                        einsatz.plz + "]" + "\n\tGeo (Breite ; Länge): " + einsatz.geo_bw + " ; " + einsatz.geo_lw +
-                        "\n\tBemerkung 1: " + einsatz.bemerkung1 + "\n\tBemerkung 2: " + einsatz.bemerkung2 + "\n\tRICs: " +
-                        einsatz.alarm_ric)
+
+            logger.info(
+                f"Neuer Alarm: {alarm_number}\n\tStichwort: {einsatz.stichwort}\n\tMeldebild: {einsatz.meldebild}"
+                f"\n\tObjekt: {einsatz.objekt}\n\tSondersignal: {einsatz.sondersignal}\n\tAdresse: {einsatz.strasse}, "
+                f"{einsatz.ort} - {einsatz.ortsteil} [{einsatz.plz}]\n\tGeo (Breite ; Länge): {einsatz.geo_bw} ; "
+                f"{einsatz.geo_lw}\n\tBemerkung 1: {einsatz.bemerkung1}\n\tBemerkung 2: {einsatz.bemerkung2}\n\tRICs: "
+                f"{einsatz.alarm_ric}")
 
             # Textdatei wieder löschen:
             try:
-                os.remove(tmp_path + "/" + alarm_number + ".txt")
+                os.remove(os.path.join(tmp_path, alarm_number + ".txt"))
                 logger.debug("Textdatei entfernt")
             except:
                 logger.error("Textdatei konnte nicht entfernt werden.")
 
     # Alarmierung:
-            token_list = []
-            if testmode:
-                token_list.append(database.select_config("token_test"))
-                logger.info("Testmodus ist an, daher keine Alarmierung zur Live-Api")
-            else:
-                # Abteilung 1 wird immer alarmiert
-                token_list.append(database.select_config("token_abt1"))
-                # Listen der jeweiligen Abteilungen erstellen, wenn diese nicht leer sind:
-                if not database.select_config("fahrzeuge_abt2") == "":
-                    list_abt_2 = database.select_config("fahrzeuge_abt2").split(";")
-                    for fahrzeug in list_abt_2:
-                        funkrufname = fahrzeug.strip().upper().replace(" ", "-").replace(".", "-")
-                        if funkrufname in einsatz.alarm_ric:
-                            logger.info("Abteilung 2 wird mit alarmiert.")
-                            token_list.append(database.select_config("token_abt2"))
+            token_list = get_token_list(einsatz, testmode)
 
-                if not database.select_config("fahrzeuge_abt3") == "":
-                    list_abt_3 = database.select_config("fahrzeuge_abt3").split(";")
-                    for fahrzeug in list_abt_3:
-                        funkrufname = fahrzeug.strip().upper().replace(" ", "-").replace(".", "-")
-                        if funkrufname in einsatz.alarm_ric:
-                            logger.info("Abteilung 3 wird mit alarmiert.")
-                            token_list.append(database.select_config("token_abt3"))
+            post_operation_args = {
+                'start': dt.now().strftime('%Y-%m-%dT%H:%M:%S'),
+                'keyword': einsatz.stichwort,
+                'status': 'new',
+                'alarmenabled': True,
+                'address': f"{einsatz.strasse}, {einsatz.ort} - {einsatz.ortsteil}",
+                'facts': einsatz.meldebild,
+                'number': alarm_number,
+                'properties': [
+                    {'key': 'Objekt', 'value': einsatz.objekt},
+                    {'key': 'Sondersignal', 'value': einsatz.sondersignal},
+                    {'key': 'Bemerkung', 'value': einsatz.bemerkung1},
+                    {'key': 'Bemerkung', 'value': einsatz.bemerkung2}
+                ],
+                'ric': einsatz.alarm_ric,
+            }
 
-                if not database.select_config("fahrzeuge_abt4") == "":
-                    list_abt_4 = database.select_config("fahrzeuge_abt4").split(";")
-                    for fahrzeug in list_abt_4:
-                        funkrufname = fahrzeug.strip().upper().replace(" ", "-").replace(".", "-")
-                        if funkrufname in einsatz.alarm_ric:
-                            logger.info("Abteilung 4 wird mit alarmiert.")
-                            token_list.append(database.select_config("token_abt4"))
+            if einsatz.geo_lw != "":
+                post_operation_args['position'] = {'Latitude': einsatz.geo_bw, 'Longitude': einsatz.geo_lw}
 
-                if not database.select_config("fahrzeuge_abt5") == "":
-                    list_abt_5 = database.select_config("fahrzeuge_abt5").split(";")
-                    for fahrzeug in list_abt_5:
-                        funkrufname = fahrzeug.strip().upper().replace(" ", "-").replace(".", "-")
-                        if funkrufname in einsatz.alarm_ric:
-                            logger.info("Abteilung 5 wird mit alarmiert.")
-                            token_list.append(database.select_config("token_abt5"))
-
-                if not database.select_config("fahrzeuge_abt6") == "":
-                    list_abt_6 = database.select_config("fahrzeuge_abt6").split(";")
-                    for fahrzeug in list_abt_6:
-                        funkrufname = fahrzeug.strip().upper().replace(" ", "-").replace(".", "-")
-                        if funkrufname in einsatz.alarm_ric:
-                            logger.info("Abteilung 6 wird mit alarmiert.")
-                            token_list.append(database.select_config("token_abt6"))
-
-            # Prüfen ob GEO oder nicht
-            if einsatz.geo_lw == "":
-                for token in token_list:
-                    if not token == "":
-                        api = PublicAPI(token)
-                        r = api.post_operation(
-                            start=dt.now().strftime('%Y-%m-%dT%H:%M:%S'),
-                            keyword=einsatz.stichwort,
-                            status="new",
-                            alarmenabled=True,
-                            address=f"{einsatz.strasse}, {einsatz.ort} - {einsatz.ortsteil}",
-                            facts=einsatz.meldebild,
-                            number=alarm_number,
-                            properties=[
-                                {"key": "Objekt", "value": einsatz.objekt},
-                                {"key": "Sondersignal", "value": einsatz.sondersignal},
-                                {"key": "Bemerkung", "value": einsatz.bemerkung1},
-                                {"key": "Bemerkung", "value": einsatz.bemerkung2}
-                            ],
-                            ric=einsatz.alarm_ric,
-                        )
-            else:
-                for token in token_list:
-                    if not token == "":
-                        api = PublicAPI(token)
-                        r = api.post_operation(
-                            start=dt.now().strftime('%Y-%m-%dT%H:%M:%S'),
-                            keyword=einsatz.stichwort,
-                            status="new",
-                            alarmenabled=True,
-                            address=f"{einsatz.strasse}, {einsatz.ort} - {einsatz.ortsteil}",
-                            position={"Latitude": einsatz.geo_bw, "Longitude": einsatz.geo_lw},
-                            facts=einsatz.meldebild,
-                            number=alarm_number,
-                            properties=[
-                                    {"key": "Objekt", "value": einsatz.objekt},
-                                    {"key": "Sondersignal", "value": einsatz.sondersignal},
-                                    {"key": "Bemerkung", "value": einsatz.bemerkung1},
-                                    {"key": "Bemerkung", "value": einsatz.bemerkung2}
-                                ],
-                            ric=einsatz.alarm_ric,
-                        )
+            for token in token_list:
+                if not token:
+                    continue
+                api = PublicAPI(token)
+                r = api.post_operation(**post_operation_args)
 
             # Modul FWBS übergabe
             if testmode:
                 logger.info("Testmode, daher keine Übergabe an Modul FWBS")
             else:
                 x = modul_fwbs(einsatz.stichwort, einsatz.meldebild, einsatz.strasse, einsatz.ort, einsatz.alarm_ric)
-                logger.info("Übergabe an Modul FWBS:  " + str(x))
-
-        logger.info("\n####################################################\n\n")
-
-    time.sleep(2)
+                logger.info ("\n####################################################\n\n")
+    time.sleep(1)

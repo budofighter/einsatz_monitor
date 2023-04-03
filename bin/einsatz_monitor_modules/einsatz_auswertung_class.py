@@ -1,4 +1,7 @@
-import os, re, logging
+# Optimiert 31.03.23
+import os
+import re
+import logging
 from . import database_class
 
 # Einstellungen laden:
@@ -10,6 +13,25 @@ logger.setLevel(logging.INFO)
 file_handler = logging.FileHandler(os.path.join(os.path.dirname(__file__), "..", "..", "logs", "logfile_EM.txt"), encoding="utf-8")
 file_handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(message)s'))
 logger.addHandler(file_handler)
+
+STICHWORT_MAPPING = {
+    "B BMA BMA": "BMA",
+    "B Brand 1 Brand 1": "Brand 1",
+    "B Brand 2 Brand 2": "Brand 2",
+    "B Brand 3 Brand 3": "Brand 3",
+    "H THL 1 THL 1": "THL 1",
+    "H THL 1 THL1": "THL 1",
+    "H THL 2 THL 2": "THL 2",
+    "H THL 3 THL 3": "THL 3",
+    "H THL 6 Ölspur THL 6": "THL 6 Ölspur",
+    "H THL Person im Wasser THL Person im Wasser": "THL Person im Wasser",
+    "H THL Türöffnung THL Türöffnung": "THL Türöffnung",
+    "R RTW Notfall+FR RTW Notfall+FR": "RTW Notfall+FR",
+    "R RTW Notfalleinsatz RTW Notfalleinsatz": "RTW Notfalleinsatz",
+    "R RTW ohne SoSi RTW ohne SoSi": "RTW ohne SoSi",
+    "R RTW+NEF+FR RTW+NEF+FR": "RTW+NEF+FR",
+    "S Sonstiges Sonstige Einsätze": "Sonstige Einsätze",
+}
 
 
 class Einsatz:
@@ -50,45 +72,9 @@ class Einsatz:
                 print(line)
                 try:
                     self.stichwort_raw = re.sub("\s{2,}", "#", line).strip().split("#")[1]
-                    if "B BMA BMA" in self.stichwort_raw:
-                        self.stichwort = self.stichwort_raw.replace("B BMA BMA", "BMA")
-                    elif "B Brand 1 Brand 1" in self.stichwort_raw:
-                        self.stichwort = self.stichwort_raw.replace("B Brand 1 Brand 1", "Brand 1")
-                    elif "B Brand 2 Brand 2" in self.stichwort_raw:
-                        self.stichwort = self.stichwort_raw.replace("B Brand 2 Brand 2", "Brand 2")
-                    elif "B Brand 3 Brand 3" in self.stichwort_raw:
-                        self.stichwort = self.stichwort_raw.replace("B Brand 3 Brand 3", "Brand 3")
-                    elif "H THL 1 THL 1" in self.stichwort_raw:
-                        self.stichwort = self.stichwort_raw.replace("H THL 1 THL 1", "THL 1")
-                    elif "H THL 1 THL1" in self.stichwort_raw:
-                        self.stichwort = self.stichwort_raw.replace("H THL 1 THL1", "THL 1")
-                    elif "H THL 2 THL 2" in self.stichwort_raw:
-                        self.stichwort = self.stichwort_raw.replace("H THL 2 THL 2", "THL 2")
-                    elif "H THL 3 THL 3" in self.stichwort_raw:
-                        self.stichwort = self.stichwort_raw.replace("H THL 3 THL 3", "THL 3")
-                    elif "H THL 6 Ölspur THL 6" in self.stichwort_raw:
-                        self.stichwort = self.stichwort_raw.replace("H THL 6 Ölspur THL 6", "THL 6 Ölspur")
-                    elif "H THL Person im Wasser THL Person im Wasser" in self.stichwort_raw:
-                        self.stichwort = self.stichwort_raw.replace("H THL Person im Wasser THL Person im Wasser",
-                                                                    "THL Person im Wasser")
-                    elif "H THL Türöffnung THL Türöffnung" in self.stichwort_raw:
-                        self.stichwort = self.stichwort_raw.replace("H THL Türöffnung THL Türöffnung", "THL Türöffnung")
-                    elif "R RTW Notfall+FR RTW Notfall+FR" in self.stichwort_raw:
-                        self.stichwort = self.stichwort_raw.replace("R RTW Notfall+FR RTW Notfall+FR", "RTW Notfall+FR")
-                    elif "R RTW Notfalleinsatz RTW Notfalleinsatz" in self.stichwort_raw:
-                        self.stichwort = self.stichwort_raw.replace("R RTW Notfalleinsatz RTW Notfalleinsatz",
-                                                                    "RTW Notfalleinsatz")
-                    elif "R RTW ohne SoSi RTW ohne SoSi" in self.stichwort_raw:
-                        self.stichwort = self.stichwort_raw.replace("R RTW ohne SoSi RTW ohne SoSi", "RTW ohne SoSi")
-                    elif "R RTW+NEF+FR RTW+NEF+FR" in self.stichwort_raw:
-                        self.stichwort = self.stichwort_raw.replace("R RTW+NEF+FR RTW+NEF+FR", "RTW+NEF+FR")
-                    elif "R RTW+NEF+FR RTW+NEF+FR" in self.stichwort_raw:
-                        self.stichwort = self.stichwort_raw.replace("S Sonstiges Sonstige Einsätze",
-                                                                    "Sonstige Einsätze")
-                    else:
-                        self.stichwort = self.stichwort_raw
-                except:
-                    pass
+                    self.stichwort = STICHWORT_MAPPING.get(self.stichwort_raw, self.stichwort_raw)
+                except IndexError:
+                    logger.exception("Error in Stichwort parsing")
 
             elif "Einsatzstichwort" in line:
                 try:
@@ -174,7 +160,6 @@ class Einsatz:
                         "kdo_alarm") + ").*(DAG).*", line):
                     self.rics.append(line.strip().split("  ")[0])
         for ric in self.rics:
-            # Alle DAG, KLEIN, leerzeichen und Punkte durch - ersetzen.
             clean_ric = re.sub("(([ -]?DAG)|([ -]KLEIN))", "", ric).strip().upper().replace(" ", "-").replace(".", "-")
             self.clean_rics.append(clean_ric)
 

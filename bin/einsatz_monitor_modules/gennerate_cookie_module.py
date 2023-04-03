@@ -1,9 +1,12 @@
-import pickle, os
+# Optimiert 30.03.23
+
+import os
+import pickle
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.expected_conditions import visibility_of_element_located
 
 from ..einsatz_monitor_modules import database_class
 
@@ -11,38 +14,40 @@ database = database_class.Database()
 
 
 def get_cookie():
+    if (database.select_error("vpn") == 0 and
+            database.select_error("wachendisplay") == 0 and
+            not database.select_config("user_wachendisplay") == "" and
+            not database.select_config("passwort_wachendisplay") == "" and
+            not database.select_config("url_wachendisplay") == ""):
 
-    # 1. Check ob das VPN läuft und das Wachensidplay erreichbar ist.
-    if database.select_error("vpn") == 0 and database.select_error("wachendisplay") == 0:
-
-        # 2. Check ob die Zugangsdaten schon eingetragen sind:
-        if not database.select_config("user_wachendisplay") == "" and not database.select_config("passwort_wachendisplay") == "" and not database.select_config("url_wachendisplay") == "":
-            try:
-                driver = webdriver.Chrome()
+        try:
+            with webdriver.Chrome() as driver:
                 driver.get(database.select_config("url_wachendisplay"))
                 wait = WebDriverWait(driver, 60)
-                wait.until(expected_conditions.visibility_of_element_located((By.ID, "tfUsername")))
-                driver.find_element_by_id("tfUsername").send_keys(database.select_config("user_wachendisplay"))
-                driver.find_element_by_id("tfPassword").send_keys(database.select_config("passwort_wachendisplay"))
+                wait.until(visibility_of_element_located((By.ID, "tfUsername")))
+                driver.find_element(By.ID, "tfUsername").send_keys(database.select_config("user_wachendisplay"))
+                driver.find_element(By.ID, "tfPassword").send_keys(database.select_config("passwort_wachendisplay"))
 
-                driver.find_element_by_id("cbAnmeldungMerken").click()
-                driver.find_element_by_id("btnLogin").click()
+                driver.find_element(By.ID, "cbAnmeldungMerken").click()
+                driver.find_element(By.ID, "btnLogin").click()
 
-                wait.until(expected_conditions.visibility_of_element_located((By.ID, "gwt-uid-22")))
+                wait.until(visibility_of_element_located((By.ID, "gwt-uid-22")))
 
-                # cookie Datei erstellen:
-                pickle.dump(driver.get_cookies(), open(os.path.join(os.path.dirname(__file__), "..", "..", "config", "cookies_wachendisplay.pkl"), "wb"))
+                cookie_file = os.path.join(os.path.dirname(__file__), "..", "..", "config", "cookies_wachendisplay.pkl")
+                with open(cookie_file, "wb") as f:
+                    pickle.dump(driver.get_cookies(), f)
+
                 return "erfolgreich"
-            except:
-                return "nicht erfolgreich"
-            finally:
-                driver.close()
 
-        else:
-            return "fehler config"
+        except Exception as e:
+            return "nicht erfolgreich"
 
-    else:
+    elif database.select_error("vpn") != 0 or database.select_error("wachendisplay") != 0:
         return "fehler vpn"
 
+    else:
+        return "fehler config"
 
-get_cookie()
+
+if __name__ == "__main__":
+    print(get_cookie())

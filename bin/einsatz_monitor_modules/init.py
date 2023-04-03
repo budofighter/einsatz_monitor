@@ -1,20 +1,24 @@
+# Optimiert 30.03.23
 import os
 
-logfile_path = os.path.join(os.path.dirname(__file__),"..", "..", "logs")
-config_path = os.path.join(os.path.dirname(__file__),"..", "..", "config")
-tmp_path = os.path.join(os.path.dirname(__file__),"..", "..", "tmp")
+def create_directory_and_empty_file(directory, file_name):
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    open(os.path.join(directory, file_name), "a", encoding="utf-8").close()
 
-# startdatei, um bei einer neuen Installation die nötigen Ordner zu erstellen:
+logfile_path = os.path.join(os.path.dirname(__file__), "..", "..", "logs")
+config_path = os.path.join(os.path.dirname(__file__), "..", "..", "config")
+tmp_path = os.path.join(os.path.dirname(__file__), "..", "..", "tmp")
 
-# Leere Dateien schreiben, wenn diese noch nicht da sind:
-if not os.path.exists(logfile_path):
-    os.makedirs(logfile_path)
+# Erstellen von Verzeichnissen, falls noch nicht vorhanden
 if not os.path.exists(config_path):
     os.makedirs(config_path)
 if not os.path.exists(tmp_path):
     os.makedirs(tmp_path)
-open(os.path.join(logfile_path, "logfile_main.txt"), "a", encoding="utf-8").close()
-open(os.path.join(logfile_path, "logfile_ovpn.txt"), "a", encoding="utf-8").close()
-open(os.path.join(logfile_path, "logfile_crawler.txt"), "a", encoding="utf-8").close()
-open(os.path.join(logfile_path, "logfile_EM.txt"), "a", encoding="utf-8").close()
+
+# Leere Dateien schreiben, wenn diese noch nicht da sind:
+create_directory_and_empty_file(logfile_path, "logfile_main.txt")
+create_directory_and_empty_file(logfile_path, "logfile_ovpn.txt")
+create_directory_and_empty_file(logfile_path, "logfile_crawler.txt")
+create_directory_and_empty_file(logfile_path, "logfile_EM.txt")
 
