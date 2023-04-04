@@ -1,6 +1,4 @@
 import urllib.parse
-import requests
-
 
 import urllib.parse
 import requests

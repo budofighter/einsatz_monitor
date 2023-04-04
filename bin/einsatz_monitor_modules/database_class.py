@@ -206,3 +206,20 @@ class Database:
             return config_dict
         except Error as e:
             logger.error(e)
+
+# Funktion um alles zurückzusetzen (bei Programmstart)
+    def reset_pids_and_errors(self):
+        try:
+            with self.con:
+                # Setze alle PIDs und aktiv_flag auf 0
+                self.cursor_obj.execute('UPDATE pid_db SET pid = 0, aktiv_flag = 0')
+                logger.debug("Alle PIDs und aktiv_flag Werte wurden auf 0 gesetzt")
+
+                # Setze alle Errors auf 1
+                self.cursor_obj.execute('UPDATE error_db SET error = 1')
+                logger.debug("Alle Errors wurden auf 1 gesetzt")
+
+            # Commit die Änderungen
+            self.con.commit()
+        except Error as e:
+            logger.error(e)

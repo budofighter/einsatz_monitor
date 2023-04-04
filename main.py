@@ -23,7 +23,7 @@ QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True) #en
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True) #use highdpi icons
 
 # Version Nummer wird hier gesetzt:
-version_nr = "0.9.9.2"
+version_nr = "0.9.9.3"
 
 # Konfigurationen importieren:
 app = QtWidgets.QApplication(sys.argv)
@@ -63,6 +63,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
 
         logger.info("Programm gestartet.")
+
+        # erst mal alle Error, PIDS und Status auf rot serten
+        database.reset_pids_and_errors()
 
         # Subprozess, um das Monitoring zu generieren:
         p = subprocess.Popen([sys.executable, monitoring_file])
