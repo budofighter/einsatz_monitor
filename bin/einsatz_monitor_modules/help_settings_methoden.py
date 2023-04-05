@@ -1,6 +1,6 @@
 # Optimiert 31.03.23
 # hier sind alle Help-Boxen aus den Einstellungen zu finden
-from PyQt5.QtWidgets import QMessageBox
+from PyQt6.QtWidgets import QMessageBox
 
 
 def create_message_box(title, informative_text, detailed_text=None):
@@ -12,7 +12,7 @@ def create_message_box(title, informative_text, detailed_text=None):
     if detailed_text:
         msg.setDetailedText(detailed_text)
 
-    msg.exec_()
+    msg.exec()
 
 def help_settings_funkrufname():
     create_message_box(

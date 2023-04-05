@@ -69,7 +69,7 @@ def close_all():
             logger.debug("PID ist 0, daher kein Close möglich")
 
     # 7. Datenbankverbindung beenden
-    with database:
-        database.close_connection()
+    #with database:
+    #    database.close_connection()
 
     logger.info("alles wurde geschlossen")

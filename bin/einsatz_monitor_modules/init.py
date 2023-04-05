@@ -21,4 +21,3 @@ create_directory_and_empty_file(logfile_path, "logfile_main.txt")
 create_directory_and_empty_file(logfile_path, "logfile_ovpn.txt")
 create_directory_and_empty_file(logfile_path, "logfile_crawler.txt")
 create_directory_and_empty_file(logfile_path, "logfile_EM.txt")
-

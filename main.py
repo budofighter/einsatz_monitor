@@ -8,19 +8,18 @@ import subprocess
 import sys
 import time
 
-from PyQt5 import QtWidgets, QtCore, QtGui
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import QFileDialog, qApp, QAction, QStyle, QWidget
+from PyQt6 import QtWidgets, QtGui
+from PyQt6.QtCore import *
+from PyQt6.QtGui import *
+from PyQt6.QtWidgets import QFileDialog, QApplication, QStyle, QDialog, QTextEdit, QVBoxLayout
 
 from bin.einsatz_monitor_modules import init, close_methode, database_class, gennerate_cookie_module  # init wird benötigt!
 from bin.einsatz_monitor_modules.help_settings_methoden import *
-from ui.logs import Ui_Logfile
 from ui.mainwindow import Ui_MainWindow
 
 # Einstelungen für High Resolution
-QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True) #enable highdpi scaling
-QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True) #use highdpi icons
+#QtWidgets.QApplication.setAttribute(QtCore.Qt.ApplicationAttribute.EnableHighDpiScaling, True) #enable highdpi scaling
+#QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True) #use highdpi icons
 
 # Version Nummer wird hier gesetzt:
 version_nr = "0.9.9.3"
@@ -84,7 +83,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Icon und Taskbar:
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(os.path.join(resources, "fwsignet_100.png")), QtGui.QIcon.Normal, QtGui.QIcon.On)
+        icon.addPixmap(QtGui.QPixmap(os.path.join(resources, "fwsignet_100.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.On)
         self.setWindowIcon(icon)
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("EM-Statusauswertung")
 
@@ -159,26 +158,29 @@ class MainWindow(QtWidgets.QMainWindow):
 
 ### Menüaufbau und aktionen
         # Alles starten:
-        start_all = QAction(self.style().standardIcon(QStyle.SP_MediaPlay), '&Alles Starten', self)
+        start_all = QAction(self.style().standardIcon(QStyle.StandardPixmap.SP_MediaPlay), '&Alles Starten', self)
         start_all.setShortcut('Ctrl+P')
-        start_all.triggered.connect(self.autostart)
+        start_all.triggered[bool].connect(self.autostart)
         self.ui.menu_bersicht.addAction(start_all)
 
+        # Korrigierter Code für PyQt6:
+
         # Exit:
-        exit_action = QAction(self.style().standardIcon(QStyle.SP_DialogCancelButton), '&Exit', self)
+        exit_action = QAction(self.style().standardIcon(QStyle.StandardPixmap.SP_DialogCancelButton), '&Exit', self)
         exit_action.setStatusTip('Exit application')
         exit_action.setShortcut('Ctrl+Q')
-        exit_action.triggered.connect(qApp.quit)
+        exit_action.triggered[bool].connect(QApplication.instance().quit)
         self.ui.menu_bersicht.addAction(exit_action)
 
         # Installationsleitung:
-        install_help = QAction(self.style().standardIcon(QStyle.SP_MessageBoxQuestion), '&Installationsanleitung', self)
-        install_help.triggered.connect(installationsanleitung)
+        install_help = QAction(self.style().standardIcon(QStyle.StandardPixmap.SP_MessageBoxQuestion),
+                               '&Installationsanleitung', self)
+        install_help.triggered[bool].connect(installationsanleitung)
         self.ui.menuHilfe.addAction(install_help)
 
         # Kontakt:
-        contact = QAction(self.style().standardIcon(QStyle.SP_MessageBoxInformation), '&Kontakt', self)
-        contact.triggered.connect(kontakt)
+        contact = QAction(self.style().standardIcon(QStyle.StandardPixmap.SP_MessageBoxInformation), '&Kontakt', self)
+        contact.triggered[bool].connect(kontakt)
         self.ui.menuHilfe.addAction(contact)
 
         def connect_buttons_to_methods(ui, button_connections):
@@ -264,9 +266,9 @@ class MainWindow(QtWidgets.QMainWindow):
             if database.select_aktiv_flag("crawler") == 1:
                 msg = QMessageBox()
                 msg.setWindowTitle("Fehler - Auswertung noch aktiv")
-                msg.setIcon(QMessageBox.Critical)
+                msg.setIcon(QMessageBox.Icon.Critical)
                 msg.setText("Bitte zuerst die Auswertung beenden!")
-                msg.exec_()
+                msg.exec()
             else:
                 pid = list(item.pid for item in psutil.process_iter() if item.name() == 'openvpn.exe')
                 for i in pid:
@@ -294,9 +296,9 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 msg = QMessageBox()
                 msg.setWindowTitle("Fehler - VPN nicht aktiv")
-                msg.setIcon(QMessageBox.Critical)
+                msg.setIcon(QMessageBox.Icon.Critical)
                 msg.setText("Bitte zuerst das VPN starten!")
-                msg.exec_()
+                msg.exec()
 
     # Methode um die Einsatzauswertung zu starten:
     def start_einsatzauswertung(self):
@@ -333,9 +335,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def show_error_message(self, title, message):
         msg = QMessageBox()
         msg.setWindowTitle(title)
-        msg.setIcon(QMessageBox.Critical)
+        msg.setIcon(QMessageBox.Icon.Critical)
         msg.setText(message)
-        msg.exec_()
+        msg.exec()
 
     def safe_settings_funkrufname(self):
         set_funkrufname = self.ui.lineEdit_settings_funkrufname.text()
@@ -508,26 +510,26 @@ class MainWindow(QtWidgets.QMainWindow):
 
         if r == "fehler vpn":
             title = "Fehler - VPN nicht aktiv"
-            icon = QMessageBox.Critical
+            icon = QMessageBox.Icon.Critical
             message = "Bitte zuerst das VPN starten!"
         elif r == "fehler config":
             title = "Fehler - Wachendisplay Configuration nicht erledigt"
-            icon = QMessageBox.Critical
+            icon = QMessageBox.Icon.Critical
             message = "Bitte zuerst die Wachendisplay Config durchführen!"
         elif r == "erfolgreich":
             title = "Erfolgreich!"
-            icon = QMessageBox.Information
+            icon = QMessageBox.Icon.Critical
             message = "Cookies erfolgreich erstellt!"
         else:
             title = "Fehler - Cookie konnte nicht erstellt werden"
-            icon = QMessageBox.Critical
+            icon = QMessageBox.Icon.Critical
             message = "Unbekannter Fehler"
 
         msg = QMessageBox()
         msg.setWindowTitle(title)
         msg.setIcon(icon)
         msg.setText(message)
-        msg.exec_()
+        msg.exec()
 
 # ##### Methoden auf der Logseite:
     LOG_FILES = {
@@ -576,23 +578,39 @@ class MainWindow(QtWidgets.QMainWindow):
     def reset_log_em(self):
         self.reset_log(self.LOG_FILES["EM"])
 
-    def open_log_file(self, log_name, log_file):
-        self.window = AnotherWindow()
-        self.window.show()
-        self.window.setWindowTitle(f"Logfile: {log_name}")
-        self.window.ui.textEdit.setText(self.read_log(log_file))
+    def open_log_file(self, log_file):
+        # Erstelle das Fenster
+        dialog = QDialog()
+        dialog.setWindowTitle(f"Logfile: {log_file}")
+
+        # Erstelle den Texteditor und lese die Logdatei
+        text_edit = QTextEdit()
+        with open(os.path.join(logfile_path, log_file), "r", encoding="utf-8") as f:
+            log_content = f.read()
+            text_edit.setPlainText(log_content)
+
+        # Füge den Texteditor dem Dialog hinzu
+        layout = QVBoxLayout()
+        layout.addWidget(text_edit)
+        dialog.setLayout(layout)
+
+        # Zeige den Dialog an
+        dialog.exec()
 
     def open_main_log(self):
-        self.open_log_file("Mainlog", self.LOG_FILES["Main"])
+        self.open_log_file(self.LOG_FILES["Main"])
+
 
     def open_crawler_log(self):
-        self.open_log_file("Crawler/Wachendisplay", self.LOG_FILES["Crawler"])
+        self.open_log_file(self.LOG_FILES["Crawler"])
+
 
     def open_ovpn_log(self):
-        self.open_log_file("OpenVPN", self.LOG_FILES["VPN"])
+        self.open_log_file(self.LOG_FILES["VPN"])
+
 
     def open_em_log(self):
-        self.open_log_file("Einsatzauswertung", self.LOG_FILES["EM"])
+        self.open_log_file(self.LOG_FILES["EM"])
 
 # ####### Sonstige Methoden:
 
@@ -601,12 +619,19 @@ class MainWindow(QtWidgets.QMainWindow):
         return any(proc.name() == prozessname for proc in psutil.process_iter())
 
     # Methode zur Textausgabe, dass die Speicherung erfolgreich war:
+#    def safe_success(self, einstellung):
+#        QMessageBox.information(
+#            None,
+#            "Erfolgreich gespeichert",
+#            f"Die Einstellung {einstellung} wurde erfolgreich gespeichert!"
+#        )
+
     def safe_success(self, einstellung):
-        QMessageBox.information(
-            self,
-            "Erfolgreich gespeichert",
-            f"Die Einstellung {einstellung} wurde erfolgreich gespeichert!"
-        )
+        msg = QMessageBox()
+        msg.setWindowTitle("Erfolgreich gespeichert")
+        msg.setText(f"Die Einstellung {einstellung} wurde erfolgreich gespeichert!")
+        msg.setIcon(QMessageBox.Icon.Information)
+        msg.exec()
 
     # Methode um den Farbbutton zu ändern:
     def set_led(self, button, status):
@@ -661,12 +686,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.start_status_auswertung()
         logging.info("Autostart durchgeführt")
 
-class AnotherWindow(QWidget):
-    def __init__(self, parent=None):
-        super().__init__()
-        self.ui = Ui_Logfile()
-        self.ui.setupUi(self)
+
 
 window = MainWindow()
 window.show()
-sys.exit(app.exec_())
+sys.exit(app.exec())
