@@ -9,8 +9,8 @@ Voraussetzungen:
 - Admin Rechte
 
 # Installation:
-1)  Installiere selenium, PyQt5, qtpy, requests und psutil Modul in deiner Python Umgebung:
-pip install selenium, PyQt5, qtpy, requests, psutil
+1)  Installiere selenium, PyQt6, requests, psutil und webdriver_manager Modul in deiner Python Umgebung:
+pip install selenium, PyQt6, requests, psutil, webdriver_manager
 
 2) Downloade und entpacke den Scriptordner auf deinem System
     
