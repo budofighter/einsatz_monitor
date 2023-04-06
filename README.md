@@ -8,26 +8,25 @@ Voraussetzungen:
 - Python > 3.8
 - Admin Rechte
 
+Beid er Ausführung der entsprechenden Auswertungen wird automatisch folgende externe SOftware herunter geladen:
+https://sites.google.com/chromium.org/driver/
+https://www.xpdfreader.com/download.html
+
+
 # Installation:
 1)  Installiere selenium, PyQt6, requests, psutil und webdriver_manager Modul in deiner Python Umgebung:
 pip install selenium, PyQt6, requests, psutil, webdriver_manager
 
-2) Downloade und entpacke den Scriptordner auf deinem System
-    
-3) Downloade chromedriver für Selenium: https://sites.google.com/chromium.org/driver/
-
-4) Downloade pdftotext: https://www.xpdfreader.com/download.html
-
-5) Führe den chromedriver in deine PATH Variable in Windows.:
+2) Führe den chromedriver in deine PATH Variable in Windows.:
         - "Erweiterte Systemeinstellungen"
         - "Umgeungsvarriablen"
         - Suche und bearbeite "Path in "Systemvarriablen"
         - Füge den Ordner, in welchem deine chromedriver.exe liegt, hinzu.
         - Das System muss neu gestartet werden.
    
-6) Starte das Programm mit "EM_start.ps1", welches automatisch mit Admin-Rechten gestartet wird. Du kannst eine Verknüpfung erstellen, um einen Schnellzugriff auf dem Desktop zu haben.
+3) Starte das Programm mit "EM_start.ps1", welches automatisch mit Admin-Rechten gestartet wird. Du kannst eine Verknüpfung erstellen, um einen Schnellzugriff auf dem Desktop zu haben.
    
-7) Vor Beginn, fülle ALLE Einstellungen auf der Setting Seite aus.
+4) Vor Beginn, fülle ALLE Einstellungen auf der Setting Seite aus.
 
 
 # Updates:
