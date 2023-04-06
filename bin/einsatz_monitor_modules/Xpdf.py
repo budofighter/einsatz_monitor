@@ -4,7 +4,7 @@ import shutil
 import logging
 from zipfile import ZipFile
 
-from bin.einsatz_monitor_modules import database_class
+from . import database_class
 
 database = database_class.Database()
 

@@ -3,8 +3,15 @@
 # Funktion zum Herunterladen von GitHub
 function Get-GitHubRelease($url, $destination) {
     try {
-        $response = Invoke-RestMethod -Uri $url -UseBasicParsing
-        $response.content > $destination
+        $webRequest = [System.Net.WebRequest]::Create($url)
+        $webRequest.Method = "GET"
+        $webRequest.Timeout = 30000
+        $response = $webRequest.GetResponse()
+        $contentStream = $response.GetResponseStream()
+        $content = New-Object System.IO.StreamReader($contentStream).ReadToEnd()
+        $contentStream.Dispose()
+        $response.Dispose()
+        [System.IO.File]::WriteAllText($destination, $content)
         Write-Output "Update erfolgreich heruntergeladen..."
         return $true
     }
@@ -30,7 +37,8 @@ function Remove-FileOrFolder($path) {
 # Funktion zum Installieren von Updates
 function Install-Update($zipPath, $extractPath) {
     try {
-        Expand-Archive -LiteralPath $zipPath -DestinationPath $extractPath
+        Add-Type -AssemblyName System.IO.Compression.FileSystem
+        [System.IO.Compression.ZipFile]::ExtractToDirectory($zipPath, $extractPath)
         Write-Output "Update erfolgreich installiert..."
         return $true
     }
@@ -44,7 +52,8 @@ function Install-Update($zipPath, $extractPath) {
 $url = "https://github.com/budofighter/einsatz_monitor/archive/refs/heads/main.zip"
 
 # Ordner und Dateien, die entfernt werden sollen, definieren
-#$files = @("./EM_start.ps1", "./README.md", "./main.py")
+$directories = @("./bin/", "./logs/", "./resources/", "./tmp/", "./ui/")
+$files = @("./EM_start.ps1", "./README.md", "./main.py")
 
 # Update-Ordner definieren
 $updateFolder = "./einsatz_monitor-main"
@@ -76,23 +85,4 @@ if (Get-GitHubRelease -url $url -destination "./EM_update.zip")
         Remove-FileOrFolder "./EM_update.zip" | Out-Null
         Remove-FileOrFolder $updateFolder | Out-Null
 
-        # Config-Modul verschieben
-        robocopy "$updateFolder\config" ".\bin\einsatz_monitor_modules" /MOV /XF config.ini.example | Out-Null
-        $output += "Verschieben der Config-Datei erfolgreich...`n"
 
-        # Update erfolgreich abgeschlossen!
-        $output += "Update erfolgreich abgeschlossen!`n"
-
-        # Script beenden
-        Exit 0
-    }
-    else {
-        $output += "Update-Installation fehlgeschlagen, daher Scriptabbruch. Bitte manuell in diesen Ordner extrahieren.`n"
-    }
-}
-else {
-    $output += "Download des Updates nicht möglich, daher Scriptabbruch.`n"
-}
-
-#Ausgabe
-Write-Output $output

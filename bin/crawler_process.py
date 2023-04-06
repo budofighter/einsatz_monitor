@@ -184,7 +184,8 @@ def run_crawler():
         chromedriver.is_chromedriver_current()
 
         service = ChromeDriverService(executable_path=chromedriver_path)
-        driver = webdriver.Chrome(service=service, options=chrome_options)
+        driver = webdriver.Chrome(executable_path=chromedriver_path, options=chrome_options)
+
 
         # erst die Webseite aufrufen:
         try:
