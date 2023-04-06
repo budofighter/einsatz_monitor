@@ -3,6 +3,7 @@ import re
 import subprocess
 import winreg
 import logging
+import shutil
 from packaging import version
 from webdriver_manager.chrome import ChromeDriverManager
 
@@ -35,7 +36,8 @@ def get_local_chromedriver_version(chromedriver_path):
 def update_chromedriver(chromedriver_path):
     try:
         updated_driver = ChromeDriverManager().install()
-        os.replace(updated_driver, chromedriver_path)
+        shutil.copy(updated_driver, chromedriver_path)
+        os.remove(updated_driver)
         logger.info("Chromedriver wurde erfolgreich aktualisiert.")
     except Exception as e:
         logger.error(f"Fehler beim Aktualisieren des Chromedrivers: {str(e)}")
