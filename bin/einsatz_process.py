@@ -6,7 +6,7 @@ from einsatz_monitor_modules import get_email, Xpdf
 from einsatz_monitor_modules.api_class import *
 from einsatz_monitor_modules.einsatz_auswertung_class import *
 from einsatz_monitor_modules.database_class import *
-from einsatz_monitor_modules.modul_fwbs import *
+#from einsatz_monitor_modules.modul_fwbs import *
 
 # Zugangsdaten:
 database = database_class.Database()
