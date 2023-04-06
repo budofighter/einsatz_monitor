@@ -22,7 +22,7 @@ from ui.mainwindow import Ui_MainWindow
 #QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True) #use highdpi icons
 
 # Version Nummer wird hier gesetzt:
-version_nr = "0.9.9.3"
+version_nr = "0.9.9.9"
 
 # Konfigurationen importieren:
 app = QtWidgets.QApplication(sys.argv)
@@ -127,7 +127,7 @@ class MainWindow(QtWidgets.QMainWindow):
             ("lineEdit_setings_email_server", "email_server"),
             ("lineEdit_settings_kdo_alarm", "kdo_alarm"),
             ("lineEdit_settings_dag_alternative", "dag_alternativ"),
-            ("lineEdit_settings_path_to_pdftotext", "path_to_pdftotext.exe"),
+            #("lineEdit_settings_path_to_pdftotext", "path_to_pdftotext.exe"),
             ("lineEdit_settings_token_test", "token_test"),
             ("lineEdit_settings_token_abt1", "token_abt1"),
             ("lineEdit_settings_token_abt2", "token_abt2"),
@@ -214,7 +214,7 @@ class MainWindow(QtWidgets.QMainWindow):
             ('pushButton_settings_safe_email_server', self.safe_email_server),
             ('pushButton_settings_safe_kdo_alarm', self.safe_kdo_ric),
             ('pushButton_settings_safe_dag_alternative', self.safe_dag_alternativ),
-            ('pushButton_settings_safe_pdftotext', self.safe_pdftotext),
+            #('pushButton_settings_safe_pdftotext', self.safe_pdftotext),
             ('pushButton_safe_settings_token_test', self.safe_settings_token_test),
             ('pushButton_safe_settings_token_abt1', self.safe_settings_token_abt1),
             ('pushButton_safe_settings_token_abt2', self.safe_settings_token_abt2),
@@ -224,7 +224,7 @@ class MainWindow(QtWidgets.QMainWindow):
             ('pushButton_safe_settings_token_abt6', self.safe_settings_token_abt6),
             ('pushButton_browse_settings_vpn_path_to_exe', self.browse_settings_vpn_path_to_exe),
             ('pushButton_browse_settings_vpn_config', self.browse_settings_vpn_config),
-            ('pushButton_settings_browse_pdftotext', self.browse_pdftotext),
+            #('pushButton_settings_browse_pdftotext', self.browse_pdftotext),
             ('pushButton_help_settings_funkrufname', help_settings_funkrufname),
             ('pushButton_help_setting_fahrzeuge', help_setting_fahrzeuge),
             ('pushButton_help_settings_token', help_settings_token),
@@ -242,7 +242,7 @@ class MainWindow(QtWidgets.QMainWindow):
             ('pushButton_settings_help_email_server', help_email_Server),
             ('pushButton_settings_help_kdo_alarm', help_kdo_alarm),
             ('pushButton_settings_help_dag_alternative', help_dag_alternativ),
-            ('pushButton_settings_help_pdftotext', help_pdftotext),
+            #('pushButton_settings_help_pdftotext', help_pdftotext),
             ('pushButton_5_help_settings_connect_tokens_all', help_connect_tokens_all),
             ('pushButton_log_reload', self.log_reload),
             ('pushButton_logs_reset_mainlog', self.reset_log_main),
@@ -444,9 +444,9 @@ class MainWindow(QtWidgets.QMainWindow):
         input_to_safe = self.ui.lineEdit_settings_dag_alternative.text()
         self.safe_settings("dag_alternativ", input_to_safe)
 
-    def safe_pdftotext(self):
-        input_to_safe = self.ui.lineEdit_settings_path_to_pdftotext.text()
-        self.safe_settings("path_to_pdftotext.exe", input_to_safe)
+   # def safe_pdftotext(self):
+   #     input_to_safe = self.ui.lineEdit_settings_path_to_pdftotext.text()
+   #     self.safe_settings("path_to_pdftotext.exe", input_to_safe)
 
     def safe_settings_token_test(self):
         input_to_safe = self.ui.lineEdit_settings_token_test.text()
@@ -491,15 +491,15 @@ class MainWindow(QtWidgets.QMainWindow):
         if filepath:
             self.ui.lineEdit_settings_vpn_config.setText(filepath)
 
-    def browse_settings_pdftotext(self):
-        filepath, _ = QFileDialog.getOpenFileName(self, 'Öffne Datei', '', 'Executable (.exe);;All files ()')
-        if filepath:
-            self.ui.lineEdit_settings_path_to_pdftotext.setText(filepath)
+   # def browse_settings_pdftotext(self):
+   #     filepath, _ = QFileDialog.getOpenFileName(self, 'Öffne Datei', '', 'Executable (.exe);;All files ()')
+   #     if filepath:
+   #         self.ui.lineEdit_settings_path_to_pdftotext.setText(filepath)
 
-    def browse_pdftotext(self):
-        filepath, _ = QFileDialog.getOpenFileName(self, 'Bitte pdftotext.exe auswählen', 'c:\\', "Executables ("
-                                                                                               "*.exe)")
-        self.ui.lineEdit_settings_path_to_pdftotext.setText(filepath)
+    #def browse_pdftotext(self):
+    #    filepath, _ = QFileDialog.getOpenFileName(self, 'Bitte pdftotext.exe auswählen', 'c:\\', "Executables ("
+     #                                                                                          "*.exe)")
+   #     self.ui.lineEdit_settings_path_to_pdftotext.setText(filepath)
 
     # methode um die Cookies zu gennerieren:
     def generate_cookie(self):

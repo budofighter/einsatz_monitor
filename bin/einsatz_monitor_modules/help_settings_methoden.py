@@ -162,14 +162,6 @@ def help_dag_alternativ():
                             "In diesem Beispiel muss KLEIN als DAG-Alternative abgespeichert werden."
     )
 
-def help_pdftotext():
-    create_message_box(
-        "Einstellung: Pfad zu pdftotext.exe",
-        "Bitte die pdftotext.exe Datei auswählen",
-        "Dieses Programm wird benötigt, um die PDF Dateien in Text umzuwandeln. Bitte hier downloaden "
-                            "und den Pfad einstellen: https://www.xpdfreader.com/download"
-    )
-
 def help_connect_tokens_all():
     create_message_box(
         "Einstellung: Tokens",

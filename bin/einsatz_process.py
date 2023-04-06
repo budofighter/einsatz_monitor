@@ -2,7 +2,7 @@
 import subprocess
 import time
 from datetime import datetime as dt
-from einsatz_monitor_modules import get_email
+from einsatz_monitor_modules import get_email, Xpdf
 from einsatz_monitor_modules.api_class import *
 from einsatz_monitor_modules.einsatz_auswertung_class import *
 from einsatz_monitor_modules.database_class import *
@@ -10,7 +10,8 @@ from einsatz_monitor_modules.modul_fwbs import *
 
 # Zugangsdaten:
 database = database_class.Database()
-tmp_path = os.path.join(os.path.dirname(__file__), ".." , "tmp")
+tmp_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".." , "tmp"))
+XPDF_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "resources", "pdftotext.exe"))
 
 # Logginginformationen
 logger = logging.getLogger(__name__)
@@ -19,6 +20,8 @@ file_handler = logging.FileHandler(os.path.join(os.path.dirname(__file__),"..", 
 file_handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(message)s'))
 logger.addHandler(file_handler)
 
+# xpdf überprüfen:
+Xpdf.XpdfHandler()
 
 def get_token_list(einsatz, testmode):
     token_list = []
@@ -60,7 +63,8 @@ while database.select_aktiv_flag("auswertung") == 1:
         for pdf in pdfs:
             inp = os.path.join(tmp_path, pdf)
             try:
-                subprocess.run([database.select_config("path_to_pdftotext.exe"), "-enc", "UTF-8", "-simple", inp])
+                print([XPDF_PATH, "-enc", "UTF-8", "-simple", inp])
+                subprocess.run([XPDF_PATH, "-enc", "UTF-8", "-simple", inp])
                 if os.path.exists(inp):
                     os.remove(inp)
                 else:
