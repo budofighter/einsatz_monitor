@@ -44,37 +44,10 @@ function Install-Update($zipPath, $extractPath) {
 $url = "https://github.com/budofighter/einsatz_monitor/archive/refs/heads/main.zip"
 
 # Ordner und Dateien, die entfernt werden sollen, definieren
-$directories = @("./bin/", "./logs/", "./resources/", "./tmp/", "./ui/")
-$files = @("./EM_start.ps1", "./README.md", "./main.py")
+#$files = @("./EM_start.ps1", "./README.md", "./main.py")
 
 # Update-Ordner definieren
 $updateFolder = "./einsatz_monitor-main"
-
-# Logging-Modul konfigurieren
-$logConfig = @"
-<log4net>
-  <appender name='LogFileAppender' type='log4net.Appender.RollingFileAppender'>
-    <file value='update.log'/>
-    <appendToFile value='true'/>
-    <rollingStyle value='Composite'/>
-    <datePattern value='yyyyMMdd'/>
-    <maxSizeRollBackups value='-1'/>
-    <maximumFileSize value='10MB'/>
-    <staticLogFileName value='true'/>
-    <layout type='log4net.Layout.PatternLayout'>
-      <conversionPattern value='%date [%thread] %-5level %logger - %message%newline'/>
-    </layout>
-  </appender>
-  <root>
-    <level value='ALL'/>
-    <appender-ref ref='LogFileAppender'/>
-  </root>
-</log4net>
-"@
-Add-Type -AssemblyName log4net
-$log = [log4net.LogManager]::GetLogger([System.Reflection.MethodBase]::GetCurrentMethod().DeclaringType)
-$log4netConfig = New-Object System.IO.StringReader($logConfig)
-[log4net.Config.XmlConfigurator]::Configure($log4netConfig)
 
 # Update herunterladen
 if (Get-GitHubRelease -url $url -destination "./EM_update.zip")
@@ -109,9 +82,6 @@ if (Get-GitHubRelease -url $url -destination "./EM_update.zip")
 
         # Update erfolgreich abgeschlossen!
         $output += "Update erfolgreich abgeschlossen!`n"
-
-        # Log-Datei schreiben
-        $log.Info("Update erfolgreich abgeschlossen.")
 
         # Script beenden
         Exit 0
