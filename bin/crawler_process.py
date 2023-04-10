@@ -28,6 +28,7 @@ import time
 import logging
 import pickle
 import sys
+import atexit
 
 from contextlib import contextmanager
 
@@ -186,17 +187,24 @@ def is_crawler_responsive(driver, timeout=60):
         return False
 
 def monitor_crawler():
-    while True:
-        process = multiprocessing.Process(target=run_crawler)
-        process.start()
-        process.join()
+    process = None
+    try:
+        while True:
+            process = multiprocessing.Process(target=run_crawler)
+            process.start()
+            process.join()
 
-        if process.exitcode == 0:
-            break
-        else:
-            logger.warning(
-                f"Crawler-Prozess wurde unerwartet beendet (Exitcode: {process.exitcode}). Neustart in 60 Sekunden...")
-            time.sleep(60)
+            if process.exitcode == 0:
+                break
+            else:
+                logger.warning(
+                    f"Crawler-Prozess wurde unerwartet beendet (Exitcode: {process.exitcode}). Neustart in 60 Sekunden..."
+                )
+                time.sleep(60)
+    finally:
+        if process is not None and process.is_alive():
+            process.terminate()
+            process.join()
 
 def run_crawler():
     database = database_class.Database()
@@ -259,6 +267,15 @@ def run_crawler():
                 logger.error(f"Chrome-driver konnte nicht abschließend geschlossen werden: {e}")
             else:
                 logger.info("Chrome-driver erfolgreich geschlossen")
+
+
+def exit_handler():
+    global process
+    if process is not None and process.is_alive():
+        process.terminate()
+        process.join()
+
+atexit.register(exit_handler)
 
 def main():
     monitor_crawler()
