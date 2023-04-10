@@ -75,7 +75,7 @@ def load_cookies(driver, cookie_file_path):
 
 
 def crawl_wachendisplay(driver, database):
-    while True:
+    while database.select_aktiv_flag("crawler") == 1:
         output_wachendisplay_string = None
 
         try:
