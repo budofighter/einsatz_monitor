@@ -1,44 +1,20 @@
-#Wenn die main() Methode ausgeführt wird, passiert Folgendes:
-#Die Funktion monitor_crawler() wird aufgerufen.
-#In der Funktion monitor_crawler() wird ein neuer Prozess mit der Funktion run_crawler() erstellt und gestartet.
-#In der Funktion run_crawler():
-#a. Eine Instanz der Database Klasse wird erstellt.
-#b. Die Chrome-Optionen werden basierend auf den Datenbankeinstellungen konfiguriert.
-#c. Der Chromedriver wird überprüft und aktualisiert, falls nötig.
-#d. Ein neuer Chrome-Browser wird gestartet.
-#e. Die Wachendisplay-Webseite wird geladen.
-#f. Die Cookies werden geladen und im Browser gesetzt.
-#g. Die Webseite wird erneut geladen.
-#h. Es wird auf das Vorhandensein des "Ruhedarstellung"-Buttons gewartet.
-#Während das Aktiv-Flag "crawler" in der Datenbank auf 1 gesetzt ist, wird die Funktion crawl_wachendisplay() kontinuierlich aufgerufen.
-#a. In der Funktion crawl_wachendisplay():
-#i. Der Button "Ruhedarstellung" wird geklickt.
-#ii. Es wird auf das Laden des Wachendisplay-Textelements gewartet.
-#iii. Der Text des Wachendisplays wird extrahiert und verarbeitet.
-#iv. Fahrzeugstatus werden extrahiert und geänderte Status werden an die ConnectAPI übergeben.
-#v. Es wird auf die Aktualisierung des Wachendisplay-Textelements gewartet.
-#Zwischen den Aufrufen der Funktion crawl_wachendisplay() wird überprüft, ob der Crawler reaktiv ist (mittels der Funktion is_crawler_responsive()). Falls nicht, wird der Prozess beendet.
-#Wenn der Crawler-Prozess unerwartet beendet wird, startet die monitor_crawler() Funktion nach einer 60-Sekunden-Pause einen neuen Prozess. Dieser Schritt wird wiederholt, bis der Crawler-Prozess erfolgreich beendet wird (mit Exitcode 0).
-#Im Allgemeinen durchläuft der Code kontinuierlich das Wachendisplay und überwacht Fahrzeugstatusänderungen. Bei Änderungen werden diese an die ConnectAPI übergeben. Der Crawler wird auch regelmäßig auf seine Reaktivität überprüft und bei Bedarf neu gestartet.
-
+import sys
+import atexit
+import time
 import multiprocessing
 import os
 import re
-import time
 import logging
 import pickle
-import sys
-import atexit
 
 from contextlib import contextmanager
-
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service as ChromeDriverService
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.expected_conditions import visibility_of_element_located
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.expected_conditions import visibility_of_element_located
 from selenium.common.exceptions import (
     NoSuchElementException,
     TimeoutException,
@@ -46,6 +22,7 @@ from selenium.common.exceptions import (
     InvalidCookieDomainException,
     WebDriverException,
 )
+
 from einsatz_monitor_modules import api_class, database_class, chromedriver
 
 
@@ -167,17 +144,7 @@ def crawl_wachendisplay(driver, database):
             element_updated((By.ID, database.select_config("wachendisplay_content_id")),
                             output_wachendisplay_string))
 
-        # Überprüfen, ob der Crawler reaktiv ist
-        while database.select_aktiv_flag("crawler") == 1:
-            if not is_crawler_responsive(driver):
-                logger.error("Crawler ist nicht mehr reaktiv. Beende den Prozess...")
-                sys.exit(1)
-
-            # Wenn der Crawler reaktiv ist, Wachendisplay erneut durchsuchen
-            if not crawl_wachendisplay(driver, database):
-                time.sleep(10)
-
-    return True
+        return True
 
 def is_crawler_responsive(driver, timeout=60):
     try:
@@ -188,8 +155,8 @@ def is_crawler_responsive(driver, timeout=60):
 
 def monitor_crawler():
     process = None
-    try:
-        while True:
+    while True:
+        try:
             process = multiprocessing.Process(target=run_crawler)
             process.start()
             process.join()
@@ -201,10 +168,20 @@ def monitor_crawler():
                     f"Crawler-Prozess wurde unerwartet beendet (Exitcode: {process.exitcode}). Neustart in 60 Sekunden..."
                 )
                 time.sleep(60)
-    finally:
-        if process is not None and process.is_alive():
-            process.terminate()
-            process.join()
+
+        except KeyboardInterrupt:
+            logger.info("Prozess durch Benutzereingabe beendet")
+            break
+        except Exception as e:
+            logger.error(f"Ein Fehler ist aufgetreten: {e}")
+            if process is not None and process.is_alive():
+                process.terminate()
+                process.join()
+            time.sleep(60)
+
+    if process is not None and process.is_alive():
+        process.terminate()
+        process.join()
 
 def run_crawler():
     database = database_class.Database()
@@ -240,15 +217,15 @@ def run_crawler():
 
         # Warten, bis die Webseite komplett geladen ist: (bis der Button "Ruhedarstellung" angezeigt wird)
 
-        with wait_for_element(driver, 60, By.XPATH, "//*[contains(text(),'Ruhedarstellung')]") as element:
+        with wait_for_element(driver, 120, By.XPATH, "//*[contains(text(),'Ruhedarstellung')]") as element:
             if element:
                 logger.info("Wachendisplay erfolgreich geladen")
 
-
-
-        while database.select_aktiv_flag("crawler") == 1:
-            if not crawl_wachendisplay(driver, database):
+        if database.select_aktiv_flag("crawler") == 1:
+            while crawl_wachendisplay(driver, database):
                 time.sleep(10)  # Warten Sie 10 Sekunden, bevor Sie erneut versuchen
+        else:
+            sys.exit(0)
 
     except WebDriverException as e:
         logger.error("Ein unbekannter Fehler ist aufgetreten:", e)
@@ -278,7 +255,25 @@ def exit_handler():
 atexit.register(exit_handler)
 
 def main():
-    monitor_crawler()
+    try:
+        while True:
+            database = database_class.Database()
+            aktiv_flag = database.select_aktiv_flag("crawler")
+            if aktiv_flag == 1:
+                monitor_crawler()
+            elif aktiv_flag == 0:
+                logger.info("Crawler wird beendet, da Aktiv-Flag auf 0 gesetzt wurde.")
+                sys.exit(0)
+            else:
+                logger.error("Aktiv-Flag hat einen ungültigen Wert.")
+                sys.exit(1)
+
+            time.sleep(10)  # Warte 10 Sekunden, bevor der Aktiv-Flag erneut überprüft wird
+
+    except KeyboardInterrupt:
+        logger.info("Crawler durch Benutzereingabe beendet")
+    except Exception as e:
+        logger.error(f"Ein Fehler ist aufgetreten: {e}")
 
 if __name__ == "__main__":
     main()
