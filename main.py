@@ -22,7 +22,7 @@ from ui.mainwindow import Ui_MainWindow
 #QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True) #use highdpi icons
 
 # Version Nummer wird hier gesetzt:
-version_nr = "0.9.9.10"
+version_nr = "0.9.9.11"
 
 # Konfigurationen importieren:
 app = QtWidgets.QApplication(sys.argv)

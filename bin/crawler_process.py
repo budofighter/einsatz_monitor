@@ -1,3 +1,26 @@
+#Wenn die main() Methode ausgeführt wird, passiert Folgendes:
+#Die Funktion monitor_crawler() wird aufgerufen.
+#In der Funktion monitor_crawler() wird ein neuer Prozess mit der Funktion run_crawler() erstellt und gestartet.
+#In der Funktion run_crawler():
+#a. Eine Instanz der Database Klasse wird erstellt.
+#b. Die Chrome-Optionen werden basierend auf den Datenbankeinstellungen konfiguriert.
+#c. Der Chromedriver wird überprüft und aktualisiert, falls nötig.
+#d. Ein neuer Chrome-Browser wird gestartet.
+#e. Die Wachendisplay-Webseite wird geladen.
+#f. Die Cookies werden geladen und im Browser gesetzt.
+#g. Die Webseite wird erneut geladen.
+#h. Es wird auf das Vorhandensein des "Ruhedarstellung"-Buttons gewartet.
+#Während das Aktiv-Flag "crawler" in der Datenbank auf 1 gesetzt ist, wird die Funktion crawl_wachendisplay() kontinuierlich aufgerufen.
+#a. In der Funktion crawl_wachendisplay():
+#i. Der Button "Ruhedarstellung" wird geklickt.
+#ii. Es wird auf das Laden des Wachendisplay-Textelements gewartet.
+#iii. Der Text des Wachendisplays wird extrahiert und verarbeitet.
+#iv. Fahrzeugstatus werden extrahiert und geänderte Status werden an die ConnectAPI übergeben.
+#v. Es wird auf die Aktualisierung des Wachendisplay-Textelements gewartet.
+#Zwischen den Aufrufen der Funktion crawl_wachendisplay() wird überprüft, ob der Crawler reaktiv ist (mittels der Funktion is_crawler_responsive()). Falls nicht, wird der Prozess beendet.
+#Wenn der Crawler-Prozess unerwartet beendet wird, startet die monitor_crawler() Funktion nach einer 60-Sekunden-Pause einen neuen Prozess. Dieser Schritt wird wiederholt, bis der Crawler-Prozess erfolgreich beendet wird (mit Exitcode 0).
+#Im Allgemeinen durchläuft der Code kontinuierlich das Wachendisplay und überwacht Fahrzeugstatusänderungen. Bei Änderungen werden diese an die ConnectAPI übergeben. Der Crawler wird auch regelmäßig auf seine Reaktivität überprüft und bei Bedarf neu gestartet.
+
 import multiprocessing
 import os
 import re
@@ -7,11 +30,13 @@ import pickle
 import sys
 
 from contextlib import contextmanager
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service as ChromeDriverService
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.expected_conditions import visibility_of_element_located
 from selenium.common.exceptions import (
     NoSuchElementException,
@@ -72,82 +97,84 @@ def load_cookies(driver, cookie_file_path):
 
 
 def crawl_wachendisplay(driver, database):
-    output_wachendisplay_string = None
-
-    try:
-        # Klick auf den Button "Ruhedarstellung"
-        driver.find_element(By.XPATH, "//*[contains(text(),'Ruhedarstellung')]").click()
-
-        # Warten, bis das Element mit dem Wachendisplay-Text geladen ist
-        content_element = WebDriverWait(driver, 60).until(
-            visibility_of_element_located((By.ID, database.select_config("wachendisplay_content_id")))
-        )
-
-        # Speichern des Textes im Webelement
-        output_wachendisplay_webelement = driver.find_element(By.ID, database.select_config("wachendisplay_content_id"))
+    while True:
+        output_wachendisplay_string = None
 
         try:
-            # Extrahieren des Textes, entfernen der Zeilenumbrüche und speichern in einer Variablen
-            output_wachendisplay_string = output_wachendisplay_webelement.text.replace("\n", " ")
+            # Klick auf den Button "Ruhedarstellung"
+            driver.find_element(By.XPATH, "//*[contains(text(),'Ruhedarstellung')]").click()
+
+            # Warten, bis das Element mit dem Wachendisplay-Text geladen ist
+            content_element = WebDriverWait(driver, 60).until(
+                EC.presence_of_element_located((By.ID, database.select_config("wachendisplay_content_id")))
+            )
+
+            # Speichern des Textes im Webelement
+            output_wachendisplay_webelement = driver.find_element(By.ID, database.select_config("wachendisplay_content_id"))
+
+            try:
+                # Extrahieren des Textes, entfernen der Zeilenumbrüche und speichern in einer Variablen
+                output_wachendisplay_string = output_wachendisplay_webelement.text.replace("\n", " ")
+            except StaleElementReferenceException:
+                logger.error("StaleElementReferenceException: kein Zeilenumbruch in der Zwischenablage gefunden")
+            except:
+                logger.exception("Sonstiger Crawler error.")
+                wait_before_retrying(10)
+
+                # Extrahieren der Fahrzeug-IDs und deren Status aus dem Text
+                fahrzeuge_list = re.findall(database.select_config("funkrufname") + " [1-4]/[0-9][0-9]/?[0-9]? [1-6]",
+                                            output_wachendisplay_string)
+
+                fahrzeug_dictionary_new_status = {}
+                for fahrzeug in fahrzeuge_list:
+                    fahrzeug_split = fahrzeug.split(" ")
+                    fahrzeug_dictionary_new_status[fahrzeug_split[0] + " " + fahrzeug_split[1]] = fahrzeug_split[2]
+
+                # Überprüfen, ob sich der Status eines Fahrzeugs geändert hat
+                for fahrzeug, status_new in fahrzeug_dictionary_new_status.items():
+
+                    status_old = database.select_status(fahrzeug)
+
+                    if not status_new == str(status_old):
+                        radioid = fahrzeug.replace(" ", "").replace("-", "").replace("/", "")
+                        try:
+                            api_class.post_fahrzeug_status(radioid, status_new)
+                            database.update_status(fahrzeug, status_new)
+                            logger.info(
+                                "neue Statusänderung erfolgreich übergeben - {0}  Status : {1}".format(radioid,
+                                                                                                       status_new))
+                        except:
+                            logger.exception("Übergabe an ConnectAPI war nicht möglich.")
+
+        except NoSuchElementException:
+            logger.error("Crawler Error, Element konnte nicht geklickt werden.")
+            wait_before_retrying(10)
+
+        except TimeoutException:
+            logger.error("Crawler Error, Timeout beim Laden des Wachendisplays.")
+            wait_before_retrying(10)
+
         except StaleElementReferenceException:
-            logger.error("StaleElementReferenceException: kein Zeilenumbruch in der Zwischenablage gefunden")
+            logger.error("StaleElementReferenceException: Feld mit Text Ruhedarstellung kann nicht gefunden werden")
+
         except:
             logger.exception("Sonstiger Crawler error.")
             wait_before_retrying(10)
 
-        # Extrahieren der Fahrzeug-IDs und deren Status aus dem Text
-        fahrzeuge_list = re.findall(database.select_config("funkrufname") + " [1-4]/[0-9][0-9]/?[0-9]? [1-6]",
-                                    output_wachendisplay_string)
+            # Überprüfen, ob das Element mit dem Wachendisplay-Text aktualisiert wurde
+        WebDriverWait(driver, 60).until(
+            element_updated((By.ID, database.select_config("wachendisplay_content_id")),
+                            output_wachendisplay_string))
 
-        fahrzeug_dictionary_new_status = {}
-        for fahrzeug in fahrzeuge_list:
-            fahrzeug_split = fahrzeug.split(" ")
-            fahrzeug_dictionary_new_status[fahrzeug_split[0] + " " + fahrzeug_split[1]] = fahrzeug_split[2]
+        # Überprüfen, ob der Crawler reaktiv ist
+        while database.select_aktiv_flag("crawler") == 1:
+            if not is_crawler_responsive(driver):
+                logger.error("Crawler ist nicht mehr reaktiv. Beende den Prozess...")
+                sys.exit(1)
 
-        # Überprüfen, ob sich der Status eines Fahrzeugs geändert hat
-        for fahrzeug, status_new in fahrzeug_dictionary_new_status.items():
-
-            status_old = database.select_status(fahrzeug)
-
-            if not status_new == str(status_old):
-                radioid = fahrzeug.replace(" ", "").replace("-", "").replace("/", "")
-                try:
-                    api_class.post_fahrzeug_status(radioid, status_new)
-                    database.update_status(fahrzeug, status_new)
-                    logger.info(
-                        "neue Statusänderung erfolgreich übergeben - {0}  Status : {1}".format(radioid,
-                                                                                               status_new))
-                except:
-                    logger.exception("Übergabe an ConnectAPI war nicht möglich.")
-
-    except NoSuchElementException:
-        logger.error("Crawler Error, Element konnte nicht geklickt werden.")
-        wait_before_retrying(10)
-
-    except TimeoutException:
-        logger.error("Crawler Error, Timeout beim Laden des Wachendisplays.")
-        wait_before_retrying(10)
-
-    except StaleElementReferenceException:
-        logger.error("StaleElementReferenceException: Feld mit Text Ruhedarstellung kann nicht gefunden werden")
-
-    except:
-        logger.exception("Sonstiger Crawler error.")
-        wait_before_retrying(10)
-
-    # Überprüfen, ob das Element mit dem Wachendisplay-Text aktualisiert wurde
-    WebDriverWait(driver, 60).until(
-        element_updated((By.ID, database.select_config("wachendisplay_content_id")), output_wachendisplay_string))
-
-    # Überprüfen, ob der Crawler reaktiv ist
-    while database.select_aktiv_flag("crawler") == 1:
-        if not is_crawler_responsive(driver):
-            logger.error("Crawler ist nicht mehr reaktiv. Beende den Prozess...")
-            sys.exit(1)
-
-        # Wenn der Crawler reaktiv ist, Wachendisplay erneut durchsuchen
-        if not crawl_wachendisplay(driver, database):
-            time.sleep(10)
+            # Wenn der Crawler reaktiv ist, Wachendisplay erneut durchsuchen
+            if not crawl_wachendisplay(driver, database):
+                time.sleep(10)
 
     return True
 
@@ -208,6 +235,8 @@ def run_crawler():
         with wait_for_element(driver, 60, By.XPATH, "//*[contains(text(),'Ruhedarstellung')]") as element:
             if element:
                 logger.info("Wachendisplay erfolgreich geladen")
+
+
 
         while database.select_aktiv_flag("crawler") == 1:
             if not crawl_wachendisplay(driver, database):
