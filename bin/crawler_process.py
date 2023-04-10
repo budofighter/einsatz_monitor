@@ -1,5 +1,4 @@
 import sys
-import atexit
 import time
 import multiprocessing
 import os
@@ -25,7 +24,8 @@ from selenium.common.exceptions import (
 
 from einsatz_monitor_modules import api_class, database_class, chromedriver
 
-
+process = None
+driver = None
 chromedriver_path = os.path.join(os.path.dirname(__file__), "..", "resources", "chromedriver.exe")
 
 logger = logging.getLogger(__name__)
@@ -154,7 +154,7 @@ def is_crawler_responsive(driver, timeout=60):
         return False
 
 def monitor_crawler():
-    process = None
+    global process
     while True:
         try:
             process = multiprocessing.Process(target=run_crawler)
@@ -184,6 +184,7 @@ def monitor_crawler():
         process.join()
 
 def run_crawler():
+    global driver
     database = database_class.Database()
     # ################ 1. Seite aufrufen und Daten extrahieren
     # Optionen für den Chrome Browser:
@@ -248,11 +249,9 @@ def run_crawler():
 
 def exit_handler():
     global process
-    if process is not None and process.is_alive():
+    if process is not None and isinstance(process, multiprocessing.Process) and process.is_alive():
         process.terminate()
         process.join()
-
-atexit.register(exit_handler)
 
 def main():
     try:
