@@ -81,12 +81,10 @@ def crawl_wachendisplay(driver, database):
         try:
             # Klick auf den Button "Ruhedarstellung"
             driver.find_element(By.XPATH, "//*[contains(text(),'Ruhedarstellung')]").click()
-
             # Warten, bis das Element mit dem Wachendisplay-Text geladen ist
             content_element = WebDriverWait(driver, 60).until(
                 EC.presence_of_element_located((By.ID, database.select_config("wachendisplay_content_id")))
             )
-
             # Speichern des Textes im Webelement
             output_wachendisplay_webelement = driver.find_element(By.ID, database.select_config("wachendisplay_content_id"))
 
@@ -99,30 +97,30 @@ def crawl_wachendisplay(driver, database):
                 logger.exception("Sonstiger Crawler error.")
                 wait_before_retrying(10)
 
-                # Extrahieren der Fahrzeug-IDs und deren Status aus dem Text
-                fahrzeuge_list = re.findall(database.select_config("funkrufname") + " [1-4]/[0-9][0-9]/?[0-9]? [1-6]",
-                                            output_wachendisplay_string)
+            # Extrahieren der Fahrzeug-IDs und deren Status aus dem Text
+            fahrzeuge_list = re.findall(database.select_config("funkrufname") + " [1-4]/[0-9][0-9]/?[0-9]? [1-6]",
+                                        output_wachendisplay_string)
 
-                fahrzeug_dictionary_new_status = {}
-                for fahrzeug in fahrzeuge_list:
-                    fahrzeug_split = fahrzeug.split(" ")
-                    fahrzeug_dictionary_new_status[fahrzeug_split[0] + " " + fahrzeug_split[1]] = fahrzeug_split[2]
+            fahrzeug_dictionary_new_status = {}
+            for fahrzeug in fahrzeuge_list:
+                fahrzeug_split = fahrzeug.split(" ")
+                fahrzeug_dictionary_new_status[fahrzeug_split[0] + " " + fahrzeug_split[1]] = fahrzeug_split[2]
 
-                # Überprüfen, ob sich der Status eines Fahrzeugs geändert hat
-                for fahrzeug, status_new in fahrzeug_dictionary_new_status.items():
+            # Überprüfen, ob sich der Status eines Fahrzeugs geändert hat
+            for fahrzeug, status_new in fahrzeug_dictionary_new_status.items():
 
-                    status_old = database.select_status(fahrzeug)
+                status_old = database.select_status(fahrzeug)
 
-                    if not status_new == str(status_old):
-                        radioid = fahrzeug.replace(" ", "").replace("-", "").replace("/", "")
-                        try:
-                            api_class.post_fahrzeug_status(radioid, status_new)
-                            database.update_status(fahrzeug, status_new)
-                            logger.info(
-                                "neue Statusänderung erfolgreich übergeben - {0}  Status : {1}".format(radioid,
-                                                                                                       status_new))
-                        except:
-                            logger.exception("Übergabe an ConnectAPI war nicht möglich.")
+                if not status_new == str(status_old):
+                    radioid = fahrzeug.replace(" ", "").replace("-", "").replace("/", "")
+                    try:
+                        api_class.post_fahrzeug_status(radioid, status_new)
+                        database.update_status(fahrzeug, status_new)
+                        logger.info(
+                            "neue Statusänderung erfolgreich übergeben - {0}  Status : {1}".format(radioid,
+                                                                                                   status_new))
+                    except:
+                        logger.exception("Übergabe an ConnectAPI war nicht möglich.")
 
         except NoSuchElementException:
             logger.error("Crawler Error, Element konnte nicht geklickt werden.")

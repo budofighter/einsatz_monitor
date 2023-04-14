@@ -17,12 +17,8 @@ from bin.einsatz_monitor_modules import init, close_methode, database_class, gen
 from bin.einsatz_monitor_modules.help_settings_methoden import *
 from ui.mainwindow import Ui_MainWindow
 
-# Einstelungen für High Resolution
-#QtWidgets.QApplication.setAttribute(QtCore.Qt.ApplicationAttribute.EnableHighDpiScaling, True) #enable highdpi scaling
-#QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True) #use highdpi icons
-
 # Version Nummer wird hier gesetzt:
-version_nr = "0.9.9.11"
+version_nr = "0.9.9.12"
 
 # Konfigurationen importieren:
 app = QtWidgets.QApplication(sys.argv)
