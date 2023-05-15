@@ -1,7 +1,7 @@
-import urllib.parse
+#import urllib.parse
 
-import urllib.parse
-import requests
+#import urllib.parse
+#import requests
 
 
 # Vorlage für API Übergabe
