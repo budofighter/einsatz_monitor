@@ -19,7 +19,7 @@ from bin.einsatz_monitor_modules.help_settings_methoden import *
 from ui.mainwindow import Ui_MainWindow
 
 # Version Nummer wird hier gesetzt:
-version_nr = "0.9.9.15"
+version_nr = "0.9.9.16"
 
 # Konfigurationen importieren:
 app = QtWidgets.QApplication(sys.argv)
@@ -60,6 +60,7 @@ class MainWindow(QtWidgets.QMainWindow):
         logger.info("Programm gestartet.")
 
         # erst mal alle Error, PIDS und Status auf rot serten
+        database.reset_pids_and_errors()
 
 
         # Subprozess, um das Monitoring zu generieren:
