@@ -677,7 +677,7 @@ class MainWindow(QtWidgets.QMainWindow):
         logging.info("Autostart durchgeführt")
 
     # Methode um alle Subprozesse des Programms nach einem bestimmen Prozess zu durchsuchen
-    def check_child_process(process_name):
+    def check_child_process(self, process_name):
         parent = psutil.Process(os.getpid())  # Holt den aktuellen Prozess
         # Durchsucht die untergeordneten Prozesse
         for child in parent.children(recursive=True):
