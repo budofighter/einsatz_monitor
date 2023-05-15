@@ -7,6 +7,7 @@ import shutil
 import subprocess
 import sys
 import time
+import signal
 
 from PyQt6 import QtWidgets, QtGui
 from PyQt6.QtCore import *
@@ -47,7 +48,6 @@ logger.addHandler(file_handler)
 app.aboutToQuit.connect(close_methode.close_all)
 app.aboutToQuit.connect(database.close_connection)
 
-
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -60,12 +60,11 @@ class MainWindow(QtWidgets.QMainWindow):
         logger.info("Programm gestartet.")
 
         # erst mal alle Error, PIDS und Status auf rot serten
-        #database.reset_pids_and_errors()
+
 
         # Subprozess, um das Monitoring zu generieren:
         p = subprocess.Popen([sys.executable, monitoring_file])
-        #pid = p.pid
-        #database.update_pid("monitoring", str(pid))
+
 
         # timer um die Statusanzeige zu aktualisieren:
         timer_status = QTimer(self)
@@ -257,7 +256,7 @@ class MainWindow(QtWidgets.QMainWindow):
     # ####### Methoden auf der Statusseite:
     # Methode, um das OpenVPN modul zu starten,  bzw. zu stoppen, wenn der openvpn Prozess schon ausgeführt wird.
     def start_vpn(self):
-        if self.check_child_process("openvpn.exe"):
+        if self.check_prozess("openvpn.exe"):
             # prüfen ob die Auswertung noch läuft:
             if database.select_aktiv_flag("crawler") == 1:
                 msg = QMessageBox()
@@ -266,13 +265,15 @@ class MainWindow(QtWidgets.QMainWindow):
                 msg.setText("Bitte zuerst die Auswertung beenden!")
                 msg.exec()
             else:
-                parent = psutil.Process(os.getpid())
-                for child in parent.children(recursive=True):
-                    if child.name() == 'openvpn.exe':
-                        child.terminate()
-                        print("gekillt!")
+                pid = list(item.pid for item in psutil.process_iter() if item.name() == 'openvpn.exe')
+                for i in pid:
+                    psutil.Process(i).terminate()
+                    database.update_pid("vpn", "0")
+                    print("gekillt!")
         else:
             p = subprocess.Popen([sys.executable, vpn_file])
+            pid = p.pid
+            database.update_pid("vpn", str(pid))
 
 
     # Methode um die Crawler Methode zu starten/stoppen
@@ -689,7 +690,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
 
-
-window = MainWindow()
-window.show()
-sys.exit(app.exec())
+try:
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec())
+except Exception as e:
+    print("Ein Fehler ist aufgetreten: ", e)
+finally:
+    database.close_connection()
+    close_methode.close_all()

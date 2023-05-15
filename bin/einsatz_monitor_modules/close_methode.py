@@ -1,5 +1,4 @@
 # Optimiert 31.03.23
-import signal
 import os
 import logging
 import psutil
@@ -24,6 +23,18 @@ def terminate_all_child_processes(parent_pid):
         except psutil.NoSuchProcess:
             pass  # der Prozess ist bereits beendet
 
+def terminate_processes(process_name):
+    pids = [item.pid for item in psutil.process_iter() if item.name() == process_name]
+    if not pids:
+        logger.debug(f"Programmende: kein {process_name} Prozess gefunden, um diesen zu beenden")
+    else:
+        for pid in pids:
+            try:
+                psutil.Process(pid).terminate()
+                logger.debug(f"Programmende: {process_name} Prozess erfolgreich beendet")
+            except psutil.NoSuchProcess:
+                logger.exception(f"Programmende: {process_name} Prozess konnte nicht beendet werden!")
+
 
 def update_database_flag(flag_name):
     try:
@@ -35,6 +46,9 @@ def update_database_flag(flag_name):
 
 
 def close_all():
+
+    # 1. OpenVPN beenden
+    terminate_processes('openvpn.exe')
 
     # 2. statusauswertung beenden
     update_database_flag("crawler")
