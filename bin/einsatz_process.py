@@ -2,11 +2,11 @@
 import subprocess
 import time
 from datetime import datetime as dt
-from einsatz_monitor_modules import get_email, Xpdf
+from einsatz_monitor_modules import mail, Xpdf
 from einsatz_monitor_modules.api_class import *
 from einsatz_monitor_modules.einsatz_auswertung_class import *
 from einsatz_monitor_modules.database_class import *
-#from einsatz_monitor_modules.modul_fwbs import *
+from einsatz_monitor_modules.modul_fwbs import *
 
 # Zugangsdaten:
 database = database_class.Database()
@@ -54,7 +54,7 @@ while database.select_aktiv_flag("auswertung") == 1:
     testmode = database.select_config("testmode") != "False"
 
     # E-Mails abholen
-    pdfs = get_email.pull_mails()
+    pdfs = mail.pull_mails()
 
     # PDFs zu Text verarbeiten und anschließend löschen
     if not pdfs:

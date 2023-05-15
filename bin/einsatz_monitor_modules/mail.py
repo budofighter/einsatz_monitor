@@ -4,6 +4,9 @@ import os
 import logging
 import re
 from email import message_from_bytes
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 from . import database_class
 
@@ -71,3 +74,33 @@ def pull_mails():
             imap.logout()
         except Exception as e:
             logger.error(f"Error bei der Verarbeitung der E-Mail Anhänge: {e}")
+
+def send_email(subject, body, recipient):
+    try:
+        # SMTP Verbindung aufbauen:
+        server = smtplib.SMTP(database.select_config("email_server"), 587)
+        server.starttls()
+
+        # einloggen:
+        server.login(database.select_config("email_username"), database.select_config("email_password"))
+
+        # erstellen der Email:
+        msg = MIMEMultipart()
+        msg["From"] = database.select_config("email_username")
+        msg["To"] = recipient
+        msg["Subject"] = subject
+
+        # anhängen des Texts:
+        msg.attach(MIMEText(body, 'plain'))
+
+        # senden der Email:
+        server.send_message(msg)
+
+        # beenden der Verbindung:
+        server.quit()
+
+        logger.info("Email erfolgreich gesendet")
+
+    except Exception as e:
+        logger.exception(f"Fehler beim Senden der Email: {e}")
+        database.update_aktiv_flag("auswertung", "2")

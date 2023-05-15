@@ -5,6 +5,7 @@ import os
 import re
 import logging
 import pickle
+import atexit
 
 from contextlib import contextmanager
 from selenium import webdriver
@@ -23,6 +24,7 @@ from selenium.common.exceptions import (
 )
 
 from einsatz_monitor_modules import api_class, database_class, chromedriver
+from einsatz_monitor_modules.mail import send_email
 
 process = None
 driver = None
@@ -75,6 +77,8 @@ def load_cookies(driver, cookie_file_path):
 
 
 def crawl_wachendisplay(driver, database):
+    global exception_counter
+
     while database.select_aktiv_flag("crawler") == 1:
         output_wachendisplay_string = None
 
@@ -123,8 +127,16 @@ def crawl_wachendisplay(driver, database):
                         logger.exception("Übergabe an ConnectAPI war nicht möglich.")
 
         except NoSuchElementException:
-            logger.error("Crawler Error, Element konnte nicht geklickt werden.")
-            wait_before_retrying(10)
+            exception_counter += 1
+            if exception_counter >= 12:
+                logger.error("Crawler Error, Element konnte nicht geklickt werden.")
+                send_email("Crawler Error", "Das Element konnte nach 12 Versuchen nicht gefunden werden.",
+                           "cs@csiebold.de")
+                exit_handler()
+                sys.exit(1)  # Beenden Sie das Skript mit Exitcode 1
+            else:
+                logger.error("Crawler Error, Element konnte nicht geklickt werden.")
+                wait_before_retrying(10)
 
         except TimeoutException:
             logger.error("Crawler Error, Timeout beim Laden des Wachendisplays.")
@@ -165,6 +177,7 @@ def monitor_crawler():
                 logger.warning(
                     f"Crawler-Prozess wurde unerwartet beendet (Exitcode: {process.exitcode}). Neustart in 60 Sekunden..."
                 )
+                exit_handler()
                 time.sleep(60)
 
         except KeyboardInterrupt:
@@ -175,6 +188,7 @@ def monitor_crawler():
             if process is not None and process.is_alive():
                 process.terminate()
                 process.join()
+            exit_handler()
             time.sleep(60)
 
     if process is not None and process.is_alive():
@@ -251,6 +265,14 @@ def exit_handler():
         process.terminate()
         process.join()
 
+    if driver is not None:
+        try:
+            driver.quit()
+        except Exception as e:
+            logger.error(f"Chrome-driver konnte nicht abschließend geschlossen werden: {e}")
+        else:
+            logger.info("Chrome-driver erfolgreich geschlossen")
+
 def main():
     try:
         while True:
@@ -271,6 +293,10 @@ def main():
         logger.info("Crawler durch Benutzereingabe beendet")
     except Exception as e:
         logger.error(f"Ein Fehler ist aufgetreten: {e}")
+    finally:
+        exit_handler()
+
+atexit.register(exit_handler)
 
 if __name__ == "__main__":
     main()
