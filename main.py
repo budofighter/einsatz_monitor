@@ -60,12 +60,12 @@ class MainWindow(QtWidgets.QMainWindow):
         logger.info("Programm gestartet.")
 
         # erst mal alle Error, PIDS und Status auf rot serten
-        database.reset_pids_and_errors()
+        #database.reset_pids_and_errors()
 
         # Subprozess, um das Monitoring zu generieren:
         p = subprocess.Popen([sys.executable, monitoring_file])
-        pid = p.pid
-        database.update_pid("monitoring", str(pid))
+        #pid = p.pid
+        #database.update_pid("monitoring", str(pid))
 
         # timer um die Statusanzeige zu aktualisieren:
         timer_status = QTimer(self)
@@ -257,7 +257,7 @@ class MainWindow(QtWidgets.QMainWindow):
     # ####### Methoden auf der Statusseite:
     # Methode, um das OpenVPN modul zu starten,  bzw. zu stoppen, wenn der openvpn Prozess schon ausgeführt wird.
     def start_vpn(self):
-        if self.check_prozess("openvpn.exe"):
+        if self.check_child_process("openvpn.exe"):
             # prüfen ob die Auswertung noch läuft:
             if database.select_aktiv_flag("crawler") == 1:
                 msg = QMessageBox()
@@ -266,28 +266,25 @@ class MainWindow(QtWidgets.QMainWindow):
                 msg.setText("Bitte zuerst die Auswertung beenden!")
                 msg.exec()
             else:
-                pid = list(item.pid for item in psutil.process_iter() if item.name() == 'openvpn.exe')
-                for i in pid:
-                    psutil.Process(i).terminate()
-                    database.update_pid("vpn", "0")
-                    print("gekillt!")
+                parent = psutil.Process(os.getpid())
+                for child in parent.children(recursive=True):
+                    if child.name() == 'openvpn.exe':
+                        child.terminate()
+                        print("gekillt!")
         else:
             p = subprocess.Popen([sys.executable, vpn_file])
-            pid = p.pid
-            database.update_pid("vpn", str(pid))
+
 
     # Methode um die Crawler Methode zu starten/stoppen
     def start_status_auswertung(self):
         if database.select_aktiv_flag("crawler") == 1:
             database.update_aktiv_flag("crawler", "0")
-            database.update_pid("crawler", "0")
+
         else:
             # Testen ob das VPN schon steht
             if database.select_error("vpn") == 0:
                 database.update_aktiv_flag("crawler", "1")
-                p = subprocess.Popen([sys.executable, crawler_file])
-                pid = p.pid
-                database.update_pid("crawler", str(pid))
+                subprocess.Popen([sys.executable, crawler_file])
 
             else:
                 msg = QMessageBox()
@@ -300,12 +297,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def start_einsatzauswertung(self):
         if database.select_aktiv_flag("auswertung") == 1:
             database.update_aktiv_flag("auswertung", "0")
-            database.update_pid("auswertung", "0")
         else:
             database.update_aktiv_flag("auswertung", "1")
-            p = subprocess.Popen([sys.executable, einsatz_process_file])
-            pid = p.pid
-            database.update_pid("auswertung", str(pid))
+            subprocess.Popen([sys.executable, einsatz_process_file])
 
     # Methode um den Testmodus zu aktivieren:
     def activate_testmode(self):
@@ -681,6 +675,18 @@ class MainWindow(QtWidgets.QMainWindow):
         time.sleep(30)
         self.start_status_auswertung()
         logging.info("Autostart durchgeführt")
+
+    # Methode um alle Subprozesse des Programms nach einem bestimmen Prozess zu durchsuchen
+    def check_child_process(process_name):
+        parent = psutil.Process(os.getpid())  # Holt den aktuellen Prozess
+        # Durchsucht die untergeordneten Prozesse
+        for child in parent.children(recursive=True):
+            if child.name() == process_name:
+                # Der Prozess läuft
+                return True
+        # Der Prozess läuft nicht
+        return False
+
 
 
 

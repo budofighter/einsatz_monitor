@@ -37,7 +37,9 @@ class Database:
             if self.cursor_obj:
                 self.cursor_obj.execute("""CREATE TABLE IF NOT EXISTS config_db (einstellung TEXT UNIQUE, wert TEXT);""")
                 self.cursor_obj.execute("""CREATE TABLE IF NOT EXISTS error_db (prozess TEXT UNIQUE, error INTEGER);""")
-                self.cursor_obj.execute("""CREATE TABLE IF NOT EXISTS pid_db (dienst TEXT UNIQUE, pid INTEGER, aktiv_flag Integer);""")
+                #self.cursor_obj.execute("""CREATE TABLE IF NOT EXISTS pid_db (dienst TEXT UNIQUE, pid INTEGER, aktiv_flag Integer);""")
+                self.cursor_obj.execute(
+                    """CREATE TABLE IF NOT EXISTS pid_db (dienst TEXT UNIQUE, aktiv_flag Integer);""")
                 self.cursor_obj.execute("""CREATE TABLE IF NOT EXISTS status_db (fahrzeug TEXT UNIQUE, status INTEGER);""")
 
                 config_data = [("connect_api_fahrzeuge", ""), ("url_wachendisplay", ""),("wachendisplay_content_id", ""),("funkrufname",
@@ -55,8 +57,8 @@ class Database:
                               ("alarm_server", "1"), ("testmode", "1"), ("alarm_auswertung", "1")]
                 self.cursor_obj.executemany("INSERT or IGNORE INTO error_db(prozess, error) VALUES (?, ?)", error_data)
 
-                pid_data = [("monitoring", "0"), ("vpn", "0"), ("crawler", "0"), ("auswertung", "0")]
-                self.cursor_obj.executemany("INSERT or IGNORE INTO pid_db(dienst,pid) VALUES (?, ?)", pid_data)
+                #pid_data = [("monitoring", "0"), ("vpn", "0"), ("crawler", "0"), ("auswertung", "0")]
+                #self.cursor_obj.executemany("INSERT or IGNORE INTO pid_db(dienst,pid) VALUES (?, ?)", pid_data)
 
                 self.con.commit()
 
@@ -123,33 +125,33 @@ class Database:
             logger.error(e)
 
 # Pid_DB
-    def update_pid(self, dienst, pid):
-        try:
-            with self.con:
-                self.cursor_obj.execute('UPDATE pid_db SET pid = ? WHERE dienst = ?',
-                                        (pid, dienst))
-            logger.debug(f"Update Pid_DB: {dienst} neue Pid: {pid}")
-        except Error as e:
-            logger.error(e)
+#    def update_pid(self, dienst, pid):
+#        try:
+#            with self.con:
+#                self.cursor_obj.execute('UPDATE pid_db SET pid = ? WHERE dienst = ?',
+#                                        (pid, dienst))
+#            logger.debug(f"Update Pid_DB: {dienst} neue Pid: {pid}")
+#        except Error as e:
+#            logger.error(e)
 
-    def select_pid(self, dienst):
-        try:
-            with self.con:
-                self.cursor_obj.execute('SELECT pid FROM pid_db WHERE dienst = ?', (dienst,))
-                rueckgabe = self.cursor_obj.fetchone()
-            return rueckgabe[0]
-        except Error as e:
-            logger.error(e)
+#    def select_pid(self, dienst):
+#        try:
+#            with self.con:
+#                self.cursor_obj.execute('SELECT pid FROM pid_db WHERE dienst = ?', (dienst,))
+#                rueckgabe = self.cursor_obj.fetchone()
+#            return rueckgabe[0]
+#        except Error as e:
+#            logger.error(e)
 
-    def select_all_pids(self):
-        try:
-            with self.con:
-                self.cursor_obj.execute('SELECT pid FROM pid_db')
-                rueckgabe = self.cursor_obj.fetchall()
-            pid_list = [i[0] for i in rueckgabe]
-            return pid_list
-        except Error as e:
-            logger.error(e)
+#    def select_all_pids(self):
+#        try:
+#            with self.con:
+#                self.cursor_obj.execute('SELECT pid FROM pid_db')
+#                rueckgabe = self.cursor_obj.fetchall()
+#            pid_list = [i[0] for i in rueckgabe]
+#            return pid_list
+#        except Error as e:
+#            logger.error(e)
 
     def select_aktiv_flag(self, dienst):
         try:
@@ -212,8 +214,8 @@ class Database:
         try:
             with self.con:
                 # Setze alle PIDs und aktiv_flag auf 0
-                self.cursor_obj.execute('UPDATE pid_db SET pid = 0, aktiv_flag = 0')
-                logger.debug("Alle PIDs und aktiv_flag Werte wurden auf 0 gesetzt")
+                self.cursor_obj.execute('UPDATE pid_db SET aktiv_flag = 0')
+                logger.debug("Alle aktiv_flag Werte wurden auf 0 gesetzt")
 
                 # Setze alle Errors auf 1
                 self.cursor_obj.execute('UPDATE error_db SET error = 1')

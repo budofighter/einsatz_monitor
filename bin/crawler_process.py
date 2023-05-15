@@ -254,8 +254,12 @@ def run_crawler():
             try:
                 driver.quit()
             except Exception as e:
+                send_email("run_crawler", "Crawler wurde vom run_crawler NICHT erfolgreich geschlossen",
+                           "cs@csiebold.de")
                 logger.error(f"Chrome-driver konnte nicht abschließend geschlossen werden: {e}")
             else:
+                send_email("run_crawler", "Crawler wurde vom run_crawler erfolgreich geschlossen",
+                           "cs@csiebold.de")
                 logger.info("Chrome-driver erfolgreich geschlossen")
 
 
@@ -269,8 +273,12 @@ def exit_handler():
         try:
             driver.quit()
         except Exception as e:
+            send_email("Exit Handler", "Crawler wurde vom Exit Handler NICHT erfolgreich geschlossen",
+                       "cs@csiebold.de")
             logger.error(f"Chrome-driver konnte nicht abschließend geschlossen werden: {e}")
         else:
+            send_email("Exit Handler", "Crawler wurde vom Exit Handler erfolgreich geschlossen",
+                       "cs@csiebold.de")
             logger.info("Chrome-driver erfolgreich geschlossen")
 
 def main():
