@@ -47,20 +47,14 @@ def update_database_flag(flag_name):
 
 def close_all():
 
-    # 1. OpenVPN beenden
+    # 1. Alle Buttons auf rot setzen und das schließen der Anwendungen starten
+    for button in ["monitoring","vpn", "crawler","auswertung", "wachendisplay",  "alarm_server", "testmodus"]:
+        update_database_flag(button)
+
+    # 2. OpenVPN beenden
     terminate_processes('openvpn.exe')
 
-    # 2. statusauswertung beenden
-    update_database_flag("crawler")
-
-    # 3. Einsatzauswertung beenden
-    update_database_flag("auswertung")
-
-    # 4. Alle Buttons auf rot setzen
-    for button in ["vpn", "wachendisplay", "statusauswertung", "alarm_server", "testmodus", "alarm_auswertung"]:
-        database.update_error(button, "1")
-
-    # 7. alle Kindprozesse des Hauptprozesses beenden
+    # 3. alle Kindprozesse des Hauptprozesses beenden
     terminate_all_child_processes(os.getpid())
 
     logger.info("alles wurde geschlossen")

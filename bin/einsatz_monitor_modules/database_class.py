@@ -36,8 +36,7 @@ class Database:
         try:
             if self.cursor_obj:
                 self.cursor_obj.execute("""CREATE TABLE IF NOT EXISTS config_db (einstellung TEXT UNIQUE, wert TEXT);""")
-                self.cursor_obj.execute("""CREATE TABLE IF NOT EXISTS error_db (prozess TEXT UNIQUE, error INTEGER);""")
-                self.cursor_obj.execute("""CREATE TABLE IF NOT EXISTS pid_db (dienst TEXT UNIQUE, pid INTEGER, aktiv_flag Integer);""")
+                self.cursor_obj.execute("""CREATE TABLE IF NOT EXISTS pid_db (dienst TEXT UNIQUE, aktiv_flag Integer);""")
                 self.cursor_obj.execute("""CREATE TABLE IF NOT EXISTS status_db (fahrzeug TEXT UNIQUE, status INTEGER);""")
 
                 config_data = [("connect_api_fahrzeuge", ""), ("url_wachendisplay", ""),("wachendisplay_content_id", ""),("funkrufname",
@@ -51,37 +50,15 @@ class Database:
                 self.cursor_obj.executemany("INSERT or IGNORE INTO config_db(einstellung, wert) VALUES (?, ?)",
                                             config_data)
 
-                error_data = [("vpn", "1"), ("wachendisplay", "1"), ("statusauswertung", "1"),
-                              ("alarm_server", "1"), ("testmode", "1"), ("alarm_auswertung", "1")]
-                self.cursor_obj.executemany("INSERT or IGNORE INTO error_db(prozess, error) VALUES (?, ?)", error_data)
 
-                pid_data = [("monitoring", "0"), ("vpn", "0"), ("crawler", "0"), ("auswertung", "0")]
-                self.cursor_obj.executemany("INSERT or IGNORE INTO pid_db(dienst,pid) VALUES (?, ?)", pid_data)
+                pid_data = [("monitoring", "0"), ("vpn", "0"), ("crawler", "0"), ("auswertung", "0"), ("wachendisplay", "0"), ("alarm_server", "0"), ("testmode", "0")]
+                self.cursor_obj.executemany("INSERT or IGNORE INTO pid_db(dienst,aktiv_flag) VALUES (?, ?)", pid_data)
 
                 self.con.commit()
 
         except Error as e:
             logger.error(e)
             self.con.close()
-
-# Error_DB:
-    def update_error(self, error_prozess, error_code):
-        try:
-            with self.con:
-                self.cursor_obj.execute('UPDATE error_db SET error = ? WHERE prozess = ?',
-                                        (error_code, error_prozess))
-            logger.debug(f"Update Error_DB: {error_prozess} neuer Errorcode: {error_code}")
-        except Error as e:
-            logger.error(e)
-
-    def select_error(self, prozess):
-        try:
-            with self.con:
-                self.cursor_obj.execute('SELECT error FROM error_db WHERE prozess = ?', (prozess,))
-                rueckgabe = self.cursor_obj.fetchone()
-            return rueckgabe[0]
-        except Error as e:
-            logger.error(e)
 
 # Status_DB:
     def update_status(self, fahrzeug, status):
@@ -119,35 +96,6 @@ class Database:
                 rueckgabe = self.cursor_obj.fetchall()
             fahrzeug_list = [i[0] for i in rueckgabe]
             return fahrzeug_list
-        except Error as e:
-            logger.error(e)
-
-# Pid_DB
-    def update_pid(self, dienst, pid):
-        try:
-            with self.con:
-                self.cursor_obj.execute('UPDATE pid_db SET pid = ? WHERE dienst = ?',
-                                        (pid, dienst))
-            logger.debug(f"Update Pid_DB: {dienst} neue Pid: {pid}")
-        except Error as e:
-            logger.error(e)
-
-    def select_pid(self, dienst):
-        try:
-            with self.con:
-                self.cursor_obj.execute('SELECT pid FROM pid_db WHERE dienst = ?', (dienst,))
-                rueckgabe = self.cursor_obj.fetchone()
-            return rueckgabe[0]
-        except Error as e:
-            logger.error(e)
-
-    def select_all_pids(self):
-        try:
-            with self.con:
-                self.cursor_obj.execute('SELECT pid FROM pid_db')
-                rueckgabe = self.cursor_obj.fetchall()
-            pid_list = [i[0] for i in rueckgabe]
-            return pid_list
         except Error as e:
             logger.error(e)
 
@@ -208,16 +156,12 @@ class Database:
             logger.error(e)
 
 # Funktion um alles zurückzusetzen (bei Programmstart)
-    def reset_pids_and_errors(self):
+    def reset_active_flag(self):
         try:
             with self.con:
-                # Setze alle PIDs und aktiv_flag auf 0
-                self.cursor_obj.execute('UPDATE pid_db SET pid = 0, aktiv_flag = 0')
-                logger.debug("Alle PIDs und aktiv_flag Werte wurden auf 0 gesetzt")
-
-                # Setze alle Errors auf 1
-                self.cursor_obj.execute('UPDATE error_db SET error = 1')
-                logger.debug("Alle Errors wurden auf 1 gesetzt")
+                # Setze alle aktiv_flag auf 0
+                self.cursor_obj.execute('UPDATE pid_db SET aktiv_flag = 0')
+                logger.debug("Alle aktiv_flag Werte wurden auf 0 gesetzt")
 
             # Commit die Änderungen
             self.con.commit()

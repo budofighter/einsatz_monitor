@@ -7,7 +7,6 @@ import shutil
 import subprocess
 import sys
 import time
-import signal
 
 from PyQt6 import QtWidgets, QtGui
 from PyQt6.QtCore import *
@@ -19,7 +18,7 @@ from bin.einsatz_monitor_modules.help_settings_methoden import *
 from ui.mainwindow import Ui_MainWindow
 
 # Version Nummer wird hier gesetzt:
-version_nr = "0.9.9.16"
+version_nr = "0.9.9.17"
 
 # Konfigurationen importieren:
 app = QtWidgets.QApplication(sys.argv)
@@ -60,7 +59,7 @@ class MainWindow(QtWidgets.QMainWindow):
         logger.info("Programm gestartet.")
 
         # erst mal alle Error, PIDS und Status auf rot serten
-        database.reset_pids_and_errors()
+        database.reset_active_flag()
 
 
         # Subprozess, um das Monitoring zu generieren:
@@ -269,12 +268,11 @@ class MainWindow(QtWidgets.QMainWindow):
                 pid = list(item.pid for item in psutil.process_iter() if item.name() == 'openvpn.exe')
                 for i in pid:
                     psutil.Process(i).terminate()
-                    database.update_pid("vpn", "0")
+                    database.update_aktiv_flag("vpn", "0")
                     print("gekillt!")
         else:
             p = subprocess.Popen([sys.executable, vpn_file])
-            pid = p.pid
-            database.update_pid("vpn", str(pid))
+            database.update_aktiv_flag("vpn", p.pid)
 
 
     # Methode um die Crawler Methode zu starten/stoppen
@@ -284,7 +282,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         else:
             # Testen ob das VPN schon steht
-            if database.select_error("vpn") == 0:
+            if database.select_aktiv_flag("vpn") != 0:
                 database.update_aktiv_flag("crawler", "1")
                 subprocess.Popen([sys.executable, crawler_file])
 
@@ -642,27 +640,19 @@ class MainWindow(QtWidgets.QMainWindow):
             STATUS_WIDGETS = [
                 (self.ui.status_vpn, "vpn"),
                 (self.ui.status_Wachendisplay, "wachendisplay"),
-                (self.ui.status_auswertung, "statusauswertung"),
+                (self.ui.status_auswertung, "crawler"),
                 (self.ui.status_server, "alarm_server"),
-                (self.ui.status_alarmscript, "alarm_auswertung")
+                (self.ui.status_alarmscript, "auswertung")
             ]
 
-            for status_widget, error_type in STATUS_WIDGETS:
-                error_count = database.select_error(error_type)
-                if error_count == 0:
+            for status_widget, application_type in STATUS_WIDGETS:
+                active_flag = database.select_aktiv_flag(application_type)
+                if active_flag != 0:
                     self.set_led(status_widget, 'green')
-                elif error_count == 2 and error_type == "alarm_auswertung":
-                    database.update_aktiv_flag("auswertung", "1")
-                    time.sleep(3)
-                    self.start_einsatzauswertung()
-                    time.sleep(5)
-                    database.update_aktiv_flag("auswertung", "0")
-                    self.start_einsatzauswertung()
-                    pass
                 else:
                     self.set_led(status_widget, 'red')
 
-                if database.select_error('testmode') == 0:
+                if database.select_aktiv_flag('testmode') == 1:
                     self.set_led(self.ui.status_testmodus, 'attention')
                 else:
                     self.set_led(self.ui.status_testmodus, 'red')
@@ -696,7 +686,8 @@ try:
     window.show()
     sys.exit(app.exec())
 except Exception as e:
-    print("Ein Fehler ist aufgetreten: ", e)
+    logger.error("Ein Fehler ist aufgetreten: ", e)
 finally:
+    logger.info("Es wird alles geschlossen")
     database.close_connection()
     close_methode.close_all()
