@@ -19,10 +19,8 @@ def check_website_availability():
     try:
         url = database.select_config("url_wachendisplay").split("/")
         eingabe = url[2].split(":")
-        print(eingabe)
         response = subprocess.call(["ping", "-n", "1", eingabe[0]], stdout=DEVNULL)
-        print(response)
-        database.update_aktiv_flag()("wachendisplay", "1" if response == 0 else "0")
+        database.update_aktiv_flag("wachendisplay", "1" if response == 0 else "0")
     except:
         logger.debug("Monitoring Error: URL Wachendisplay")
 

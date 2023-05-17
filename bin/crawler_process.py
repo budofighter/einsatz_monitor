@@ -8,6 +8,7 @@ import pickle
 import atexit
 
 from contextlib import contextmanager
+from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service as ChromeDriverService
@@ -254,12 +255,12 @@ def run_crawler():
             try:
                 driver.quit()
             except Exception as e:
-                send_email("run_crawler", "Crawler wurde vom run_crawler NICHT erfolgreich geschlossen",
+                current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                send_email("Exit Handler",
+                           f"Crawler wurde vom run_crawler NICHT erfolgreich geschlossen. Zeit: {current_time}",
                            "cs@csiebold.de")
                 logger.error(f"Chrome-driver konnte nicht abschließend geschlossen werden: {e}")
             else:
-                send_email("run_crawler", "Crawler wurde vom run_crawler erfolgreich geschlossen",
-                           "cs@csiebold.de")
                 logger.info("Chrome-driver erfolgreich geschlossen")
 
 
@@ -273,12 +274,12 @@ def exit_handler():
         try:
             driver.quit()
         except Exception as e:
-            send_email("Exit Handler", "Crawler wurde vom Exit Handler NICHT erfolgreich geschlossen",
+            current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            send_email("Exit Handler",
+                       f"Crawler wurde vom Exit Handler NICHT erfolgreich geschlossen. Zeit: {current_time}",
                        "cs@csiebold.de")
             logger.error(f"Chrome-driver konnte nicht abschließend geschlossen werden: {e}")
         else:
-            send_email("Exit Handler", "Crawler wurde vom Exit Handler erfolgreich geschlossen",
-                       "cs@csiebold.de")
             logger.info("Chrome-driver erfolgreich geschlossen")
 
 def main():
