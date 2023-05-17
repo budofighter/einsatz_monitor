@@ -78,11 +78,12 @@ if (Get-GitHubRelease -url $url -destination "./EM_update.zip")
         }
     }
     # Update installieren
-    if (Install-Update -zipPath "./EM_update.zip" -extractPath "./") {
+    if (Install-Update -zipPath "./EM_update.zip" -extractPath "./")
+    {
         # Dateien verschieben und löschen
         $output += "Dateien erfolgreich verschoben und TMP-Dateien gelöscht...`n"
         robocopy $updateFolder .\ /E /MOVE /Z /XO /XD .git /XD __pycache__ /XF .gitignore | Out-Null
         Remove-FileOrFolder "./EM_update.zip" | Out-Null
         Remove-FileOrFolder $updateFolder | Out-Null
-
-
+    }
+}
