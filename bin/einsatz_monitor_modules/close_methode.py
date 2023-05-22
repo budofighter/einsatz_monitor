@@ -40,7 +40,6 @@ def update_database_flag(flag_name):
     try:
         database.update_aktiv_flag(flag_name, "0")
         logger.debug(f"Programmende: Aktivdatei der {flag_name} erfolgreich gelöscht.")
-        #database.update_pid(flag_name, "0")
     except Exception as e:
         logger.exception(f"Programmende: Aktivdatei der {flag_name} konnte nicht gelöscht werden! ({str(e)})")
 

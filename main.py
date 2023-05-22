@@ -122,7 +122,6 @@ class MainWindow(QtWidgets.QMainWindow):
             ("lineEdit_setings_email_server", "email_server"),
             ("lineEdit_settings_kdo_alarm", "kdo_alarm"),
             ("lineEdit_settings_dag_alternative", "dag_alternativ"),
-            #("lineEdit_settings_path_to_pdftotext", "path_to_pdftotext.exe"),
             ("lineEdit_settings_token_test", "token_test"),
             ("lineEdit_settings_token_abt1", "token_abt1"),
             ("lineEdit_settings_token_abt2", "token_abt2"),
@@ -209,7 +208,6 @@ class MainWindow(QtWidgets.QMainWindow):
             ('pushButton_settings_safe_email_server', self.safe_email_server),
             ('pushButton_settings_safe_kdo_alarm', self.safe_kdo_ric),
             ('pushButton_settings_safe_dag_alternative', self.safe_dag_alternativ),
-            #('pushButton_settings_safe_pdftotext', self.safe_pdftotext),
             ('pushButton_safe_settings_token_test', self.safe_settings_token_test),
             ('pushButton_safe_settings_token_abt1', self.safe_settings_token_abt1),
             ('pushButton_safe_settings_token_abt2', self.safe_settings_token_abt2),
@@ -219,7 +217,6 @@ class MainWindow(QtWidgets.QMainWindow):
             ('pushButton_safe_settings_token_abt6', self.safe_settings_token_abt6),
             ('pushButton_browse_settings_vpn_path_to_exe', self.browse_settings_vpn_path_to_exe),
             ('pushButton_browse_settings_vpn_config', self.browse_settings_vpn_config),
-            #('pushButton_settings_browse_pdftotext', self.browse_pdftotext),
             ('pushButton_help_settings_funkrufname', help_settings_funkrufname),
             ('pushButton_help_setting_fahrzeuge', help_setting_fahrzeuge),
             ('pushButton_help_settings_token', help_settings_token),
@@ -481,16 +478,6 @@ class MainWindow(QtWidgets.QMainWindow):
         if filepath:
             self.ui.lineEdit_settings_vpn_config.setText(filepath)
 
-   # def browse_settings_pdftotext(self):
-   #     filepath, _ = QFileDialog.getOpenFileName(self, 'Öffne Datei', '', 'Executable (.exe);;All files ()')
-   #     if filepath:
-   #         self.ui.lineEdit_settings_path_to_pdftotext.setText(filepath)
-
-    #def browse_pdftotext(self):
-    #    filepath, _ = QFileDialog.getOpenFileName(self, 'Bitte pdftotext.exe auswählen', 'c:\\', "Executables ("
-     #                                                                                          "*.exe)")
-   #     self.ui.lineEdit_settings_path_to_pdftotext.setText(filepath)
-
     # methode um die Cookies zu gennerieren:
     def generate_cookie(self):
         r = gennerate_cookie_module.get_cookie()
@@ -607,14 +594,6 @@ class MainWindow(QtWidgets.QMainWindow):
     # Methode im zu prüfen, ob ein bestimmter Prozess ausgeführt wird. Return: True/False
     def check_prozess(self, prozessname):
         return any(proc.name() == prozessname for proc in psutil.process_iter())
-
-    # Methode zur Textausgabe, dass die Speicherung erfolgreich war:
-#    def safe_success(self, einstellung):
-#        QMessageBox.information(
-#            None,
-#            "Erfolgreich gespeichert",
-#            f"Die Einstellung {einstellung} wurde erfolgreich gespeichert!"
-#        )
 
     def safe_success(self, einstellung):
         msg = QMessageBox()
