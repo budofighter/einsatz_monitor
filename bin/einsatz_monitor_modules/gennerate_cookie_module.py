@@ -14,8 +14,8 @@ database = database_class.Database()
 
 
 def get_cookie():
-    if (database.select_aktiv_flag("vpn") == 1 and
-            database.select_aktiv_flag("wachendisplay") == 1 and
+    if (database.select_aktiv_flag("vpn") != 0 and
+            database.select_aktiv_flag("wachendisplay") == 0 and
             not database.select_config("user_wachendisplay") == "" and
             not database.select_config("passwort_wachendisplay") == "" and
             not database.select_config("url_wachendisplay") == ""):
