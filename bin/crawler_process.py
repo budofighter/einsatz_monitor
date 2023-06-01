@@ -29,6 +29,7 @@ from einsatz_monitor_modules.mail import send_email
 
 process = None
 driver = None
+exception_counter = 0
 chromedriver_path = os.path.join(os.path.dirname(__file__), "..", "resources", "chromedriver.exe")
 
 logger = logging.getLogger(__name__)
