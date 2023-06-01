@@ -42,7 +42,7 @@ def get_cookie():
         except Exception as e:
             return "nicht erfolgreich"
 
-    elif database.select_aktiv_flag("vpn") != 1 or database.select_aktiv_flag("wachendisplay") != 1:
+    elif database.select_aktiv_flag("vpn") != 0 or database.select_aktiv_flag("wachendisplay") != 1:
         return "fehler vpn"
 
     else:
