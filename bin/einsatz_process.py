@@ -56,13 +56,19 @@ try:
 
         # E-Mails abholen
         pdfs = mail.pull_mails()
+        if pdfs:
+            if isinstance(pdfs, str):
+                pdfs = [pdfs]
 
         # PDFs zu Text verarbeiten und anschließend löschen
+
+
         if not pdfs:
             pass
         else:
             for pdf in pdfs:
                 inp = os.path.join(tmp_path, pdf)
+
                 try:
                     print([XPDF_PATH, "-enc", "UTF-8", "-simple", inp])
                     subprocess.run([XPDF_PATH, "-enc", "UTF-8", "-simple", inp])
@@ -104,6 +110,7 @@ try:
                     logger.error("Textdatei konnte nicht entfernt werden.")
 
         # Alarmierung:
+                
                 token_list = get_token_list(einsatz, testmode)
 
                 post_operation_args = {

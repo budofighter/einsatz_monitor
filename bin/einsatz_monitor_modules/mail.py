@@ -35,36 +35,33 @@ def pull_mails():
 
         if not unread_ids:
             logger.debug("Keine neuen Mails")
+            return None
         else:
-            pdfs = []
-            # jede ungelesene
-            for unread_id in unread_ids:
-                # Emails mit ihrer ID holen
-                res, msg = imap.fetch(str(unread_id), "(RFC822)")
-                for response in msg:
-                    if isinstance(response, tuple):
-                        # Email in ein msg Objekt parsen
-                        msg = message_from_bytes(response[1])
-                        # Wenn die E-Mail eine Multipart E-Mail ist:
-                        if msg.is_multipart():
-                            # jeden Part durchgehen
-                            for part in msg.walk():
-                                # und den Content-Typ auslesen.
-                                content_disposition = str(part.get("Content-Disposition"))
-                                # wenn der Content-Typ ein Anhang ist:
-                                if "attachment" in content_disposition:
-                                    # Anhang herunterladen und speichern.
-                                    filename = part.get_filename()
-                                    if filename:
-                                        filepath = os.path.join(
-                                            os.path.dirname(__file__), "..", "..", "tmp", filename
-                                        )
-                                        # Anhang herunterladen und zwischenspeichern:
-                                        with open(filepath, "wb") as file:
-                                            file.write(part.get_payload(decode=True))
-                                        pdfs.append(filename)
-                            logger.debug("E-Mailanhänge erfolgreich heruntergeladen")
-            return pdfs
+            # Nur die neueste ungelesene E-Mail abrufen
+            latest_unread_id = max(unread_ids, key=int)
+            
+            # E-Mail mit ihrer ID holen
+            res, msg = imap.fetch(str(latest_unread_id), "(RFC822)")
+            for response in msg:
+                if isinstance(response, tuple):
+                    # E-Mail in ein msg Objekt parsen
+                    msg = message_from_bytes(response[1])
+                    if msg.is_multipart():
+                        for part in msg.walk():
+                            content_disposition = str(part.get("Content-Disposition"))
+                            if "attachment" in content_disposition:
+                                filename = part.get_filename()
+                                if filename:
+                                    filepath = os.path.join(
+                                        os.path.dirname(__file__), "..", "..", "tmp", filename
+                                    )
+                                    # Anhang herunterladen und zwischenspeichern:
+                                    with open(filepath, "wb") as file:
+                                        file.write(part.get_payload(decode=True))
+                                    # E-Mail als gelesen markieren
+                                    imap.store(str(latest_unread_id), '+FLAGS', '\Seen')
+                                    logger.debug("E-Mailanhänge erfolgreich heruntergeladen und als gelesen markiert")
+                                    return filename
     except Exception as e:
         logger.exception(f"Error beim Aufbau der IMAP Verbindung: {e}")
         database.update_aktiv_flag("auswertung", "2")
@@ -74,6 +71,7 @@ def pull_mails():
             imap.logout()
         except Exception as e:
             logger.error(f"Error bei der Verarbeitung der E-Mail Anhänge: {e}")
+
 
 def send_email(subject, body, recipient):
     try:
