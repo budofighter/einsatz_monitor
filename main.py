@@ -18,7 +18,7 @@ from bin.einsatz_monitor_modules.help_settings_methoden import *
 from ui.mainwindow import Ui_MainWindow
 
 # Version Nummer wird hier gesetzt:
-version_nr = "0.9.9.19"
+version_nr = "0.9.9.20"
 
 # Konfigurationen importieren:
 app = QtWidgets.QApplication(sys.argv)
@@ -62,11 +62,11 @@ class MainWindow(QtWidgets.QMainWindow):
         database.reset_active_flag()
 
 
-        # Subprozess, um das Monitoring zu generieren:
+        # Subprozess, um das Monitoring-Prozess zu generieren:
         p = subprocess.Popen([sys.executable, monitoring_file])
 
 
-        # timer um die Statusanzeige zu aktualisieren:
+        # wiederholender Timer um die Statusanzeige zu aktualisieren (monitoring-Funktion (self)):
         timer_status = QTimer(self)
         timer_status.timeout.connect(self.monitoring)
         timer_status.start(1000)
@@ -626,15 +626,18 @@ class MainWindow(QtWidgets.QMainWindow):
 
             for status_widget, application_type in STATUS_WIDGETS:
                 active_flag = database.select_aktiv_flag(application_type)
-                if active_flag != 0:
+                if active_flag == 1:
                     self.set_led(status_widget, 'green')
+                elif active_flag == 2:
+                    self.set_led(status_widget, 'attention')
                 else:
                     self.set_led(status_widget, 'red')
 
-                if database.select_aktiv_flag('testmode') == 1:
-                    self.set_led(self.ui.status_testmodus, 'attention')
-                else:
-                    self.set_led(self.ui.status_testmodus, 'red')
+            # Hier wird der Testmode gesetzt:
+            if database.select_aktiv_flag('testmode') == 1:
+                self.set_led(self.ui.status_testmodus, 'attention')
+            else:
+                self.set_led(self.ui.status_testmodus, 'red')
         except:
             logger.error("Fehler bei der Monitoring Aktualisierung der Datenbank")
 
