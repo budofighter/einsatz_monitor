@@ -13,12 +13,12 @@ from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import QFileDialog, QApplication, QStyle, QDialog, QTextEdit, QVBoxLayout
 
-from bin.einsatz_monitor_modules import init, close_methode, database_class, gennerate_cookie_module  # init wird benötigt!
+from bin.einsatz_monitor_modules import init, close_methode, database_class, gennerate_cookie_module, start_einsatzauswertung  # init wird benötigt!
 from bin.einsatz_monitor_modules.help_settings_methoden import *
 from ui.mainwindow import Ui_MainWindow
 
 # Version Nummer wird hier gesetzt:
-version_nr = "0.9.9.20"
+version_nr = "0.9.9.21"
 
 # Konfigurationen importieren:
 app = QtWidgets.QApplication(sys.argv)
@@ -185,7 +185,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Liste der Button-Verbindungen:
         button_connections = [
             ('pushButton_start_vpn', self.start_vpn),
-            ('pushButton_start_auswretung', self.start_status_auswertung),
+            ('pushButton_start_auswretung', self.start_status_auswertung_local),
             ('pushButton_start_einsatzauswertung', self.start_einsatzauswertung),
             ('pushButton_testmode', self.activate_testmode),
             ('pushButton_live_mode', self.autostart),
@@ -273,7 +273,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
     # Methode um die Crawler Methode zu starten/stoppen
-    def start_status_auswertung(self):
+    def start_status_auswertung_local(self):
         if database.select_aktiv_flag("crawler") == 1:
             database.update_aktiv_flag("crawler", "0")
 
@@ -647,7 +647,7 @@ class MainWindow(QtWidgets.QMainWindow):
         time.sleep(30)
         self.start_einsatzauswertung()
         time.sleep(30)
-        self.start_status_auswertung()
+        self.start_status_auswertung_local()
         logging.info("Autostart durchgeführt")
 
     # Methode um alle Subprozesse des Programms nach einem bestimmen Prozess zu durchsuchen
