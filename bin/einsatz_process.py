@@ -49,92 +49,99 @@ def get_tokens_for_departments(database, alarm_ric):
                 break
     return tokens
 
+try:
+    while database.select_aktiv_flag("auswertung") == 1:
 
-while database.select_aktiv_flag("auswertung") == 1:
-    testmode = database.select_config("testmode") != "False"
+        testmode = database.select_config("testmode") != "False"
 
-    # E-Mails abholen
-    pdfs = mail.pull_mails()
+        # E-Mails abholen
+        pdfs = mail.pull_mails()
 
-    # PDFs zu Text verarbeiten und anschließend löschen
-    if not pdfs:
-        pass
-    else:
-        for pdf in pdfs:
-            inp = os.path.join(tmp_path, pdf)
-            try:
-                print([XPDF_PATH, "-enc", "UTF-8", "-simple", inp])
-                subprocess.run([XPDF_PATH, "-enc", "UTF-8", "-simple", inp])
-                if os.path.exists(inp):
-                    os.remove(inp)
+        # PDFs zu Text verarbeiten und anschließend löschen
+        if not pdfs:
+            pass
+        else:
+            for pdf in pdfs:
+                inp = os.path.join(tmp_path, pdf)
+                try:
+                    print([XPDF_PATH, "-enc", "UTF-8", "-simple", inp])
+                    subprocess.run([XPDF_PATH, "-enc", "UTF-8", "-simple", inp])
+                    if os.path.exists(inp):
+                        os.remove(inp)
+                    else:
+                        logger.error("Die PDF Datei kann nicht gelöscht werden")
+                    logger.debug("PDF2Text ist abgeschlossen")
+                except:
+                    logger.exception("error bei PDF2Text: " + tmp_path)
+                alarm_number = pdf.split(".")[0]
+
+                # Textdatei verarbeiten:
+                # EinsatzObjekt erstellen:
+                einsatz = Einsatz(alarm_number + ".txt")
+                # Textdatei in Liste einlesen:
+                einsatz_text = einsatz.get_text_to_list()
+                # Parsing:
+                einsatz.parse_alarm(einsatz_text)
+                einsatz.parse_aao(einsatz_text)
+
+                # Ausgabe:
+                alarminhalt = [einsatz.meldebild, einsatz.stichwort, einsatz.objekt, einsatz.bemerkung1, einsatz.bemerkung2,
+                            einsatz.sondersignal, einsatz.ort, einsatz.plz, einsatz.strasse, einsatz.ortsteil,
+                            einsatz.geo_bw, einsatz.geo_lw, einsatz.alarm_ric]
+
+                logger.info(
+                    f"Neuer Alarm: {alarm_number}\n\tStichwort: {einsatz.stichwort}\n\tMeldebild: {einsatz.meldebild}"
+                    f"\n\tObjekt: {einsatz.objekt}\n\tSondersignal: {einsatz.sondersignal}\n\tAdresse: {einsatz.strasse}, "
+                    f"{einsatz.ort} - {einsatz.ortsteil} [{einsatz.plz}]\n\tGeo (Breite ; Länge): {einsatz.geo_bw} ; "
+                    f"{einsatz.geo_lw}\n\tBemerkung 1: {einsatz.bemerkung1}\n\tBemerkung 2: {einsatz.bemerkung2}\n\tRICs: "
+                    f"{einsatz.alarm_ric}")
+
+                # Textdatei wieder löschen:
+                try:
+                    os.remove(os.path.join(tmp_path, alarm_number + ".txt"))
+                    logger.debug("Textdatei entfernt")
+                except:
+                    logger.error("Textdatei konnte nicht entfernt werden.")
+
+        # Alarmierung:
+                token_list = get_token_list(einsatz, testmode)
+
+                post_operation_args = {
+                    'start': dt.now().strftime('%Y-%m-%dT%H:%M:%S'), 
+                    'keyword': einsatz.stichwort,
+                    'status': 'new',
+                    'alarmenabled': True,
+                    'address': f"{einsatz.strasse}, {einsatz.ort} - {einsatz.ortsteil}",
+                    'facts': einsatz.meldebild,
+                    'number': alarm_number,
+                    'properties': [
+                        {'key': 'Objekt', 'value': einsatz.objekt},
+                        {'key': 'Sondersignal', 'value': einsatz.sondersignal},
+                        {'key': 'Bemerkung', 'value': einsatz.bemerkung1},
+                        {'key': 'Bemerkung', 'value': einsatz.bemerkung2}
+                    ],
+                    'ric': einsatz.alarm_ric,
+                }
+
+                if einsatz.geo_lw != "":
+                    post_operation_args['position'] = {'Latitude': einsatz.geo_bw, 'Longitude': einsatz.geo_lw}
+
+                for token in token_list:
+                    if not token:
+                        continue
+                    api = PublicAPI(token)
+                    r = api.post_operation(**post_operation_args)
+
+                # Modul FWBS übergabe
+                if testmode:
+                    logger.info("Testmode, daher keine Übergabe an Modul FWBS")
                 else:
-                    logger.error("Die PDF Datei kann nicht gelöscht werden")
-                logger.debug("PDF2Text ist abgeschlossen")
-            except:
-                logger.exception("error bei PDF2Text: " + tmp_path)
-            alarm_number = pdf.split(".")[0]
-
-            # Textdatei verarbeiten:
-            # EinsatzObjekt erstellen:
-            einsatz = Einsatz(alarm_number + ".txt")
-            # Textdatei in Liste einlesen:
-            einsatz_text = einsatz.get_text_to_list()
-            # Parsing:
-            einsatz.parse_alarm(einsatz_text)
-            einsatz.parse_aao(einsatz_text)
-
-            # Ausgabe:
-            alarminhalt = [einsatz.meldebild, einsatz.stichwort, einsatz.objekt, einsatz.bemerkung1, einsatz.bemerkung2,
-                           einsatz.sondersignal, einsatz.ort, einsatz.plz, einsatz.strasse, einsatz.ortsteil,
-                           einsatz.geo_bw, einsatz.geo_lw, einsatz.alarm_ric]
-
-            logger.info(
-                f"Neuer Alarm: {alarm_number}\n\tStichwort: {einsatz.stichwort}\n\tMeldebild: {einsatz.meldebild}"
-                f"\n\tObjekt: {einsatz.objekt}\n\tSondersignal: {einsatz.sondersignal}\n\tAdresse: {einsatz.strasse}, "
-                f"{einsatz.ort} - {einsatz.ortsteil} [{einsatz.plz}]\n\tGeo (Breite ; Länge): {einsatz.geo_bw} ; "
-                f"{einsatz.geo_lw}\n\tBemerkung 1: {einsatz.bemerkung1}\n\tBemerkung 2: {einsatz.bemerkung2}\n\tRICs: "
-                f"{einsatz.alarm_ric}")
-
-            # Textdatei wieder löschen:
-            try:
-                os.remove(os.path.join(tmp_path, alarm_number + ".txt"))
-                logger.debug("Textdatei entfernt")
-            except:
-                logger.error("Textdatei konnte nicht entfernt werden.")
-
-    # Alarmierung:
-            token_list = get_token_list(einsatz, testmode)
-
-            post_operation_args = {
-                'start': dt.now().strftime('%Y-%m-%dT%H:%M:%S'),
-                'keyword': einsatz.stichwort,
-                'status': 'new',
-                'alarmenabled': True,
-                'address': f"{einsatz.strasse}, {einsatz.ort} - {einsatz.ortsteil}",
-                'facts': einsatz.meldebild,
-                'number': alarm_number,
-                'properties': [
-                    {'key': 'Objekt', 'value': einsatz.objekt},
-                    {'key': 'Sondersignal', 'value': einsatz.sondersignal},
-                    {'key': 'Bemerkung', 'value': einsatz.bemerkung1},
-                    {'key': 'Bemerkung', 'value': einsatz.bemerkung2}
-                ],
-                'ric': einsatz.alarm_ric,
-            }
-
-            if einsatz.geo_lw != "":
-                post_operation_args['position'] = {'Latitude': einsatz.geo_bw, 'Longitude': einsatz.geo_lw}
-
-            for token in token_list:
-                if not token:
-                    continue
-                api = PublicAPI(token)
-                r = api.post_operation(**post_operation_args)
-
-            # Modul FWBS übergabe
-            if testmode:
-                logger.info("Testmode, daher keine Übergabe an Modul FWBS")
-            else:
-                x = modul_fwbs(einsatz.stichwort, einsatz.meldebild, einsatz.strasse, einsatz.ort, einsatz.alarm_ric)
-                logger.info ("\n####################################################\n\n")
+                    x = modul_fwbs(einsatz.stichwort, einsatz.meldebild, einsatz.strasse, einsatz.ort, einsatz.alarm_ric)
+                    logger.info ("\n####################################################\n\n")
     time.sleep(1)
+    
+except Exception as e:
+    logger.exception(f"Ein Fehler im einsatz_process.py ist aufgetreten, wodurch die exception ausgelöst wurde: {e}")
+    database.update_aktiv_flag("auswertung", "2")
+
+    
