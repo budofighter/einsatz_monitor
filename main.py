@@ -13,7 +13,7 @@ from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import QFileDialog, QApplication, QStyle, QDialog, QTextEdit, QVBoxLayout
 
-from bin.einsatz_monitor_modules import init, close_methode, database_class, gennerate_cookie_module, start_einsatzauswertung  # init wird benötigt!
+from bin.einsatz_monitor_modules import init, close_methode, database_class, gennerate_cookie_module # init wird benötigt!
 from bin.einsatz_monitor_modules.help_settings_methoden import *
 from ui.mainwindow import Ui_MainWindow
 
@@ -626,12 +626,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
             for status_widget, application_type in STATUS_WIDGETS:
                 active_flag = database.select_aktiv_flag(application_type)
-                if active_flag == 1:
-                    self.set_led(status_widget, 'green')
+                if active_flag == 0:
+                    self.set_led(status_widget, 'red')
                 elif active_flag == 2:
                     self.set_led(status_widget, 'attention')
                 else:
-                    self.set_led(status_widget, 'red')
+                    self.set_led(status_widget, 'green')
 
             # Hier wird der Testmode gesetzt:
             if database.select_aktiv_flag('testmode') == 1:
