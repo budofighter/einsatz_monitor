@@ -30,11 +30,18 @@ from einsatz_monitor_modules.mail import send_email
 process = None
 driver = None
 exception_counter = 0
-chromedriver_path = os.path.join(os.path.dirname(__file__), "..", "resources", "chromedriver.exe")
+
+if getattr(sys, 'frozen', False):
+    basedir = sys._MEIPASS
+else:
+    basedir = os.path.join(os.path.dirname(__file__), "..")
+
+chromedriver_path = os.path.join(basedir, "resources", "chromedriver.exe")
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-file_handler = logging.FileHandler(os.path.join(os.path.dirname(__file__), "..", "logs", "logfile_crawler.txt"), encoding="utf-8")
+file_handler = logging.FileHandler(os.path.join(basedir, "logs", "logfile_crawler.txt"), encoding="utf-8")
 file_handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(message)s'))
 logger.addHandler(file_handler)
 
@@ -221,7 +228,7 @@ def run_crawler():
             logger.exception("Webseite konnte nicht geladen werden!")
 
         # Cookies laden und einbinden:
-        cookie_file_path = os.path.join(os.path.dirname(__file__), "..", "config", "cookies_wachendisplay.pkl")
+        cookie_file_path = os.path.join(basedir, "config", "cookies_wachendisplay.pkl")
         load_cookies(driver, cookie_file_path)
 
         # Seite neu aufrufen:

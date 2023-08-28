@@ -1,5 +1,6 @@
 import os
 import re
+import sys
 import subprocess
 import winreg
 import logging
@@ -7,14 +8,19 @@ import shutil
 from packaging import version
 from webdriver_manager.chrome import ChromeDriverManager
 
+if getattr(sys, 'frozen', False):
+    basedir = sys._MEIPASS
+else:
+    basedir = os.path.join(os.path.dirname(__file__), "..", "..")
+
 # Logger initialisieren
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-file_handler = logging.FileHandler(os.path.join(os.path.dirname(__file__),"..", "..", "logs", "logfile_crawler.txt"), encoding="utf-8")
+file_handler = logging.FileHandler(os.path.join(basedir, "logs", "logfile_crawler.txt"), encoding="utf-8")
 file_handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(message)s'))
 logger.addHandler(file_handler)
 
-CHROMEDRIVER_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "resources", "chromedriver.exe")
+CHROMEDRIVER_PATH = os.path.join(basedir, "resources", "chromedriver.exe")
 
 def get_chrome_version():
     try:

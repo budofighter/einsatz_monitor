@@ -10,13 +10,19 @@ from subprocess import DEVNULL
 
 
 database = database_class.Database()
-basedir = os.path.dirname(__file__)
+
+if getattr(sys, 'frozen', False):
+    basedir = sys._MEIPASS
+else:
+    basedir = os.path.join(os.path.dirname(__file__), "..")
+
+
 einsatz_process = os.path.join(basedir, "einsatz_process.py")
 
 # Logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-file_handler = logging.FileHandler(os.path.join(os.path.dirname(__file__), "..", "logs", "logfile_main.txt"), encoding="utf-8")
+file_handler = logging.FileHandler(os.path.join(basedir, "logs", "logfile_main.txt"), encoding="utf-8")
 file_handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(message)s'))
 logger.addHandler(file_handler)
 
@@ -45,7 +51,7 @@ def check_evaluation_status_and_reset():
         status = database.select_aktiv_flag("auswertung")
         if status == 2:
             # Lösche alle Dateien im Ordner tmp
-            tmp_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), ".." , "tmp"))
+            tmp_folder = os.path.abspath(os.path.join(basedir, "tmp"))
             for filename in os.listdir(tmp_folder):
                 file_path = os.path.join(tmp_folder, filename)
                 try:

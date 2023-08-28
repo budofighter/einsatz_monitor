@@ -1,16 +1,22 @@
 # Optimiert 31.03.23
 import os
 import re
+import sys
 import logging
 from . import database_class
 
 # Einstellungen laden:
 database = database_class.Database()
 
+if getattr(sys, 'frozen', False):
+    basedir = sys._MEIPASS
+else:
+    basedir = os.path.join(os.path.dirname(__file__), "..", "..")
+
 # Logger:
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-file_handler = logging.FileHandler(os.path.join(os.path.dirname(__file__), "..", "..", "logs", "logfile_EM.txt"), encoding="utf-8")
+file_handler = logging.FileHandler(os.path.join(basedir, "logs", "logfile_EM.txt"), encoding="utf-8")
 file_handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(message)s'))
 logger.addHandler(file_handler)
 
@@ -37,7 +43,7 @@ STICHWORT_MAPPING = {
 class Einsatz:
     def __init__(self, dateiname):
         self.dateiname = dateiname
-        self.path_to_textfile = os.path.join(os.path.dirname(__file__), "..", "..", "tmp", dateiname)
+        self.path_to_textfile = os.path.join(basedir, "tmp", dateiname)
         self.rics = []
         self.clean_rics = []
         self.meldebild = ""

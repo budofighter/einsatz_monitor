@@ -1,4 +1,5 @@
 import os
+import sys
 import requests
 import shutil
 import logging
@@ -6,10 +7,15 @@ from zipfile import ZipFile
 
 from . import database_class
 
+if getattr(sys, 'frozen', False):
+    basedir = sys._MEIPASS
+else:
+    basedir = os.path.join(os.path.dirname(__file__), "..", "..")
+
 database = database_class.Database()
 
 XPDF_VERSION = '4.04'
-RESOURCES_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "resources"))
+RESOURCES_PATH = os.path.abspath(os.path.join(basedir, "resources"))
 XPDF_PATH = os.path.join(RESOURCES_PATH, "pdftotext.exe")
 
 # Logger initialisieren
@@ -70,7 +76,7 @@ class XpdfHandler:
 
 
 if __name__ == "__main__":
-    with logging.FileHandler(os.path.join(os.path.dirname(__file__), "..", "..", "logs", "logfile_crawler.txt"),
+    with logging.FileHandler(os.path.join(basedir, "logs", "logfile_crawler.txt"),
                              encoding="utf-8") as file_handler:
         file_handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(message)s'))
         logger.addHandler(file_handler)

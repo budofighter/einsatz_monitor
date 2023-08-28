@@ -1,14 +1,19 @@
 # Optimiert 31.03.23
 import os
+import sys
 import logging
 import psutil
 from ..einsatz_monitor_modules import database_class
 
+if getattr(sys, 'frozen', False):
+    basedir = sys._MEIPASS
+else:
+    basedir = os.path.join(os.path.dirname(__file__), "..", "..")
+
 # Logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-file_handler = logging.FileHandler(os.path.join(os.path.dirname(__file__), "..", "..", "logs",
-                                                "logfile_main.txt"), encoding="utf-8")
+file_handler = logging.FileHandler(os.path.join(basedir, "logs", "logfile_main.txt"), encoding="utf-8")
 file_handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(message)s'))
 logger.addHandler(file_handler)
 

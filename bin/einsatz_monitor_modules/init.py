@@ -1,14 +1,20 @@
 # Optimiert 30.03.23
 import os
+import sys
+
+if getattr(sys, 'frozen', False):
+    basedir = sys._MEIPASS
+else:
+    basedir = os.path.join(os.path.dirname(__file__), "..", "..")
 
 def create_directory_and_empty_file(directory, file_name):
     if not os.path.exists(directory):
         os.makedirs(directory)
     open(os.path.join(directory, file_name), "a", encoding="utf-8").close()
 
-logfile_path = os.path.join(os.path.dirname(__file__), "..", "..", "logs")
-config_path = os.path.join(os.path.dirname(__file__), "..", "..", "config")
-tmp_path = os.path.join(os.path.dirname(__file__), "..", "..", "tmp")
+logfile_path = os.path.join(basedir, "logs")
+config_path = os.path.join(basedir, "config")
+tmp_path = os.path.join(basedir, "tmp")
 
 # Erstellen von Verzeichnissen, falls noch nicht vorhanden
 if not os.path.exists(config_path):

@@ -25,7 +25,11 @@ app = QtWidgets.QApplication(sys.argv)
 database = database_class.Database()
 
 # Variablen und Pfade setzen:
-basedir = os.path.dirname(__file__)
+if getattr(sys, 'frozen', False):
+    basedir = sys._MEIPASS
+else:
+    basedir = os.path.dirname(__file__)
+    
 monitoring_file = os.path.join(basedir, "bin", "monitoring_process.py")
 vpn_file = os.path.join(basedir, "bin", "ovpn_process.py")
 crawler_file = os.path.join(basedir, "bin", "crawler_process.py")
@@ -78,7 +82,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Icon und Taskbar:
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(os.path.join(resources, "fwsignet_100.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.On)
+        icon.addPixmap(QtGui.QPixmap(os.path.join(resources, "fwsignet_100.ico")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.On)
         self.setWindowIcon(icon)
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("EM-Statusauswertung")
 

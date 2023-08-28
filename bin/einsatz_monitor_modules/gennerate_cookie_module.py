@@ -2,6 +2,7 @@
 
 import os
 import pickle
+import sys
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -9,6 +10,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.expected_conditions import visibility_of_element_located
 
 from ..einsatz_monitor_modules import database_class
+
+if getattr(sys, 'frozen', False):
+    basedir = sys._MEIPASS
+else:
+    basedir = os.path.join(os.path.dirname(__file__), "..", "..")
 
 database = database_class.Database()
 
@@ -33,7 +39,7 @@ def get_cookie():
 
                 wait.until(visibility_of_element_located((By.ID, "gwt-uid-22")))
 
-                cookie_file = os.path.join(os.path.dirname(__file__), "..", "..", "config", "cookies_wachendisplay.pkl")
+                cookie_file = os.path.join(basedir, "config", "cookies_wachendisplay.pkl")
                 with open(cookie_file, "wb") as f:
                     pickle.dump(driver.get_cookies(), f)
 

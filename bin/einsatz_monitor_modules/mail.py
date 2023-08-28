@@ -2,6 +2,7 @@
 import imaplib
 import os
 import logging
+import sys
 import re
 from email import message_from_bytes
 import smtplib
@@ -10,13 +11,18 @@ from email.mime.text import MIMEText
 
 from . import database_class
 
+if getattr(sys, 'frozen', False):
+    basedir = sys._MEIPASS
+else:
+    basedir = os.path.join(os.path.dirname(__file__), "..", "..")
+
 # Zugangsdaten:
 database = database_class.Database()
 
 # Logger:
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-log_file_path = os.path.join(os.path.dirname(__file__), "..", "..", "logs", "logfile_EM.txt")
+log_file_path = os.path.join(basedir, "logs", "logfile_EM.txt")
 file_handler = logging.FileHandler(log_file_path, encoding="utf-8")
 file_handler.setFormatter(logging.Formatter("%(asctime)s:%(levelname)s:%(message)s"))
 logger.addHandler(file_handler)
@@ -52,9 +58,7 @@ def pull_mails():
                             if "attachment" in content_disposition:
                                 filename = part.get_filename()
                                 if filename:
-                                    filepath = os.path.join(
-                                        os.path.dirname(__file__), "..", "..", "tmp", filename
-                                    )
+                                    filepath = os.path.join(basedir, "tmp", filename)
                                     # Anhang herunterladen und zwischenspeichern:
                                     with open(filepath, "wb") as file:
                                         file.write(part.get_payload(decode=True))

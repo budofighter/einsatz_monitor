@@ -1,5 +1,6 @@
 # Optimiert 30.03.23
 import subprocess
+import sys
 import time
 from datetime import datetime as dt
 from einsatz_monitor_modules import mail, Xpdf
@@ -8,15 +9,20 @@ from einsatz_monitor_modules.einsatz_auswertung_class import *
 from einsatz_monitor_modules.database_class import *
 from einsatz_monitor_modules.modul_fwbs import *
 
+if getattr(sys, 'frozen', False):
+    basedir = sys._MEIPASS
+else:
+    basedir = os.path.join(os.path.dirname(__file__), "..")
+
 # Zugangsdaten:
 database = database_class.Database()
-tmp_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".." , "tmp"))
-XPDF_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "resources", "pdftotext.exe"))
+tmp_path = os.path.abspath(os.path.join(basedir , "tmp"))
+XPDF_PATH = os.path.abspath(os.path.join(basedir, "resources", "pdftotext.exe"))
 
 # Logginginformationen
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-file_handler = logging.FileHandler(os.path.join(os.path.dirname(__file__),"..", "logs", "logfile_EM.txt"), encoding="utf-8")
+file_handler = logging.FileHandler(os.path.join(basedir, "logs", "logfile_EM.txt"), encoding="utf-8")
 file_handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(message)s'))
 logger.addHandler(file_handler)
 

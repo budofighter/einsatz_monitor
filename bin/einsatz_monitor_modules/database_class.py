@@ -1,16 +1,21 @@
 # Optimiert 31.03.23
 import os.path
+import sys
 import sqlite3
 import logging
 from sqlite3 import Error
 
-path_to_database = os.path.join(os.path.dirname(__file__), "..", "..", "database.db")
+if getattr(sys, 'frozen', False):
+    basedir = sys._MEIPASS
+else:
+    basedir = os.path.join(os.path.dirname(__file__), "..", "..")
+
+path_to_database = os.path.join(basedir, "database.db")
 
 # Logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-file_handler = logging.FileHandler(os.path.join(os.path.dirname(__file__), "..", "..", "logs", "logfile_main.txt"),
-                                   encoding="utf-8")
+file_handler = logging.FileHandler(os.path.join(basedir, "logs", "logfile_main.txt"), encoding="utf-8")
 file_handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(message)s'))
 logger.addHandler(file_handler)
 
