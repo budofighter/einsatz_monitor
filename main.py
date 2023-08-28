@@ -82,7 +82,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Icon und Taskbar:
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(os.path.join(resources, "fwsignet_100.ico")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.On)
+        icon.addPixmap(QtGui.QPixmap(os.path.join(resources, "fwsignet.ico")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.On)
         self.setWindowIcon(icon)
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("EM-Statusauswertung")
 
@@ -609,9 +609,9 @@ class MainWindow(QtWidgets.QMainWindow):
     # Methode um den Farbbutton zu ändern:
     def set_led(self, button, status):
         status_to_image = {
-            'green': resources + "/green-led-on_small.png",
-            'red': resources + "/led-red-on_small.png",
-            'attention': resources + "/attention_small.png"
+            'green': resources + "/led-green.png",
+            'red': resources + "/led-red.png",
+            'attention': resources + "/attention.png"
         }
         button_image = QPixmap(status_to_image[status])
         button.setPixmap(button_image)
