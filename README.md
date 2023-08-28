@@ -4,8 +4,8 @@
 Version: 0.9
 
 Voraussetzungen:
-- Windows 10
-- Python > 3.8
+- mind. Windows 10
+- Python > 3.10
 - Admin Rechte
 
 Beid er Ausführung der entsprechenden Auswertungen wird automatisch folgende externe SOftware herunter geladen:
@@ -15,7 +15,7 @@ https://www.xpdfreader.com/download.html
 
 # Installation:
 1)  Installiere selenium, PyQt6, requests, psutil und webdriver_manager Modul in deiner Python Umgebung:
-pip install selenium, PyQt6, requests, psutil, webdriver_manager
+pip install selenium, PyQt6, requests, psutil, webdriver_manager, packaging
 
 2) Führe den chromedriver in deine PATH Variable in Windows.:
         - "Erweiterte Systemeinstellungen"
