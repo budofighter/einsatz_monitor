@@ -17,12 +17,6 @@ https://www.xpdfreader.com/download.html
 1)  Installiere selenium, PyQt6, requests, psutil und webdriver_manager Modul in deiner Python Umgebung:
 pip install selenium, PyQt6, requests, psutil, webdriver_manager, packaging
 
-2) Führe den chromedriver in deine PATH Variable in Windows.:
-        - "Erweiterte Systemeinstellungen"
-        - "Umgeungsvarriablen"
-        - Suche und bearbeite "Path in "Systemvarriablen"
-        - Füge den Ordner, in welchem deine chromedriver.exe liegt, hinzu.
-        - Das System muss neu gestartet werden.
    
 3) Starte das Programm mit "EM_start.ps1", welches automatisch mit Admin-Rechten gestartet wird. Du kannst eine Verknüpfung erstellen, um einen Schnellzugriff auf dem Desktop zu haben.
    

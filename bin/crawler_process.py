@@ -218,9 +218,6 @@ def run_crawler():
         # überprüfen, ob der Chromedriver da und aktuell ist:
         chromedriver.is_chromedriver_current()
 
-        #service = ChromeDriverService(executable_path=chromedriver_path)
-        #driver = webdriver.Chrome(executable_path=chromedriver_path, options=chrome_options)
-
         service = Service(executable_path=chromedriver_path)
         driver = webdriver.Chrome(service=service, options=chrome_options)
 
