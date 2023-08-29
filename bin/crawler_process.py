@@ -16,6 +16,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.expected_conditions import visibility_of_element_located
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.service import Service
 from selenium.common.exceptions import (
     NoSuchElementException,
     TimeoutException,
@@ -217,9 +218,11 @@ def run_crawler():
         # überprüfen, ob der Chromedriver da und aktuell ist:
         chromedriver.is_chromedriver_current()
 
-        service = ChromeDriverService(executable_path=chromedriver_path)
-        driver = webdriver.Chrome(executable_path=chromedriver_path, options=chrome_options)
+        #service = ChromeDriverService(executable_path=chromedriver_path)
+        #driver = webdriver.Chrome(executable_path=chromedriver_path, options=chrome_options)
 
+        service = Service(executable_path=chromedriver_path)
+        driver = webdriver.Chrome(service=service, options=chrome_options)
 
         # erst die Webseite aufrufen:
         try:
