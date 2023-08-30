@@ -8,7 +8,9 @@ Voraussetzungen:
 - Admin Rechte
 
 Bei der Ausführung der entsprechenden Auswertungen wird automatisch folgende externe Software herunter geladen:
+
 https://sites.google.com/chromium.org/driver/
+
 https://www.xpdfreader.com/download.html
 
 

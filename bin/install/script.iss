@@ -2,10 +2,10 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "EinsatzHandler"
-#define MyAppVersion "1.0"
+#define MyAppVersion "0.92"
 #define MyAppPublisher "Christian Siebold"
 #define MyAppURL "https://github.com/budofighter/einsatz_monitor"
-#define MyAppExeName "EM_start.exe"
+#define MyAppExeName "EinsatzHandler.exe"
 #define MyAppAssocName MyAppName + " File"
 #define MyAppAssocExt ".myp"
 #define MyAppAssocKey StringChange(MyAppAssocName, " ", "") + MyAppAssocExt
@@ -69,7 +69,7 @@ Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\bin\einsatz_monitor_mod
 Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\bin\einsatz_monitor_modules\modul_fwbs.py"; DestDir: "{app}\bin\einsatz_monitor_modules"; Flags: ignoreversion
 Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\bin\einsatz_monitor_modules\Xpdf.py"; DestDir: "{app}\bin\einsatz_monitor_modules"; Flags: ignoreversion
 ; Vorkonfigurierte Python Virtual Environment
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\EinsatzHandler_venv\*"; DestDir: "{app}\EinsatzHandler_venv"; Flags: ignoreversion recursesubdirs createallsubdirs
+; Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\EinsatzHandler_venv\*"; DestDir: "{app}\EinsatzHandler_venv"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
@@ -80,6 +80,10 @@ Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}\DefaultIcon"; ValueType: s
 Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\{#MyAppExeName}"" ""%1"""
 Root: HKA; Subkey: "Software\Classes\Applications\{#MyAppExeName}\SupportedTypes"; ValueType: string; ValueName: ".myp"; ValueData: ""
 
+; Erstellt einen Registry-Eintrag unter HKEY_LOCAL_MACHINE (HKLM) oder HKEY_CURRENT_USER (HKCU)
+; Der Eintrag wird in den Pfad "Software\IhrUnternehmen\IhrProdukt" mit dem Schlüssel "Version" und dem Wert "{#MyAppVersion}" gespeichert.
+Root: HKA; Subkey: "Software\Classes\Applications\{#MyAppExeName}"; ValueType: string; ValueName: "Version"; ValueData: "{#MyAppVersion}"
+
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
@@ -87,4 +91,55 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: de
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: shellexec postinstall skipifsilent
 
+[Code]
+const
+  MyPascalAppVersion = '{#MyAppVersion}';  // Konstante im Pascal-Code
+  MyPascalExeName = '{#MyAppExeName}';
 
+var
+  IsUpdate: Boolean;  // Globale Variable
+
+function GetInstalledVersion(): String;
+var
+  Version: String;
+begin
+  if RegQueryStringValue(HKA, 'Software\Classes\Applications\' + MyPascalExeName, 'Version', Version) then
+    Result := Version
+  else
+    Result := '';
+end;
+
+procedure CurStepChanged(CurStep: TSetupStep);
+var
+  NewVersion: String;
+  InstalledVersion: String;
+begin
+  if CurStep = ssInstall then
+  begin
+    NewVersion := MyPascalAppVersion;
+    InstalledVersion := GetInstalledVersion();
+
+    // Prüfen, ob die Anwendung bereits installiert ist
+    IsUpdate := FileExists(ExpandConstant('{app}\' + MyPascalExeName));
+
+    if IsUpdate then
+    begin
+      // Prüfen, ob die neue Version tatsächlich neuer ist
+      if NewVersion > InstalledVersion then
+      begin
+        // Benutzerdefinierte Aktionen für ein Update
+        MsgBox('Es ist eine veraltete Version der Software vorhanden. Es wird ein Update durchgeführt, wobei die Benutezereinstellungen beibehalten werden.', mbInformation, MB_OK);
+      end
+      else
+      begin
+        MsgBox('Sie haben bereits die neueste Version installiert.', mbInformation, MB_OK);
+        // Hier könnten Sie die Installation abbrechen, wenn Sie möchten
+        WizardForm.Close;
+      end;
+    end
+    else
+    begin
+      // Benutzerdefinierte Aktionen für eine Neuinstallation
+    end;
+  end;
+end;
