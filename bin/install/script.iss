@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "EinsatzHandler"
-#define MyAppVersion "0.92"
+#define MyAppVersion "0.9.9.25"
 #define MyAppPublisher "Christian Siebold"
 #define MyAppURL "https://github.com/budofighter/einsatz_monitor"
 #define MyAppExeName "EinsatzHandler.exe"
@@ -45,31 +45,13 @@ Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\{#MyAppExeName}"; DestD
 Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\update.ps1"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\README.md"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\main.py"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\resources\attention.png"; DestDir: "{app}\resources"; Flags: ignoreversion
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\resources\fwsignet.ico"; DestDir: "{app}\resources"; Flags: ignoreversion
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\resources\led-green.png"; DestDir: "{app}\resources"; Flags: ignoreversion
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\resources\led-red.png"; DestDir: "{app}\resources"; Flags: ignoreversion
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\resources\logo_fwbs.png"; DestDir: "{app}\resources"; Flags: ignoreversion
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\resources\pdftotext.exe"; DestDir: "{app}\resources"; Flags: ignoreversion
 Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\ui\mainwindow.py"; DestDir: "{app}\ui"; Flags: ignoreversion
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\bin\crawler_process.py"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\bin\einsatz_process.py"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\bin\monitoring_process.py"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\bin\ovpn_process.py"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\bin\einsatz_monitor_modules\__init__"; DestDir: "{app}\bin\einsatz_monitor_modules"; Flags: ignoreversion
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\bin\einsatz_monitor_modules\api_class.py"; DestDir: "{app}\bin\einsatz_monitor_modules"; Flags: ignoreversion
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\bin\einsatz_monitor_modules\chromedriver.py"; DestDir: "{app}\bin\einsatz_monitor_modules"; Flags: ignoreversion
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\bin\einsatz_monitor_modules\close_methode.py"; DestDir: "{app}\bin\einsatz_monitor_modules"; Flags: ignoreversion
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\bin\einsatz_monitor_modules\database_class.py"; DestDir: "{app}\bin\einsatz_monitor_modules"; Flags: ignoreversion
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\bin\einsatz_monitor_modules\einsatz_auswertung_class.py"; DestDir: "{app}\bin\einsatz_monitor_modules"; Flags: ignoreversion
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\bin\einsatz_monitor_modules\gennerate_cookie_module.py"; DestDir: "{app}\bin\einsatz_monitor_modules"; Flags: ignoreversion
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\bin\einsatz_monitor_modules\help_settings_methoden.py"; DestDir: "{app}\bin\einsatz_monitor_modules"; Flags: ignoreversion
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\bin\einsatz_monitor_modules\init.py"; DestDir: "{app}\bin\einsatz_monitor_modules"; Flags: ignoreversion
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\bin\einsatz_monitor_modules\mail.py"; DestDir: "{app}\bin\einsatz_monitor_modules"; Flags: ignoreversion
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\bin\einsatz_monitor_modules\modul_fwbs.py"; DestDir: "{app}\bin\einsatz_monitor_modules"; Flags: ignoreversion
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\bin\einsatz_monitor_modules\Xpdf.py"; DestDir: "{app}\bin\einsatz_monitor_modules"; Flags: ignoreversion
+Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\bin\*"; DestDir: "{app}\bin"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; Vorkonfigurierte Python Virtual Environment
-; Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\EinsatzHandler_venv\*"; DestDir: "{app}\EinsatzHandler_venv"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\EinsatzHandler_venv\*"; DestDir: "{app}\EinsatzHandler_venv"; Flags: ignoreversion recursesubdirs createallsubdirs
+
+; Sophos OpenVPN für das Wachendisplay
+Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\resources\*"; DestDir: "{app}\resources"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
@@ -122,17 +104,23 @@ begin
     // Prüfen, ob die Anwendung bereits installiert ist
     IsUpdate := FileExists(ExpandConstant('{app}\' + MyPascalExeName));
 
-    if IsUpdate then
+  if IsUpdate then
     begin
       // Prüfen, ob die neue Version tatsächlich neuer ist
       if NewVersion > InstalledVersion then
       begin
-        // Benutzerdefinierte Aktionen für ein Update
-        MsgBox('Es ist eine veraltete Version der Software vorhanden. Es wird ein Update durchgeführt, wobei die Benutezereinstellungen beibehalten werden.', mbInformation, MB_OK);
+        if MsgBox('Es ist eine veraltete Version der Software vorhanden. Möchten Sie ein Update durchführen und die Benutzereinstellungen beibehalten?', mbConfirmation, MB_YESNO) = idYes then
+          begin
+          // Benutzerdefinierte Aktionen für ein Update
+          end
+        else
+          begin
+            WizardForm.Close;
+          end;
       end
       else
       begin
-        MsgBox('Sie haben bereits die neueste Version installiert.', mbInformation, MB_OK);
+        MsgBox('Sie haben bereits die neueste Version installiert. Daher wird das Installationsprogramm beendet.', mbInformation, MB_OK);
         // Hier könnten Sie die Installation abbrechen, wenn Sie möchten
         WizardForm.Close;
       end;

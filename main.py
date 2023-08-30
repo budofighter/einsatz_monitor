@@ -18,7 +18,7 @@ from bin.einsatz_monitor_modules.help_settings_methoden import *
 from ui.mainwindow import Ui_MainWindow
 
 # Version Nummer wird hier gesetzt:
-version_nr = "0.9.9.22"
+version_nr = "0.9.9.26"
 
 # Konfigurationen importieren:
 app = QtWidgets.QApplication(sys.argv)
@@ -117,7 +117,6 @@ class MainWindow(QtWidgets.QMainWindow):
             ("lineEdit_wachendisplay_password", "passwort_wachendisplay"),
             ("lineEdit_settings_vpn_user", "ovpn_user"),
             ("lineEdit_settings_vpn_password", "ovpn_passwort"),
-            ("lineEdit_settings_vpn_path_to_exe", "path_to_openvpn.exe"),
             ("lineEdit_settings_vpn_config", "openvpn_config"),
             ("comboBox_settings_headless_browser", "headless_browser"),
             ("comboBox", "autostart"),
@@ -198,7 +197,6 @@ class MainWindow(QtWidgets.QMainWindow):
             ('pushButton_safe_settings_token', self.safe_settings_token),
             ('pushButton_safe_settings_vpn_user', self.safe_settings_vpn_user),
             ('pushButton_safe_settings_vpn_password', self.safe_settings_vpn_password),
-            ('pushButton_safe_settings_vpn_path_to_exe', self.safe_settings_vpn_path_to_exe),
             ('pushButton_safe_settings_vpn_config', self.safe_settings_vpn_config),
             ('pushButton_safe_settings_wachendisplay_url', self.safe_settings_wachendisplay_url),
             ('pushButton_safe_wachendisplay_contend_id', self.safe_wachendisplay_contend_id),
@@ -219,14 +217,12 @@ class MainWindow(QtWidgets.QMainWindow):
             ('pushButton_safe_settings_token_abt4', self.safe_settings_token_abt4),
             ('pushButton_safe_settings_token_abt5', self.safe_settings_token_abt5),
             ('pushButton_safe_settings_token_abt6', self.safe_settings_token_abt6),
-            ('pushButton_browse_settings_vpn_path_to_exe', self.browse_settings_vpn_path_to_exe),
             ('pushButton_browse_settings_vpn_config', self.browse_settings_vpn_config),
             ('pushButton_help_settings_funkrufname', help_settings_funkrufname),
             ('pushButton_help_setting_fahrzeuge', help_setting_fahrzeuge),
             ('pushButton_help_settings_token', help_settings_token),
             ('pushButton_help_settings_vpn_user', help_settings_vpn_user),
             ('pushButton_help_settings_vpn_password', help_settings_vpn_password),
-            ('pushButton_help_settings_vpn_path_to_exe', help_settings_vpn_path_to_exe),
             ('pushButton_help_settings_vpn_config', help_settings_vpn_config),
             ('pushButton_help_settings_wachendisplay_url', help_settings_wachendisplay_url),
             ('pushButton_help_wachendisplay_contend_id', help_wachendisplay_contend_id),
@@ -238,7 +234,6 @@ class MainWindow(QtWidgets.QMainWindow):
             ('pushButton_settings_help_email_server', help_email_Server),
             ('pushButton_settings_help_kdo_alarm', help_kdo_alarm),
             ('pushButton_settings_help_dag_alternative', help_dag_alternativ),
-            #('pushButton_settings_help_pdftotext', help_pdftotext),
             ('pushButton_5_help_settings_connect_tokens_all', help_connect_tokens_all),
             ('pushButton_log_reload', self.log_reload),
             ('pushButton_logs_reset_mainlog', self.reset_log_main),
@@ -363,10 +358,6 @@ class MainWindow(QtWidgets.QMainWindow):
         with open(pass_file_vpn, "w", encoding="utf-8") as file:
             file.write(database.select_config("ovpn_user") + "\n" + database.select_config("ovpn_passwort"))
 
-    def safe_settings_vpn_path_to_exe(self):
-        safe_settings_vpn_path_to_exe = self.ui.lineEdit_settings_vpn_path_to_exe.text()
-        self.safe_settings("path_to_openvpn.exe", safe_settings_vpn_path_to_exe)
-
     def safe_settings_vpn_config(self):
         safe_settings_vpn_config_path = self.ui.lineEdit_settings_vpn_config.text()
         if "/" in safe_settings_vpn_config_path:
@@ -408,11 +399,6 @@ class MainWindow(QtWidgets.QMainWindow):
         safe_autostart = self.ui.comboBox.currentText()
         self.safe_settings("autostart", safe_autostart)
 
-    def browse_settings_vpn_path_to_exe(self):
-        filepath, _ = QFileDialog.getOpenFileName(self, 'Bitte openvpn.exe auswählen', 'c:\\', "Executables (*.exe)")
-        self.ui.lineEdit_settings_vpn_path_to_exe.setText(filepath)
-
-
     def safe_email_user(self):
         input_to_safe = self.ui.lineEdit_setting_email_user.text()
         self.safe_settings("email_username", input_to_safe)
@@ -434,10 +420,6 @@ class MainWindow(QtWidgets.QMainWindow):
     def safe_dag_alternativ(self):
         input_to_safe = self.ui.lineEdit_settings_dag_alternative.text()
         self.safe_settings("dag_alternativ", input_to_safe)
-
-   # def safe_pdftotext(self):
-   #     input_to_safe = self.ui.lineEdit_settings_path_to_pdftotext.text()
-   #     self.safe_settings("path_to_pdftotext.exe", input_to_safe)
 
     def safe_settings_token_test(self):
         input_to_safe = self.ui.lineEdit_settings_token_test.text()

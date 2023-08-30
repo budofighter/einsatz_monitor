@@ -12,6 +12,8 @@ else:
 
 database = database_class.Database()
 
+path_to_openvpn = os.path.join(basedir, "resources", "openvpn", "openvpn.exe")
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 file_handler = logging.FileHandler(os.path.join(basedir, "logs", "logfile_ovpn.txt"), encoding="utf-8")
@@ -24,7 +26,7 @@ wachendisplay_pass = os.path.join(basedir, "config", "pass_ovpn_wachendisplay.tx
 # OpenVPN Prozess wird als Subprozess gestartet
 def start_openvpn_process():
     try:
-        ovpn_process = subprocess.Popen([database.select_config("path_to_openvpn.exe"), "--config", wachendisplay_config, "--auth-user-pass", wachendisplay_pass])
+        ovpn_process = subprocess.Popen([path_to_openvpn, "--config", wachendisplay_config, "--auth-user-pass", wachendisplay_pass])
         logger.info("OVPN erfolgreich gestartet")
     except Exception as e:
         logger.exception("OVPN konnte nicht gestartet werden: %s", e)
