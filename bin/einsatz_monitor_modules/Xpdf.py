@@ -15,8 +15,7 @@ else:
 database = database_class.Database()
 
 XPDF_VERSION = '4.04'
-RESOURCES_PATH = os.path.abspath(os.path.join(basedir, "resources"))
-XPDF_PATH = os.path.join(RESOURCES_PATH, "pdftotext.exe")
+XPDF_PATH = os.path.join(basedir,"resources", "pdftotext.exe")
 
 # Logger initialisieren
 logger = logging.getLogger(__name__)
@@ -40,12 +39,12 @@ class XpdfHandler:
     def download_xpdf(self):
         try:
             url = f'https://dl.xpdfreader.com/xpdf-tools-win-{XPDF_VERSION}.zip'
-            zip_filename = os.path.join(RESOURCES_PATH, 'xpdf_tools.zip')
+            zip_filename = os.path.join(basedir, "resources", 'xpdf_tools.zip')
             self.download_file(url, zip_filename)
 
             # Entpacken
             with ZipFile(zip_filename, 'r') as zip_ref:
-                extracted_folder = os.path.join(RESOURCES_PATH, f'xpdf-tools-win-{XPDF_VERSION}')
+                extracted_folder = os.path.join(basedir, "resources", f'xpdf-tools-win-{XPDF_VERSION}')
                 zip_ref.extractall(extracted_folder)
 
             # Datei verschieben
@@ -60,10 +59,6 @@ class XpdfHandler:
             shutil.rmtree(extracted_folder)
             os.remove(zip_filename)
             logger.debug(f"Dateien wurden gelöscht")
-
-            # Pfad in der Datenbank hinterlegt:
-            database.update_config("path_to_pdftotext.exe", XPDF_PATH)
-            logger.info("pdftotext.exe wurde heruntergeladen, gespeichert und der extrahierte Ordner wurde gelöscht")
 
         except Exception as e:
             logger.error(f"Fehler beim Download: {str(e)}")
