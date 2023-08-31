@@ -1,0 +1,25 @@
+VSVersionInfo(
+  ffi=FixedFileInfo(
+    filevers=(0, 9, 9, 25),
+    prodvers=(0, 9, 9, 25),
+    mask=0x3f,
+    flags=0x0,
+    OS=0x4,
+    fileType=0x1,
+    subtype=0x0,
+    date=(0, 0)
+    ),
+  kids=[
+    StringFileInfo(
+      [
+      StringTable(
+        u'040704B0',
+        [StringStruct(u'ProductName', u'EinsatzHandler'),
+        StringStruct(u'FileDescription', u'EinsatzHandler zur Auswertung und Alarmierung für Feuersoftware Connect'),
+        StringStruct(u'Copyright', u'Christian Siebold')
+        ])
+      ] 
+    ),
+    VarFileInfo([VarStruct(u'Translation', [1031, 1200])])
+  ]
+)
