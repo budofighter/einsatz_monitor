@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "EinsatzHandler"
-#define MyAppVersion "0.9.9.25"
+#define MyAppVersion "0.9.9.26"
 #define MyAppPublisher "Christian Siebold"
 #define MyAppURL "https://github.com/budofighter/einsatz_monitor"
 #define MyAppExeName "EinsatzHandler.exe"
@@ -42,7 +42,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\update.ps1"; DestDir: "{app}"; Flags: ignoreversion
+; Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\update.ps1"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\README.md"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\main.py"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\ui\mainwindow.py"; DestDir: "{app}\ui"; Flags: ignoreversion

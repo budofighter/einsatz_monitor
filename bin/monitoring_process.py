@@ -9,6 +9,8 @@ from einsatz_monitor_modules import database_class
 from subprocess import DEVNULL
 
 
+
+
 database = database_class.Database()
 
 if getattr(sys, 'frozen', False):
@@ -16,7 +18,7 @@ if getattr(sys, 'frozen', False):
 else:
     basedir = os.path.join(os.path.dirname(__file__), "..")
 
-
+python_path = os.path.join(basedir, "EinsatzHandler_venv", "Scripts", "python.exe")
 einsatz_process = os.path.join(basedir, "einsatz_process.py")
 
 # Logging
@@ -70,7 +72,7 @@ def check_evaluation_status_and_reset():
 
             # Setze den Status zurück auf 1
             database.update_aktiv_flag("auswertung", "1")
-            subprocess.Popen([sys.executable, einsatz_process])
+            subprocess.Popen([python_path, einsatz_process])
 
     except Exception as e:
         logger.error(f"Error in check_evaluation_status_and_reset: {e}")

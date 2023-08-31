@@ -21,7 +21,6 @@ from ui.mainwindow import Ui_MainWindow
 version_nr = "0.9.9.26"
 
 # Konfigurationen importieren:
-app = QtWidgets.QApplication(sys.argv)
 database = database_class.Database()
 
 # Variablen und Pfade setzen:
@@ -38,6 +37,7 @@ logfile_path = os.path.join(basedir, "logs")
 config_path = os.path.join(basedir, "config")
 pass_file_vpn = os.path.join(basedir, "config", "pass_ovpn_wachendisplay.txt")
 einsatz_process_file = os.path.join(basedir, "bin", "einsatz_process.py" )
+python_path = os.path.join(basedir, "EinsatzHandler_venv", "Scripts", "python.exe")
 
 
 # Logging
@@ -47,6 +47,13 @@ file_handler = logging.FileHandler(os.path.join(logfile_path, "logfile_main.txt"
 file_handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(message)s'))
 logger.addHandler(file_handler)
 
+ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("EinsatzHandlerNew")
+app = QtWidgets.QApplication(sys.argv)
+icon = QtGui.QIcon(os.path.join(resources, "fwsignet.ico"))
+app.setWindowIcon(icon)
+
+
+
 # Bei schließen des Programms wird die close methode ausgeführt:
 app.aboutToQuit.connect(close_methode.close_all)
 app.aboutToQuit.connect(database.close_connection)
@@ -55,7 +62,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.setWindowTitle("Einsatz Monitor")
+        self.setWindowTitle("Einsatz Handler")
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -67,8 +74,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
         # Subprozess, um das Monitoring-Prozess zu generieren:
-        p = subprocess.Popen([sys.executable, monitoring_file])
-
+        #p = subprocess.Popen([sys.executable, monitoring_file])
+        p = subprocess.Popen([python_path, monitoring_file])
 
         # wiederholender Timer um die Statusanzeige zu aktualisieren (monitoring-Funktion (self)):
         timer_status = QTimer(self)
@@ -84,7 +91,7 @@ class MainWindow(QtWidgets.QMainWindow):
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(os.path.join(resources, "fwsignet.ico")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.On)
         self.setWindowIcon(icon)
-        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("EM-Statusauswertung")
+
 
         # Fwbs Logo einbinden:
         logo_fwbs = QPixmap(resources + "/logo_fwbs.png")
@@ -267,7 +274,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     database.update_aktiv_flag("vpn", "0")
                     print("gekillt!")
         else:
-            p = subprocess.Popen([sys.executable, vpn_file])
+            p = subprocess.Popen([python_path, vpn_file])
             database.update_aktiv_flag("vpn", p.pid)
 
 
@@ -280,7 +287,7 @@ class MainWindow(QtWidgets.QMainWindow):
             # Testen ob das VPN schon steht
             if database.select_aktiv_flag("vpn") != 0:
                 database.update_aktiv_flag("crawler", "1")
-                subprocess.Popen([sys.executable, crawler_file])
+                subprocess.Popen([python_path, crawler_file])
 
             else:
                 msg = QMessageBox()
@@ -295,7 +302,7 @@ class MainWindow(QtWidgets.QMainWindow):
             database.update_aktiv_flag("auswertung", "0")
         else:
             database.update_aktiv_flag("auswertung", "1")
-            subprocess.Popen([sys.executable, einsatz_process_file])
+            subprocess.Popen([python_path, einsatz_process_file])
 
     # Methode um den Testmodus zu aktivieren:
     def activate_testmode(self):

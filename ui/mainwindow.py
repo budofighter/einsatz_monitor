@@ -1194,7 +1194,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Einsatz Monitor"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Einsatz Handler"))
         self.copyright.setText(_translate("MainWindow", "<html><head/><body><p>Quellcode: <a href=\"https://github.com/budofighter/einsatz_monitor\"><span style=\" text-decoration: underline; color:#0000ff;\">github.com/budofighter/einsatz_monitor </span></a></p><p>Programm zum aufbauen einer OpenVPN Verbindung, Auslesen des <br/>Fahrzeugstatus und Weiterleitung an die ConnectAPI der Feuersoftware.</p><p><span style=\" font-family:\'arial\',\'sans-serif\'; font-size:14px; color:#4d5156; background-color:#ffffff;\">© by Christian Siebold</span></p></body></html>"))
         self.logo_fwbs.setText(_translate("MainWindow", "logo_fwbs"))
         self.tabWidget.setToolTip(_translate("MainWindow", "<html><head/><body><p>Einstellungen</p></body></html>"))

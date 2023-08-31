@@ -76,7 +76,7 @@ try:
                 inp = os.path.join(tmp_path, pdf)
 
                 try:
-                    print([XPDF_PATH, "-enc", "UTF-8", "-simple", inp])
+                    #print([XPDF_PATH, "-enc", "UTF-8", "-simple", inp])
                     subprocess.run([XPDF_PATH, "-enc", "UTF-8", "-simple", inp])
                     if os.path.exists(inp):
                         os.remove(inp)
