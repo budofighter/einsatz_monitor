@@ -2,13 +2,13 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "EinsatzHandler"
-#define MyAppVersion "0.9.9.26"
 #define MyAppPublisher "Christian Siebold"
 #define MyAppURL "https://github.com/budofighter/einsatz_monitor"
 #define MyAppExeName "EinsatzHandler.exe"
 #define MyAppAssocName MyAppName + " File"
 #define MyAppAssocExt ".myp"
 #define MyAppAssocKey StringChange(MyAppAssocName, " ", "") + MyAppAssocExt
+#define MyAppVersion "0.9.9.25"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -16,7 +16,6 @@
 AppId={{D9B6CC1F-1D06-49BE-BE66-761110F44035}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
-;AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
@@ -55,7 +54,7 @@ Root: HKA; Subkey: "Software\Classes\Applications\{#MyAppExeName}\SupportedTypes
 
 ; Erstellt einen Registry-Eintrag unter HKEY_LOCAL_MACHINE (HKLM) oder HKEY_CURRENT_USER (HKCU)
 ; Der Eintrag wird in den Pfad "Software\IhrUnternehmen\IhrProdukt" mit dem Schl�ssel "Version" und dem Wert "{#MyAppVersion}" gespeichert.
-Root: HKA; Subkey: "Software\Classes\Applications\{#MyAppExeName}"; ValueType: string; ValueName: "Version"; ValueData: "{#MyAppVersion}"
+Root: HKA; Subkey: "Software\Classes\Applications\{#MyAppExeName}"; ValueType: string; ValueName: "Version"; ValueData: {#MyAppVersion}
 
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
@@ -66,11 +65,11 @@ Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChang
 
 [Code]
 const
-  MyPascalAppVersion = '{#MyAppVersion}';  // Konstante im Pascal-Code
   MyPascalExeName = '{#MyAppExeName}';
+  MyPascalAppVersion = '{#MyAppVersion}';
 
 var
-  IsUpdate: Boolean;  // Globale Variable
+  IsUpdate: Boolean;
 
 function GetInstalledVersion(): String;
 var
