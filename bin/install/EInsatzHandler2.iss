@@ -8,7 +8,7 @@
 #define MyAppAssocName MyAppName + " File"
 #define MyAppAssocExt ".myp"
 #define MyAppAssocKey StringChange(MyAppAssocName, " ", "") + MyAppAssocExt
-#define MyAppVersion "0.9.9.25"
+#define MyAppVersion "0.9.9.30"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -25,9 +25,9 @@ ChangesAssociations=yes
 DisableProgramGroupPage=yes
 InfoBeforeFile=C:\Users\Public\PycharmProjects\einsatz_monitor\README.md
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
-;PrivilegesRequired=lowest
+PrivilegesRequired=admin
 OutputDir=C:\Users\Public\PycharmProjects\einsatz_monitor\Installer
-OutputBaseFilename=EinsatzHandlerSetup
+OutputBaseFilename="Setup_{#MyAppVersion}"
 SetupIconFile=C:\Users\Public\PycharmProjects\einsatz_monitor\resources\fwsignet.ico
 Compression=lzma
 SolidCompression=yes
@@ -66,21 +66,88 @@ Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChang
 [Code]
 const
   MyPascalExeName = '{#MyAppExeName}';
-  MyPascalAppVersion = '{#MyAppVersion}';
+  MyPascalAppVersion = '{#MyAppVersion}';  // Diese Zeile könnte durch ein externes Skript gesetzt werden
 
 var
   IsUpdate: Boolean;
 
+// Installierte Version besorgen
 function GetInstalledVersion(): String;
 var
   Version: String;
 begin
-  if RegQueryStringValue(HKA, 'Software\Classes\Applications\' + MyPascalExeName, 'Version', Version) then
+  if RegQueryStringValue(HKLM, 'Software\Classes\Applications\{#MyAppName}', 'Version', Version) then
     Result := Version
   else
     Result := '';
 end;
 
+//Funktion im die Tokens zu kriegen
+function GetToken(const AString, ASeparator: String; AIndex: Integer): String;
+var
+  I, StrCount, SepLen: Integer;
+  S: String;
+begin
+  Result := '';
+  S := AString;
+  SepLen := Length(ASeparator);
+  StrCount := 0;
+  
+  while (Length(S) > 0) and (StrCount <= AIndex) do
+  begin
+    I := Pos(ASeparator, S);
+    if I = 0 then I := Length(S) + 1;
+    
+    if StrCount = AIndex then
+    begin
+      Result := Copy(S, 1, I - 1);
+      Exit;
+    end;
+    
+    Inc(StrCount);
+    S := Copy(S, I + SepLen, Length(S));
+  end;
+end;
+
+
+
+
+//Funktion um die Versionen zu vergleichen
+function CompareVersions(Version1, Version2: String): Integer;
+var
+  Major1, Minor1, Patch1, Build1: Integer;
+  Major2, Minor2, Patch2, Build2: Integer;
+begin
+  // Zerlegen der Version1 in ihre Komponenten
+  StringChange(Version1, '.', ',');
+  StringChange(Version2, '.', ',');
+  Major1 := StrToInt(GetToken(Version1, ',', 0));
+  Minor1 := StrToInt(GetToken(Version1, ',', 1));
+  Patch1 := StrToInt(GetToken(Version1, ',', 2));
+  Build1 := StrToInt(GetToken(Version1, ',', 3));
+
+  // Zerlegen der Version2 in ihre Komponenten
+  Major2 := StrToInt(GetToken(Version2, ',', 0));
+  Minor2 := StrToInt(GetToken(Version2, ',', 1));
+  Patch2 := StrToInt(GetToken(Version2, ',', 2));
+  Build2 := StrToInt(GetToken(Version2, ',', 3));
+
+  // Vergleich
+  if Major1 > Major2 then Result := 1
+  else if Major1 < Major2 then Result := -1
+  else if Minor1 > Minor2 then Result := 1
+  else if Minor1 < Minor2 then Result := -1
+  else if Patch1 > Patch2 then Result := 1
+  else if Patch1 < Patch2 then Result := -1
+  else if Build1 > Build2 then Result := 1
+  else if Build1 < Build2 then Result := -1
+  else Result := 0;
+end;
+
+
+
+
+//Installieren oder abbrechen
 procedure CurStepChanged(CurStep: TSetupStep);
 var
   NewVersion: String;
@@ -90,34 +157,38 @@ begin
   begin
     NewVersion := MyPascalAppVersion;
     InstalledVersion := GetInstalledVersion();
-
-    // Prüfen, ob die Anwendung bereits installiert ist
     IsUpdate := FileExists(ExpandConstant('{app}\' + MyPascalExeName));
 
   if IsUpdate then
+  begin
+    if CompareVersions(NewVersion, InstalledVersion) > 0 then
     begin
-      // Prüfen, ob die neue Version tatsächlich neuer ist
-      if NewVersion > InstalledVersion then
+      // Update Logik
+      if MsgBox('Es ist eine neuere Version verfügbar. Möchten Sie das Update durchführen?', mbConfirmation, MB_YESNO) = IDYES then
       begin
-        if MsgBox('Es ist eine veraltete Version der Software vorhanden. Möchten Sie ein Update durchführen und die Benutzereinstellungen beibehalten?', mbConfirmation, MB_YESNO) = idYes then
-          begin
-          // Benutzerdefinierte Aktionen für ein Update
-          end
-        else
-          begin
-            WizardForm.Close;
-          end;
+        //MsgBox('Update wird ausgeführt', mbInformation, MB_OK);
       end
       else
       begin
-        MsgBox('Sie haben bereits die neueste Version installiert. Daher wird das Installationsprogramm beendet.', mbInformation, MB_OK);
-        // Hier könnten Sie die Installation abbrechen, wenn Sie möchten
+        //MsgBox('Update abgebrochen.', mbInformation, MB_OK);
         WizardForm.Close;
       end;
     end
     else
     begin
-      // Benutzerdefinierte Aktionen für eine Neuinstallation
+      MsgBox('Sie haben bereits eine neuere Version installiert. Die Installation wird abgebrochen.', mbInformation, MB_OK);
+      WizardForm.Close;
     end;
+  end
+    else
+    begin
+      // Neuinstallations-Logik
+    end;
+  end;
+  if CurStep = ssPostInstall then
+  begin
+    // Aktualisieren der Versionsnummer in der Registry
+    RegWriteStringValue(HKLM, 'Software\Classes\Applications\{#MyAppName}', 'Version', MyPascalAppVersion);
+    //MsgBox('Versionsnummer in der Registry gesetzt: ' + MyPascalAppVersion, mbInformation, MB_OK);
   end;
 end;

@@ -17,8 +17,7 @@ from bin.einsatz_monitor_modules import init, close_methode, database_class, gen
 from bin.einsatz_monitor_modules.help_settings_methoden import *
 from ui.mainwindow import Ui_MainWindow
 
-# Version Nummer wird hier gesetzt:
-# version_nr = "0.9.9.26"
+
 
 # Konfigurationen importieren:
 database = database_class.Database()
@@ -38,9 +37,7 @@ config_path = os.path.join(basedir, "config")
 pass_file_vpn = os.path.join(basedir, "config", "pass_ovpn_wachendisplay.txt")
 einsatz_process_file = os.path.join(basedir, "bin", "einsatz_process.py" )
 python_path = os.path.join(basedir, "EinsatzHandler_venv", "Scripts", "python.exe")
-
-
-
+rc_file_path = os.path.join(basedir, "versioninfo.rc")
 
 # Logging
 logger = logging.getLogger(__name__)
@@ -53,8 +50,6 @@ ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("EinsatzHandlerNew
 app = QtWidgets.QApplication(sys.argv)
 icon = QtGui.QIcon(os.path.join(resources, "fwsignet.ico"))
 app.setWindowIcon(icon)
-
-
 
 # Bei schließen des Programms wird die close methode ausgeführt:
 app.aboutToQuit.connect(close_methode.close_all)
@@ -76,7 +71,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
         # Subprozess, um das Monitoring-Prozess zu generieren:
-        #p = subprocess.Popen([sys.executable, monitoring_file])
         p = subprocess.Popen([python_path, monitoring_file])
 
         # wiederholender Timer um die Statusanzeige zu aktualisieren (monitoring-Funktion (self)):
@@ -99,9 +93,9 @@ class MainWindow(QtWidgets.QMainWindow):
         logo_fwbs = QPixmap(resources + "/logo_fwbs.png")
         self.ui.logo_fwbs.setPixmap(logo_fwbs)
 
-        exe_path = os.path.join(basedir, "EinsatzHandler.exe")
-
-        version_nr = self.get_file_version(exe_path)
+        # Version Info:
+        version_nr = self.read_version_from_rc(rc_file_path)
+        
         if version_nr:
             self.ui.label_status_versionnr.setText(version_nr)
         else:
@@ -660,20 +654,15 @@ class MainWindow(QtWidgets.QMainWindow):
         # Der Prozess läuft nicht
         return False
     
-    def get_file_version(self, file_path):
-        size = ctypes.windll.version.GetFileVersionInfoSizeW(file_path, None)
-        if size == 0:
-            return None
-        buffer = ctypes.create_string_buffer(size)
-        ctypes.windll.version.GetFileVersionInfoW(file_path, None, size, buffer)
-        r = ctypes.c_void_p()
-        l = ctypes.c_uint()
-        ctypes.windll.version.VerQueryValueW(buffer, '\\', ctypes.byref(r), ctypes.byref(l))
-        fvi = ctypes.cast(r, ctypes.POINTER(ctypes.c_ubyte * l.value)).contents
-        vi = fvi[:16]
-        wFileVersion = tuple(int(i) for i in vi[8:16][::-1])
-        return f"{wFileVersion[5]}.{wFileVersion[7]}.{wFileVersion[1]}.{wFileVersion[3]}"
-
+    # Methode um die Version Nr aus der versioninfo.rc zu importieren
+    def read_version_from_rc(self, rc_file_path):
+        with open(rc_file_path, 'r') as f:
+            content = f.read()
+            match = re.search(r'filevers=\((\d+,\s*\d+,\s*\d+,\s*\d+)\)', content)
+            if match:
+                version = match.group(1).replace(',', '.')
+                return version
+        return None
 
 
 
