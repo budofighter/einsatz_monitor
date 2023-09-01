@@ -61,4 +61,8 @@ def close_all():
     # 3. alle Kindprozesse des Hauptprozesses beenden
     terminate_all_child_processes(os.getpid())
 
+    # 4. sicherstellen, dass VPN 
+    with open(os.path.join(basedir,"logs", "logfile_ovpn.txt"), "a") as f:
+        f.write("###########\n\n\n")
+
     logger.info("alles wurde geschlossen")

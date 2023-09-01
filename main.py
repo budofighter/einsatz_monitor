@@ -272,9 +272,11 @@ class MainWindow(QtWidgets.QMainWindow):
                 for i in pid:
                     psutil.Process(i).terminate()
                     database.update_aktiv_flag("vpn", "0")
-                    print("gekillt!")
+                    with open(os.path.join(basedir,"logs", self.LOG_FILES["VPN"]), "a") as f:
+                        f.write("###########\nVPN wird beendet \n\n\n")
         else:
-            p = subprocess.Popen([python_path, vpn_file])
+            with open(os.path.join(basedir,"logs", self.LOG_FILES["VPN"]), "a") as f:
+                p = subprocess.Popen([python_path, vpn_file], stdout=f, stderr=f)
             database.update_aktiv_flag("vpn", p.pid)
 
 
@@ -595,20 +597,27 @@ class MainWindow(QtWidgets.QMainWindow):
         msg.setIcon(QMessageBox.Icon.Information)
         msg.exec()
 
-    # Methode um den Farbbutton zu ändern:
+
     def set_led(self, button, status):
-        status_to_image = {
-            'green': resources + "/led-green.png",
-            'red': resources + "/led-red.png",
-            'attention': resources + "/attention.png"
-        }
-        button_image = QPixmap(status_to_image[status])
-        button.setPixmap(button_image)
+        if status == 'loading':
+            movie = QMovie(resources + "/spinner.gif")
+            button.setMovie(movie)
+            movie.start()
+            button.repaint()  # Erzwingt eine Neumalung des Widgets
+        else:
+            status_to_image = {
+                'green': resources + "/led-green.png",
+                'red': resources + "/led-red.png",
+                'attention': resources + "/attention.png"
+            }
+            button_image = QPixmap(status_to_image[status])
+            button.setPixmap(button_image)
+
 
     # Methode um die Error-Datenbank auszulesen und die statusanzeigen zu aktualisieren, bzw. einen Neustart zu gennerieren:
     def monitoring(self):
-        # Eine Liste von Tupeln, die jedes Status-Widget und zugehörigen Fehler-Typ enthalten
         try:
+            # Eine Liste von Tupeln, die jedes Status-Widget und zugehörigen Fehler-Typ enthalten
             STATUS_WIDGETS = [
                 (self.ui.status_vpn, "vpn"),
                 (self.ui.status_Wachendisplay, "wachendisplay"),
@@ -619,6 +628,17 @@ class MainWindow(QtWidgets.QMainWindow):
 
             for status_widget, application_type in STATUS_WIDGETS:
                 active_flag = database.select_aktiv_flag(application_type)
+                
+                if application_type == 'vpn' and active_flag not in [0, 2]:
+                    # Überprüfen Sie, ob "Initialization Sequence Completed" in den letzten 3 Zeilen der Log-Datei steht
+                    with open(os.path.join(basedir, "logs", self.LOG_FILES["VPN"]), "r") as f:
+                        last_lines = f.readlines()[-1:]  # Lesen der letzten 3 Zeilen
+                        if any("Initialization Sequence Completed" in line for line in last_lines):
+                            self.set_led(status_widget, 'green')
+                        else:
+                            self.set_led(status_widget, 'loading')
+                        continue  # Überspringen Sie den Rest der Schleife für diesen Fall
+
                 if active_flag == 0:
                     self.set_led(status_widget, 'red')
                 elif active_flag == 2:
@@ -631,8 +651,12 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.set_led(self.ui.status_testmodus, 'attention')
             else:
                 self.set_led(self.ui.status_testmodus, 'red')
-        except:
-            logger.error("Fehler bei der Monitoring Aktualisierung der Datenbank")
+
+        except Exception as e:
+            logger.error(f"Fehler bei der Monitoring Aktualisierung der Datenbank: {e}")
+
+
+
 
     # Methode Autostart
     def autostart(self):

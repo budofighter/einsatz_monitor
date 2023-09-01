@@ -8,7 +8,7 @@ a = Analysis(
     ['main.py'],
     pathex=['.'],
     binaries=[],
-    datas=[('versioninfo.rc','.'),('EinsatzHandler.manifest','.'),('bin/crawler_process.py','bin'),('bin/einsatz_process.py','bin'),('bin/monitoring_process.py','bin'),('bin/ovpn_process.py','bin'), ('ui/*','ui'),('resources/openvpn/*','resources/openvpn'),('bin/einsatz_monitor_modules/*','bin/einsatz_monitor_modules'),('resources/attention.png','resources'),('resources/fwsignet.ico','resources'),('resources/led-green.png','resources'),('resources/led-red.png','resources'),('resources/logo_fwbs.png','resources'),('resources/pdftotext.exe','resources')],
+    datas=[('versioninfo.rc','.'),('EinsatzHandler.manifest','.'),('bin/crawler_process.py','bin'),('bin/einsatz_process.py','bin'),('bin/monitoring_process.py','bin'),('bin/ovpn_process.py','bin'), ('ui/*','ui'),('resources/openvpn/*','resources/openvpn'),('bin/einsatz_monitor_modules/*','bin/einsatz_monitor_modules'),('resources/attention.png','resources'),('resources/fwsignet.ico','resources'),('resources/led-green.png','resources'),('resources/led-red.png','resources'),('resources/logo_fwbs.png','resources'),('resources/pdftotext.exe','resources'),('resources/spinner.gif','resources')],
     
     hiddenimports=[
 
@@ -50,7 +50,7 @@ exe = EXE(
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    console=True,
+    console=False,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
