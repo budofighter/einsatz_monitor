@@ -632,7 +632,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 if application_type == 'vpn' and active_flag not in [0, 2]:
                     # Überprüfen Sie, ob "Initialization Sequence Completed" in den letzten 3 Zeilen der Log-Datei steht
                     with open(os.path.join(basedir, "logs", self.LOG_FILES["VPN"]), "r") as f:
-                        last_lines = f.readlines()[-1:]  # Lesen der letzten 3 Zeilen
+                        last_lines = f.readlines()[-1:]  # Lesen der letzte Zeilen
                         if any("Initialization Sequence Completed" in line for line in last_lines):
                             self.set_led(status_widget, 'green')
                         else:
