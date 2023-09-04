@@ -89,7 +89,8 @@ def load_cookies(driver, cookie_file_path):
 def crawl_wachendisplay(driver, database):
     global exception_counter
 
-    while database.select_aktiv_flag("crawler") == 1:
+    while database.select_aktiv_flag("crawler") in [1, 3]:
+
         output_wachendisplay_string = None
 
         try:
@@ -243,7 +244,7 @@ def run_crawler():
             if element:
                 logger.info("Wachendisplay erfolgreich geladen")
 
-        if database.select_aktiv_flag("crawler") == 1:
+        if database.select_aktiv_flag("crawler") in [1, 3]:
             while crawl_wachendisplay(driver, database):
                 time.sleep(10)  # Warten Sie 10 Sekunden, bevor Sie erneut versuchen
         else:
@@ -295,7 +296,8 @@ def main():
         while True:
             database = database_class.Database()
             aktiv_flag = database.select_aktiv_flag("crawler")
-            if aktiv_flag == 1:
+            
+            if database.select_aktiv_flag("crawler") in [1, 3]:
                 monitor_crawler()
             elif aktiv_flag == 0:
                 logger.info("Crawler wird beendet, da Aktiv-Flag auf 0 gesetzt wurde.")

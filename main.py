@@ -261,7 +261,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def start_vpn(self):
         if self.check_prozess("openvpn.exe"):
             # prüfen ob die Auswertung noch läuft:
-            if database.select_aktiv_flag("crawler") == 1:
+            if database.select_aktiv_flag("crawler") in [1, 3]:
                 msg = QMessageBox()
                 msg.setWindowTitle("Fehler - Auswertung noch aktiv")
                 msg.setIcon(QMessageBox.Icon.Critical)
@@ -272,23 +272,23 @@ class MainWindow(QtWidgets.QMainWindow):
                 for i in pid:
                     psutil.Process(i).terminate()
                     database.update_aktiv_flag("vpn", "0")
-                    with open(os.path.join(basedir,"logs", self.LOG_FILES["VPN"]), "a") as f:
+                    with open(os.path.join(basedir,"logs", self.LOG_FILES["vpn"]), "a") as f:
                         f.write("###########\nVPN wird beendet \n\n\n")
         else:
-            with open(os.path.join(basedir,"logs", self.LOG_FILES["VPN"]), "a") as f:
+            with open(os.path.join(basedir,"logs", self.LOG_FILES["vpn"]), "a") as f:
                 p = subprocess.Popen([python_path, vpn_file], stdout=f, stderr=f)
             database.update_aktiv_flag("vpn", p.pid)
 
 
     # Methode um die Crawler Methode zu starten/stoppen
     def start_status_auswertung_local(self):
-        if database.select_aktiv_flag("crawler") == 1:
+        if database.select_aktiv_flag("crawler") in [1, 3]:
             database.update_aktiv_flag("crawler", "0")
 
         else:
             # Testen ob das VPN schon steht
             if database.select_aktiv_flag("vpn") != 0:
-                database.update_aktiv_flag("crawler", "1")
+                database.update_aktiv_flag("crawler", "3")
                 subprocess.Popen([python_path, crawler_file])
 
             else:
@@ -505,10 +505,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
 # ##### Methoden auf der Logseite:
     LOG_FILES = {
-        "Main": "logfile_main.txt",
-        "VPN": "logfile_ovpn.txt",
-        "Crawler": "logfile_crawler.txt",
-        "EM": "logfile_EM.txt",
+        "main": "logfile_main.txt",
+        "vpn": "logfile_ovpn.txt",
+        "crawler": "logfile_crawler.txt",
+        "em": "logfile_EM.txt",
     }
 
     def log_reload(self):
@@ -520,13 +520,13 @@ class MainWindow(QtWidgets.QMainWindow):
             last_lines = file.readlines()[-50:]
             change_sort = reversed(last_lines)
 
-        if log_file == self.LOG_FILES["Main"]:
+        if log_file == self.LOG_FILES["main"]:
             self.ui.textEdit_log_main.setText("".join(change_sort))
-        elif log_file == self.LOG_FILES["VPN"]:
+        elif log_file == self.LOG_FILES["vpn"]:
             self.ui.textEdit_log_vpn.setText("".join(change_sort))
-        elif log_file == self.LOG_FILES["Crawler"]:
+        elif log_file == self.LOG_FILES["crawler"]:
             self.ui.textEdit_log_crawler.setText("".join(change_sort))
-        elif log_file == self.LOG_FILES["EM"]:
+        elif log_file == self.LOG_FILES["em"]:
             self.ui.textEdit_log_EM.setText("".join(change_sort))
 
     def read_log(self, logfile):
@@ -539,16 +539,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.read_last_five_lines(log_file)
 
     def reset_log_main(self):
-        self.reset_log(self.LOG_FILES["Main"])
+        self.reset_log(self.LOG_FILES["main"])
 
     def reset_log_vpn(self):
-        self.reset_log(self.LOG_FILES["VPN"])
+        self.reset_log(self.LOG_FILES["vpn"])
 
     def reset_log_crawler(self):
-        self.reset_log(self.LOG_FILES["Crawler"])
+        self.reset_log(self.LOG_FILES["crawler"])
 
     def reset_log_em(self):
-        self.reset_log(self.LOG_FILES["EM"])
+        self.reset_log(self.LOG_FILES["em"])
 
     def open_log_file(self, log_file):
         # Erstelle das Fenster
@@ -570,19 +570,19 @@ class MainWindow(QtWidgets.QMainWindow):
         dialog.exec()
 
     def open_main_log(self):
-        self.open_log_file(self.LOG_FILES["Main"])
+        self.open_log_file(self.LOG_FILES["main"])
 
 
     def open_crawler_log(self):
-        self.open_log_file(self.LOG_FILES["Crawler"])
+        self.open_log_file(self.LOG_FILES["crawler"])
 
 
     def open_ovpn_log(self):
-        self.open_log_file(self.LOG_FILES["VPN"])
+        self.open_log_file(self.LOG_FILES["vpn"])
 
 
     def open_em_log(self):
-        self.open_log_file(self.LOG_FILES["EM"])
+        self.open_log_file(self.LOG_FILES["em"])
 
 # ####### Sonstige Methoden:
 
@@ -615,9 +615,49 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
     # Methode um die Error-Datenbank auszulesen und die statusanzeigen zu aktualisieren, bzw. einen Neustart zu gennerieren:
+    # def monitoring(self):
+    #     try:
+    #         # Eine Liste von Tupeln, die jedes Status-Widget und zugehörigen Fehler-Typ enthalten
+    #         STATUS_WIDGETS = [
+    #             (self.ui.status_vpn, "vpn"),
+    #             (self.ui.status_Wachendisplay, "wachendisplay"),
+    #             (self.ui.status_auswertung, "crawler"),
+    #             (self.ui.status_server, "alarm_server"),
+    #             (self.ui.status_alarmscript, "auswertung")
+    #         ]
+
+    #         for status_widget, application_type in STATUS_WIDGETS:
+    #             active_flag = database.select_aktiv_flag(application_type)
+                
+                # if application_type == 'vpn' and active_flag not in [0, 2]:
+                #     # Überprüfen Sie, ob "Initialization Sequence Completed" in den letzten 3 Zeilen der Log-Datei steht
+                #     with open(os.path.join(basedir, "logs", self.LOG_FILES["vpn"]), "r") as f:
+                #         last_lines = f.readlines()[-1:]  # Lesen der letzte Zeilen
+                #         if any("Initialization Sequence Completed" in line for line in last_lines):
+                #             self.set_led(status_widget, 'green')
+                #         else:
+                #             self.set_led(status_widget, 'loading')
+                #         continue  # Überspringen Sie den Rest der Schleife für diesen Fall
+
+    #             if active_flag == 0:
+    #                 self.set_led(status_widget, 'red')
+    #             elif active_flag == 2:
+    #                 self.set_led(status_widget, 'attention')
+    #             else:
+    #                 self.set_led(status_widget, 'green')
+
+    #         # Hier wird der Testmode gesetzt:
+    #         if database.select_aktiv_flag('testmode') == 1:
+    #             self.set_led(self.ui.status_testmodus, 'attention')
+    #         else:
+    #             self.set_led(self.ui.status_testmodus, 'red')
+
+    #     except Exception as e:
+    #         logger.error(f"Fehler bei der Monitoring Aktualisierung der Datenbank: {e}")
+
+
     def monitoring(self):
         try:
-            # Eine Liste von Tupeln, die jedes Status-Widget und zugehörigen Fehler-Typ enthalten
             STATUS_WIDGETS = [
                 (self.ui.status_vpn, "vpn"),
                 (self.ui.status_Wachendisplay, "wachendisplay"),
@@ -628,34 +668,46 @@ class MainWindow(QtWidgets.QMainWindow):
 
             for status_widget, application_type in STATUS_WIDGETS:
                 active_flag = database.select_aktiv_flag(application_type)
-                
+
+                # Spezielle Routine für VPN
                 if application_type == 'vpn' and active_flag not in [0, 2]:
-                    # Überprüfen Sie, ob "Initialization Sequence Completed" in den letzten 3 Zeilen der Log-Datei steht
-                    with open(os.path.join(basedir, "logs", self.LOG_FILES["VPN"]), "r") as f:
+                    with open(os.path.join(basedir, "logs", self.LOG_FILES["vpn"]), "r") as f:
                         last_lines = f.readlines()[-1:]  # Lesen der letzte Zeilen
                         if any("Initialization Sequence Completed" in line for line in last_lines):
                             self.set_led(status_widget, 'green')
                         else:
                             self.set_led(status_widget, 'loading')
-                        continue  # Überspringen Sie den Rest der Schleife für diesen Fall
+                    continue  # Überspringen Sie den Rest der Schleife für diesen Fall
 
+                # Allgemeine Routine
                 if active_flag == 0:
                     self.set_led(status_widget, 'red')
                 elif active_flag == 2:
                     self.set_led(status_widget, 'attention')
+                elif active_flag == 3:
+                    log_file = self.LOG_FILES.get(application_type)
+                    if log_file:
+                        with open(os.path.join(basedir, "logs", log_file), "r") as f:
+                            last_lines = f.readlines()[-1:]  # Letzte 1 Zeilen
+                            if application_type == 'crawler':
+                                keyword = "Wachendisplay erfolgreich geladen"
+                            else:
+                                keyword = None
+
+                            if keyword and any(keyword in line for line in last_lines):
+                                self.set_led(status_widget, 'green')
+                                database.update_aktiv_flag(application_type, "1")
+                            else:
+                                self.set_led(status_widget, 'loading')
                 else:
                     self.set_led(status_widget, 'green')
 
-            # Hier wird der Testmode gesetzt:
             if database.select_aktiv_flag('testmode') == 1:
                 self.set_led(self.ui.status_testmodus, 'attention')
             else:
                 self.set_led(self.ui.status_testmodus, 'red')
-
         except Exception as e:
-            logger.error(f"Fehler bei der Monitoring Aktualisierung der Datenbank: {e}")
-
-
+            print(f"Exception in monitoring: {e}")
 
 
     # Methode Autostart
