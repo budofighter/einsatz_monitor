@@ -163,29 +163,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.log_reload()
 
 ### Menüaufbau und aktionen
-        # Alles starten:
-        start_all = QAction(self.style().standardIcon(QStyle.StandardPixmap.SP_MediaPlay), '&Alles Starten', self)
-        start_all.setShortcut('Ctrl+P')
-        start_all.triggered[bool].connect(self.autostart)
-        self.ui.menu_bersicht.addAction(start_all)
-
-        # Exit:
-        exit_action = QAction(self.style().standardIcon(QStyle.StandardPixmap.SP_DialogCancelButton), '&Exit', self)
-        exit_action.setStatusTip('Exit application')
-        exit_action.setShortcut('Ctrl+Q')
-        exit_action.triggered[bool].connect(QApplication.instance().quit)
-        self.ui.menu_bersicht.addAction(exit_action)
-
-        # Installationsleitung:
-        install_help = QAction(self.style().standardIcon(QStyle.StandardPixmap.SP_MessageBoxQuestion),
-                               '&Installationsanleitung', self)
-        install_help.triggered[bool].connect(installationsanleitung)
-        self.ui.menuHilfe.addAction(install_help)
-
-        # Kontakt:
-        contact = QAction(self.style().standardIcon(QStyle.StandardPixmap.SP_MessageBoxInformation), '&Kontakt', self)
-        contact.triggered[bool].connect(kontakt)
-        self.ui.menuHilfe.addAction(contact)
 
         def connect_buttons_to_methods(ui, button_connections):
             for button_name, method in button_connections:
@@ -198,7 +175,6 @@ class MainWindow(QtWidgets.QMainWindow):
             ('pushButton_start_auswretung', self.start_status_auswertung_local),
             ('pushButton_start_einsatzauswertung', self.start_einsatzauswertung),
             ('pushButton_testmode', self.activate_testmode),
-            ('pushButton_live_mode', self.autostart),
             ('pushButton_safe_settings_funkrufname', self.safe_settings_funkrufname),
             ('pushButton_safe_setting_fahrzeuge', self.safe_setting_fahrzeuge),
             ('pushButton_safe_settings_token', self.safe_settings_token),
@@ -242,7 +218,6 @@ class MainWindow(QtWidgets.QMainWindow):
             ('pushButton_settings_help_kdo_alarm', help_kdo_alarm),
             ('pushButton_settings_help_dag_alternative', help_dag_alternativ),
             ('pushButton_5_help_settings_connect_tokens_all', help_connect_tokens_all),
-            ('pushButton_log_reload', self.log_reload),
             ('pushButton_logs_reset_mainlog', self.reset_log_main),
             ('pushButton_logs_reset_vpnlog', self.reset_log_vpn),
             ('pushButton_logs_reset_crawlerlog', self.reset_log_crawler),
@@ -490,12 +465,13 @@ class MainWindow(QtWidgets.QMainWindow):
             message = "Bitte zuerst die Wachendisplay Config durchführen!"
         elif r == "erfolgreich":
             title = "Erfolgreich!"
-            icon = QMessageBox.Icon.Critical
+            icon = QMessageBox.Icon.Information
             message = "Cookies erfolgreich erstellt!"
         else:
             title = "Fehler - Cookie konnte nicht erstellt werden"
             icon = QMessageBox.Icon.Critical
-            message = "Unbekannter Fehler"
+            message = f"Fehler - Cookie konnte nicht erstellt werden - Unbekannter Fehler: {r}"
+
 
         msg = QMessageBox()
         msg.setWindowTitle(title)
@@ -612,49 +588,6 @@ class MainWindow(QtWidgets.QMainWindow):
             }
             button_image = QPixmap(status_to_image[status])
             button.setPixmap(button_image)
-
-
-    # Methode um die Error-Datenbank auszulesen und die statusanzeigen zu aktualisieren, bzw. einen Neustart zu gennerieren:
-    # def monitoring(self):
-    #     try:
-    #         # Eine Liste von Tupeln, die jedes Status-Widget und zugehörigen Fehler-Typ enthalten
-    #         STATUS_WIDGETS = [
-    #             (self.ui.status_vpn, "vpn"),
-    #             (self.ui.status_Wachendisplay, "wachendisplay"),
-    #             (self.ui.status_auswertung, "crawler"),
-    #             (self.ui.status_server, "alarm_server"),
-    #             (self.ui.status_alarmscript, "auswertung")
-    #         ]
-
-    #         for status_widget, application_type in STATUS_WIDGETS:
-    #             active_flag = database.select_aktiv_flag(application_type)
-                
-                # if application_type == 'vpn' and active_flag not in [0, 2]:
-                #     # Überprüfen Sie, ob "Initialization Sequence Completed" in den letzten 3 Zeilen der Log-Datei steht
-                #     with open(os.path.join(basedir, "logs", self.LOG_FILES["vpn"]), "r") as f:
-                #         last_lines = f.readlines()[-1:]  # Lesen der letzte Zeilen
-                #         if any("Initialization Sequence Completed" in line for line in last_lines):
-                #             self.set_led(status_widget, 'green')
-                #         else:
-                #             self.set_led(status_widget, 'loading')
-                #         continue  # Überspringen Sie den Rest der Schleife für diesen Fall
-
-    #             if active_flag == 0:
-    #                 self.set_led(status_widget, 'red')
-    #             elif active_flag == 2:
-    #                 self.set_led(status_widget, 'attention')
-    #             else:
-    #                 self.set_led(status_widget, 'green')
-
-    #         # Hier wird der Testmode gesetzt:
-    #         if database.select_aktiv_flag('testmode') == 1:
-    #             self.set_led(self.ui.status_testmodus, 'attention')
-    #         else:
-    #             self.set_led(self.ui.status_testmodus, 'red')
-
-    #     except Exception as e:
-    #         logger.error(f"Fehler bei der Monitoring Aktualisierung der Datenbank: {e}")
-
 
     def monitoring(self):
         try:
