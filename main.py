@@ -11,7 +11,7 @@ import time
 from PyQt6 import QtWidgets, QtGui
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
-from PyQt6.QtWidgets import QFileDialog, QApplication, QStyle, QDialog, QTextEdit, QVBoxLayout
+from PyQt6.QtWidgets import QFileDialog, QApplication, QStyle, QDialog, QTextEdit, QVBoxLayout, QLineEdit
 
 from bin.einsatz_monitor_modules import init, close_methode, database_class, gennerate_cookie_module # init wird benötigt!
 from bin.einsatz_monitor_modules.help_settings_methoden import *
@@ -92,6 +92,31 @@ class MainWindow(QtWidgets.QMainWindow):
         # Fwbs Logo einbinden:
         logo_fwbs = QPixmap(resources + "/logo_fwbs.png")
         self.ui.logo_fwbs.setPixmap(logo_fwbs)
+
+        help_logo = QIcon(resources + "/information.png")
+        button_names = [
+            "pushButton_help_settings_funkrufname",
+            "pushButton_help_setting_fahrzeuge",
+            "pushButton_help_autostart",
+            "pushButton_help_settings_vpn_user",
+            "pushButton_help_settings_vpn_password",
+            "pushButton_help_settings_vpn_config",
+            "pushButton_help_settings_wachendisplay_url",
+            "pushButton_help_wachendisplay_contend_id",
+            "pushButton_help_settings_wachendisplay_user",
+            "pushButton_help_wachendisplay_password",
+            "pushButton_settings_help_email_user",
+            "pushButton_settings_help_email_password",
+            "pushButton_settings_help_email_server",
+            "pushButton_settings_help_kdo_alarm",
+            "pushButton_settings_help_dag_alternative",
+            "pushButton_help_settings_token",
+            "pushButton_5_help_settings_connect_tokens_all"
+        ]
+        for button_name in button_names:
+            button = getattr(self.ui, button_name)
+            button.setIcon(help_logo)
+
 
         # Version Info:
         version_nr = self.read_version_from_rc(rc_file_path)
@@ -175,31 +200,12 @@ class MainWindow(QtWidgets.QMainWindow):
             ('pushButton_start_auswretung', self.start_status_auswertung_local),
             ('pushButton_start_einsatzauswertung', self.start_einsatzauswertung),
             ('pushButton_testmode', self.activate_testmode),
-            ('pushButton_safe_settings_funkrufname', self.safe_settings_funkrufname),
-            ('pushButton_safe_setting_fahrzeuge', self.safe_setting_fahrzeuge),
-            ('pushButton_safe_settings_token', self.safe_settings_token),
-            ('pushButton_safe_settings_vpn_user', self.safe_settings_vpn_user),
-            ('pushButton_safe_settings_vpn_password', self.safe_settings_vpn_password),
-            ('pushButton_safe_settings_vpn_config', self.safe_settings_vpn_config),
-            ('pushButton_safe_settings_wachendisplay_url', self.safe_settings_wachendisplay_url),
-            ('pushButton_safe_wachendisplay_contend_id', self.safe_wachendisplay_contend_id),
-            ('pushButton_safe_ettings_wachendisplay_user', self.safe_settings_wachendisplay_user),
-            ('pushButton_safe_wachendisplay_password', self.safe_wachendisplay_password),
-            ('pushButton_safe_headless_browser', self.safe_headless_browser),
-            ('pushButton_safe_autostart', self.safe_autostart),
+            ('pushButton_safe_settings_allgemein', self.safe_settings_allgemein),
+            ('pushButton_safe_settings_vpn', self.safe_settings_vpn),
+            ('pushButton_safe_settings_wachendisplay', self.settings_wachendisplay),
+            ('pushButton_safe_settings_email', self.safe_settings_email),
+            ('pushButton_safe_settings_alltokens', self.safe_settings_alltokens),
             ('pushButton_settings_gennerat_cookie', self.generate_cookie),
-            ('pushButton_settings_safe_email_user', self.safe_email_user),
-            ('pushButton_settings_safe_email_password', self.safe_email_password),
-            ('pushButton_settings_safe_email_server', self.safe_email_server),
-            ('pushButton_settings_safe_kdo_alarm', self.safe_kdo_ric),
-            ('pushButton_settings_safe_dag_alternative', self.safe_dag_alternativ),
-            ('pushButton_safe_settings_token_test', self.safe_settings_token_test),
-            ('pushButton_safe_settings_token_abt1', self.safe_settings_token_abt1),
-            ('pushButton_safe_settings_token_abt2', self.safe_settings_token_abt2),
-            ('pushButton_safe_settings_token_abt3', self.safe_settings_token_abt3),
-            ('pushButton_safe_settings_token_abt4', self.safe_settings_token_abt4),
-            ('pushButton_safe_settings_token_abt5', self.safe_settings_token_abt5),
-            ('pushButton_safe_settings_token_abt6', self.safe_settings_token_abt6),
             ('pushButton_browse_settings_vpn_config', self.browse_settings_vpn_config),
             ('pushButton_help_settings_funkrufname', help_settings_funkrufname),
             ('pushButton_help_setting_fahrzeuge', help_setting_fahrzeuge),
@@ -226,6 +232,8 @@ class MainWindow(QtWidgets.QMainWindow):
             ('pushButton_open_log_crawler', self.open_crawler_log),
             ('pushButton_open_log_vpn', self.open_ovpn_log),
             ('pushButton_open_log_em', self.open_em_log)
+
+            
         ]
 
         # Verbinde die Buttons mit ihren Methoden
@@ -294,7 +302,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def safe_settings(self, setting_name, setting_value):
         database.update_config(setting_name, setting_value.strip())
-        self.safe_success(setting_value)
+        #self.safe_success(setting_value)
 
     def update_setting_with_validation(self, setting_name, setting_value, regex_pattern, error_message):
         if re.match(regex_pattern, setting_value):
@@ -309,144 +317,156 @@ class MainWindow(QtWidgets.QMainWindow):
         msg.setText(message)
         msg.exec()
 
-    def safe_settings_funkrufname(self):
+    def safe_success(self, einstellung):
+        msg = QMessageBox()
+        msg.setWindowTitle("Erfolgreich gespeichert")
+        msg.setText(f"Die Einstellung {einstellung} wurde erfolgreich gespeichert!")
+        msg.setIcon(QMessageBox.Icon.Information)
+        msg.exec()
+
+
+
+    def safe_settings_allgemein(self):
+        # Mapping für allgemeine Einstellungen
+        settings_mapping = {
+            "autostart": self.ui.comboBox,
+        }
+        # Speichern der allgemeinen Einstellungen
+        for key, ui_element in settings_mapping.items():
+            input_to_save = ui_element.currentText()
+            self.safe_settings(key, input_to_save)
+        # Spezielle Validierung für Funkrufname
         set_funkrufname = self.ui.lineEdit_settings_funkrufname.text()
         regex_pattern = "^[A-Z][A-Z]-[A-Z][A-Z]$"
         error_message = "Bitte den Funkrufnamen nach dieser Syntax eingeben: <br><b> FL-BS</b>"
         self.update_setting_with_validation("funkrufname", set_funkrufname, regex_pattern, error_message)
         if re.match(regex_pattern, set_funkrufname):
             self.safe_settings("fw_kurz", set_funkrufname.split("-")[1])
-
-    def safe_setting_fahrzeuge(self):
+        # Spezielle Behandlung für Fahrzeugliste
         set_fahrzeuge = str(self.ui.textEdit_fahrzeuge.toMarkdown())
         fahrzeuge_list = set_fahrzeuge.split("\n\n")
         fahrzeuge_list_clean = [feld.strip() for feld in fahrzeuge_list if feld != '']
         database.safe_status_fahrzeuge(fahrzeuge_list_clean)
-        self.safe_success("Fahrzeugliste")
 
-    def safe_settings_token(self):
-        set_token = self.ui.lineEdit_settings_token.text()
-        self.safe_settings("connect_api_fahrzeuge", set_token)
+        self.safe_success("Allgemeine Einstellungen")
 
-    def safe_settings_vpn_user(self):
-        set_vpn_user = self.ui.lineEdit_settings_vpn_user.text()
-        self.safe_settings("ovpn_user", set_vpn_user)
-        self.update_vpn_pass_file()
 
-    def safe_settings_vpn_password(self):
-        set_vpn_password = self.ui.lineEdit_settings_vpn_password.text()
-        self.safe_settings("ovpn_passwort", set_vpn_password)
-        self.update_vpn_pass_file()
+    def safe_settings_vpn(self):
+        settings_mapping = {
+            "ovpn_user": self.ui.lineEdit_settings_vpn_user,
+            "ovpn_passwort": self.ui.lineEdit_settings_vpn_password,
+        }
+
+        # Allgemeine Einstellungen
+        for key, ui_element in settings_mapping.items():
+            input_to_save = ui_element.text()
+            self.safe_settings(key, input_to_save)
+            self.update_vpn_pass_file()
+
+        # Spezielle Validierung für die VPN-Konfigurationsdatei
+        safe_settings_vpn_config_path = self.ui.lineEdit_settings_vpn_config.text()
+        _, filename = os.path.split(safe_settings_vpn_config_path)
+        file_root, file_ext = os.path.splitext(filename)
+
+        if file_ext.lower() == '.ovpn':
+            if os.path.isabs(safe_settings_vpn_config_path):
+                try:
+                    shutil.copy2(safe_settings_vpn_config_path, config_path)
+                    self.ui.lineEdit_settings_vpn_config.setText(filename)
+                    self.safe_settings("openvpn_config", filename)
+                except:
+                    self.show_error_message("Fehler", "Die Einstellung konnte nicht gespeichert werden.")
+        else:
+            self.show_error_message("Fehler",
+                                    "Die Einstellung konnte nicht gespeichert werden, da der Dateiname nicht auf .ovpn endet.")
+
+        self.safe_success("VPN Einstellungen")
+
 
     def update_vpn_pass_file(self):
         with open(pass_file_vpn, "w", encoding="utf-8") as file:
             file.write(database.select_config("ovpn_user") + "\n" + database.select_config("ovpn_passwort"))
 
-    def safe_settings_vpn_config(self):
-        safe_settings_vpn_config_path = self.ui.lineEdit_settings_vpn_config.text()
-        if "/" in safe_settings_vpn_config_path:
-            try:
-                shutil.copy2(safe_settings_vpn_config_path, config_path)
-                _, filename = os.path.split(safe_settings_vpn_config_path)
-                self.ui.lineEdit_settings_vpn_config.setText(filename)
-                self.safe_settings("openvpn_config", filename)
-            except:
-                self.show_error_message("Fehler", "Die Einstellung konnte nicht gespeichert werden.")
-        else:
-            self.show_error_message("Fehler",
-                                    "Die Einstellung konnte nicht gespeichert werden, da der Eingabetext nicht einem absoluten Pfad entspricht.")
+    def browse_settings_vpn_config(self):
+        filepath, _ = QFileDialog.getOpenFileName(self, 'Öffne Datei', '', 'All files ()')
+        if filepath:
+            self.ui.lineEdit_settings_vpn_config.setText(filepath)
 
-    def safe_settings_wachendisplay_url(self):
+
+    def settings_wachendisplay(self):
+        settings_mapping = {
+            "wachendisplay_content_id": self.ui.lineEdit_wachendisplay_contend_id,
+            "user_wachendisplay": self.ui.lineEdit_settings_wachendisplay_user,
+            "passwort_wachendisplay": self.ui.lineEdit_wachendisplay_password,
+            "headless_browser": self.ui.comboBox_settings_headless_browser,
+        }
+
+        # Spezielle Validierung für die URL
         safe_settings_wachendisplay_url = self.ui.lineEdit_settings_wachendisplay_url.text()
         regex_pattern = "^http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}/$"
         error_message = "Bitte die URL nach dieser Syntax eingeben: <br><b> http://172.16.24.3:8080/</b>"
-        self.update_setting_with_validation("url_wachendisplay", safe_settings_wachendisplay_url, regex_pattern,
-                                            error_message)
+        self.update_setting_with_validation("url_wachendisplay", safe_settings_wachendisplay_url, regex_pattern, error_message)
 
-    def safe_wachendisplay_contend_id(self):
-        safe_settings_wachendisplay_content_id = self.ui.lineEdit_wachendisplay_contend_id.text()
-        self.safe_settings("wachendisplay_content_id", safe_settings_wachendisplay_content_id)
+        # Allgemeine Einstellungen
+        for key, ui_element in settings_mapping.items():
+            input_to_save = ui_element.text() if hasattr(ui_element, 'text') else ui_element.currentText()
+            self.safe_settings(key, input_to_save)
 
-    def safe_settings_wachendisplay_user(self):
-        safe_settings_wachendisplay_user = self.ui.lineEdit_settings_wachendisplay_user.text()
-        self.safe_settings("user_wachendisplay", safe_settings_wachendisplay_user)
+        self.safe_success("Wachendisplay Einstellungen")
 
-    def safe_wachendisplay_password(self):
-        safe_settings_wachendisplay_passwort = self.ui.lineEdit_wachendisplay_password.text()
-        self.safe_settings("passwort_wachendisplay", safe_settings_wachendisplay_passwort)
 
-    def safe_headless_browser(self):
-        safe_headless_browser = self.ui.comboBox_settings_headless_browser.currentText()
-        self.safe_settings("headless_browser", safe_headless_browser)
+    def safe_settings_email(self):
+        settings_mapping = {
+            "email_username": self.ui.lineEdit_setting_email_user,
+            "email_password": self.ui.lineEdit_settings_email_password,
+            "email_server": self.ui.lineEdit_setings_email_server,
+            "kdo_alarm": self.ui.lineEdit_settings_kdo_alarm,
+            "dag_alternativ": self.ui.lineEdit_settings_dag_alternative,
+        }
 
-    def safe_autostart(self):
-        safe_autostart = self.ui.comboBox.currentText()
-        self.safe_settings("autostart", safe_autostart)
+        for key, line_edit in settings_mapping.items():
+            input_to_safe = line_edit.text()
+    
+            if key == "email_server":
+                regex_pattern = "^[A-Za-z0-9]+.[A-Za-z0-9]+.[A-Za-z0-9]{1,4}$"
+                error_message = "Bitte die Server-URL nach dieser Syntax eingeben, ohne http(s) oder /: <br><b>imap.serverdomain.org</b>"
+                self.update_setting_with_validation(key, input_to_safe, regex_pattern, error_message)
+            else:
 
-    def safe_email_user(self):
-        input_to_safe = self.ui.lineEdit_setting_email_user.text()
-        self.safe_settings("email_username", input_to_safe)
+                self.safe_settings(key, input_to_safe)
 
-    def safe_email_password(self):
-        input_to_safe = self.ui.lineEdit_settings_email_password.text()
-        self.safe_settings("email_password", input_to_safe)
+        self.safe_success("E-Mail Einstellungen")
 
-    def safe_email_server(self):
-        input_to_safe = self.ui.lineEdit_setings_email_server.text()
-        regex_pattern = "^[A-Za-z0-9]+.[A-Za-z0-9]+.[A-Za-z0-9]{1,4}$"
-        error_message = "Bitte die Server-URL nach dieser Syntax eingeben, ohne http(s) oder /: <br><b>imap.serverdomain.org</b>"
-        self.update_setting_with_validation("email_server", input_to_safe, regex_pattern, error_message)
+    def safe_settings_alltokens(self):
+        settings_mapping = {
+            "connect_api_fahrzeuge": self.ui.lineEdit_settings_token,
+            "token_test": self.ui.lineEdit_settings_token_test,
+            "token_abt1": self.ui.lineEdit_settings_token_abt1,
+            "token_abt2": self.ui.lineEdit_settings_token_abt2,
+            "fahrzeuge_abt2": self.ui.lineEdit_settings_fahrzeuge_abt2,
+            "token_abt3": self.ui.lineEdit_settings_token_abt3,
+            "fahrzeuge_abt3": self.ui.lineEdit_settings_fahrzeuge_abt3,
+            "token_abt4": self.ui.lineEdit_settings_token_abt4,
+            "fahrzeuge_abt4": self.ui.lineEdit_settings_fahrzeuge_abt4,
+            "token_abt5": self.ui.lineEdit_settings_token_abt5,
+            "fahrzeuge_abt5": self.ui.lineEdit_settings_fahrzeuge_abt5,
+            "token_abt6": self.ui.lineEdit_settings_token_abt6,
+            "fahrzeuge_abt6": self.ui.lineEdit_settings_fahrzeuge_abt6,
+        }
 
-    def safe_kdo_ric(self):
-        input_to_safe = self.ui.lineEdit_settings_kdo_alarm.text()
-        self.safe_settings("kdo_alarm", input_to_safe)
+        for key, widget in settings_mapping.items():
+            if isinstance(widget, QLineEdit):
+                input_to_safe = widget.text()
+            elif isinstance(widget, QTextEdit):
+                input_to_safe = widget.toPlainText()
+            else:
+                continue  # Überspringen, wenn der Widget-Typ nicht unterstützt wird
 
-    def safe_dag_alternativ(self):
-        input_to_safe = self.ui.lineEdit_settings_dag_alternative.text()
-        self.safe_settings("dag_alternativ", input_to_safe)
 
-    def safe_settings_token_test(self):
-        input_to_safe = self.ui.lineEdit_settings_token_test.text()
-        self.safe_settings("token_test", input_to_safe)
+            self.safe_settings(key, input_to_safe)
 
-    def safe_settings_token_abt1(self):
-        input_to_safe = self.ui.lineEdit_settings_token_abt1.text()
-        self.safe_settings("token_abt1", input_to_safe)
+        self.safe_success("Tokens")
 
-    def safe_settings_token_abt2(self):
-        input_to_safe = self.ui.lineEdit_settings_token_abt2.text()
-        self.safe_settings("token_abt2", input_to_safe)
-        input_to_safe_fahrzeuge = self.ui.lineEdit_settings_fahrzeuge_abt2.text()
-        self.safe_settings("fahrzeuge_abt2", input_to_safe_fahrzeuge)
-
-    def safe_settings_token_abt3(self):
-        input_to_safe = self.ui.lineEdit_settings_token_abt3.text()
-        self.safe_settings("token_abt3", input_to_safe)
-        input_to_safe_fahrzeuge = self.ui.lineEdit_settings_fahrzeuge_abt3.text()
-        self.safe_settings("fahrzeuge_abt3", input_to_safe_fahrzeuge)
-
-    def safe_settings_token_abt4(self):
-        input_to_safe = self.ui.lineEdit_settings_token_abt4.text()
-        self.safe_settings("token_abt4", input_to_safe)
-        input_to_safe_fahrzeuge = self.ui.lineEdit_settings_fahrzeuge_abt4.text()
-        self.safe_settings("fahrzeuge_abt4", input_to_safe_fahrzeuge)
-
-    def safe_settings_token_abt5(self):
-        input_to_safe = self.ui.lineEdit_settings_token_abt5.text()
-        self.safe_settings("token_abt5", input_to_safe)
-        input_to_safe_fahrzeuge = self.ui.lineEdit_settings_fahrzeuge_abt5.text()
-        self.safe_settings("fahrzeuge_abt5", input_to_safe_fahrzeuge)
-
-    def safe_settings_token_abt6(self):
-        input_to_safe = self.ui.lineEdit_settings_token_abt6.text()
-        self.safe_settings("token_abt6", input_to_safe)
-        input_to_safe_fahrzeuge = self.ui.lineEdit_settings_fahrzeuge_abt6.text()
-        self.safe_settings("fahrzeuge_abt6", input_to_safe_fahrzeuge)
-
-    def browse_settings_vpn_config(self):
-        filepath, _ = QFileDialog.getOpenFileName(self, 'Öffne Datei', '', 'Config (.ovpn);;All files ()')
-        if filepath:
-            self.ui.lineEdit_settings_vpn_config.setText(filepath)
 
     # methode um die Cookies zu gennerieren:
     def generate_cookie(self):
@@ -566,13 +586,6 @@ class MainWindow(QtWidgets.QMainWindow):
     def check_prozess(self, prozessname):
         return any(proc.name() == prozessname for proc in psutil.process_iter())
 
-    def safe_success(self, einstellung):
-        msg = QMessageBox()
-        msg.setWindowTitle("Erfolgreich gespeichert")
-        msg.setText(f"Die Einstellung {einstellung} wurde erfolgreich gespeichert!")
-        msg.setIcon(QMessageBox.Icon.Information)
-        msg.exec()
-
 
     def set_led(self, button, status):
         if status == 'loading':
@@ -672,8 +685,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 version = match.group(1).replace(',', '.')
                 return version
         return None
-
-
 
 try:
     window = MainWindow()

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>674</width>
-    <height>736</height>
+    <height>634</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -650,23 +650,85 @@
            <enum>QFrame::Sunken</enum>
           </property>
           <property name="currentIndex">
-           <number>3</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="AllgemeineEinstellungen">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>340</width>
-             <height>150</height>
+             <width>628</width>
+             <height>277</height>
             </rect>
            </property>
            <attribute name="label">
             <string>1. Allgemeine Einstellungen:</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_6">
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_settings_funkrufname">
+            <item row="3" column="2">
+             <widget class="QTextEdit" name="textEdit_fahrzeuge">
+              <property name="placeholderText">
+               <string>FL-BS 1/10</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="2">
+             <spacer name="verticalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="0" column="3">
+             <widget class="QPushButton" name="pushButton_safe_settings_allgemein">
+              <property name="styleSheet">
+               <string notr="true">QPushButton {
+    font-weight: bold;
+    background-color: #fb0006;
+    color: white;
+    border: 2px solid #a0a0a0a0;
+    padding: 4px 8px;
+    text-align: center;
+    border-radius: 8px;
+}
+QPushButton:hover {
+    background-color: #ae0004;
+	border: 2px solid #202123;
+}
+</string>
+              </property>
+              <property name="text">
+               <string>Speichern</string>
+              </property>
+              <property name="checkable">
+               <bool>false</bool>
+              </property>
+              <property name="autoDefault">
+               <bool>false</bool>
+              </property>
+              <property name="default">
+               <bool>false</bool>
+              </property>
+              <property name="flat">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="Autostart">
+              <property name="text">
+               <string>Autostart:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_setting_fahrzeuge">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -674,11 +736,57 @@
                </sizepolicy>
               </property>
               <property name="text">
+               <string>Fahrzeuge:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0" colspan="3">
+             <widget class="QLabel" name="label_33">
+              <property name="font">
+               <font>
+                <family>MS Shell Dlg 2</family>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>1. Einstellungen Allgemein</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_settings_funkrufname">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>93</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
                <string>Funkrufname:</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="3">
+            <item row="4" column="2">
+             <widget class="QComboBox" name="comboBox">
+              <item>
+               <property name="text">
+                <string>Nein</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Ja</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="1" column="1">
              <widget class="QPushButton" name="pushButton_help_settings_funkrufname">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -694,19 +802,54 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>16777215</width>
-                <height>30</height>
+                <width>16</width>
+                <height>16</height>
                </size>
               </property>
               <property name="text">
-               <string>Hilfe</string>
+               <string/>
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
-             <widget class="QTextEdit" name="textEdit_fahrzeuge"/>
+            <item row="3" column="1">
+             <widget class="QPushButton" name="pushButton_help_setting_fahrzeuge">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
             </item>
-            <item row="0" column="1">
+            <item row="4" column="1">
+             <widget class="QPushButton" name="pushButton_help_autostart">
+              <property name="maximumSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
              <widget class="QLineEdit" name="lineEdit_settings_funkrufname">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -726,141 +869,8 @@
                 <height>16777215</height>
                </size>
               </property>
-             </widget>
-            </item>
-            <item row="1" column="3">
-             <widget class="QPushButton" name="pushButton_help_setting_fahrzeuge">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Hilfe</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="1">
-             <spacer name="verticalSpacer_2">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="1" column="2">
-             <widget class="QPushButton" name="pushButton_safe_setting_fahrzeuge">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Speichern</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_setting_fahrzeuge">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Fahrzeuge:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="2">
-             <widget class="QPushButton" name="pushButton_safe_settings_funkrufname">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Speichern</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QComboBox" name="comboBox">
-              <item>
-               <property name="text">
-                <string>Nein</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Ja</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="Autostart">
-              <property name="text">
-               <string>Autostart:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="2">
-             <widget class="QPushButton" name="pushButton_safe_autostart">
-              <property name="text">
-               <string>Speichern</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="3">
-             <widget class="QPushButton" name="pushButton_help_autostart">
-              <property name="text">
-               <string>Hilfe</string>
+              <property name="placeholderText">
+               <string>FL-BS</string>
               </property>
              </widget>
             </item>
@@ -871,40 +881,38 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>355</width>
-             <height>102</height>
+             <width>628</width>
+             <height>277</height>
             </rect>
            </property>
            <attribute name="label">
             <string>2. OpenVPN:</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_7">
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_settings_vpn_user">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>16777215</height>
-               </size>
+            <item row="0" column="4">
+             <widget class="QPushButton" name="pushButton_safe_settings_vpn">
+              <property name="styleSheet">
+               <string notr="true">QPushButton {
+    font-weight: bold;
+    background-color: #fb0006;
+    color: white;
+    border: 2px solid #a0a0a0a0;
+    padding: 4px 8px;
+    text-align: center;
+    border-radius: 8px;
+}
+QPushButton:hover {
+    background-color: #ae0004;
+	border: 2px solid #202123;
+}
+</string>
               </property>
               <property name="text">
-               <string>Benutzer:</string>
+               <string>Speichern</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
+            <item row="2" column="2">
              <widget class="QLineEdit" name="lineEdit_settings_vpn_password">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -924,59 +932,12 @@
                 <height>16777215</height>
                </size>
               </property>
-             </widget>
-            </item>
-            <item row="0" column="3">
-             <widget class="QPushButton" name="pushButton_safe_settings_vpn_user">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Speichern</string>
+              <property name="placeholderText">
+               <string>*************</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="4">
-             <widget class="QPushButton" name="pushButton_help_settings_vpn_password">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Hilfe</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="2">
+            <item row="3" column="3">
              <widget class="QPushButton" name="pushButton_browse_settings_vpn_config">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -1001,20 +962,7 @@
               </property>
              </widget>
             </item>
-            <item row="3" column="1">
-             <spacer name="verticalSpacer_3">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="1" column="0">
+            <item row="2" column="0">
              <widget class="QLabel" name="label_settings_vpn_password">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -1039,7 +987,7 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
+            <item row="1" column="2">
              <widget class="QLineEdit" name="lineEdit_settings_vpn_user">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -1059,40 +1007,25 @@
                 <height>16777215</height>
                </size>
               </property>
-             </widget>
-            </item>
-            <item row="0" column="4">
-             <widget class="QPushButton" name="pushButton_help_settings_vpn_user">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="baseSize">
-               <size>
-                <width>80</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Hilfe</string>
+              <property name="placeholderText">
+               <string>Benutzername</string>
               </property>
              </widget>
             </item>
-            <item row="2" column="1">
+            <item row="4" column="2">
+             <spacer name="verticalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="3" column="2">
              <widget class="QLineEdit" name="lineEdit_settings_vpn_config">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -1112,10 +1045,13 @@
                 <height>16777215</height>
                </size>
               </property>
+              <property name="placeholderText">
+               <string>benutzername@vpn.ils-wt.de.ovpn</string>
+              </property>
              </widget>
             </item>
-            <item row="1" column="3">
-             <widget class="QPushButton" name="pushButton_safe_settings_vpn_password">
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_settings_vpn_user">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -1131,16 +1067,54 @@
               <property name="maximumSize">
                <size>
                 <width>16777215</width>
-                <height>30</height>
+                <height>16777215</height>
                </size>
               </property>
               <property name="text">
-               <string>Speichern</string>
+               <string>Benutzer:</string>
               </property>
              </widget>
             </item>
-            <item row="2" column="3">
-             <widget class="QPushButton" name="pushButton_safe_settings_vpn_config">
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_settings_vpn_config">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>93</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Pfad zur  Config: </string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0" colspan="3">
+             <widget class="QLabel" name="label_32">
+              <property name="font">
+               <font>
+                <family>MS Shell Dlg 2</family>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>2. Einstellungen OpenVPN:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QPushButton" name="pushButton_help_settings_vpn_user">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -1155,16 +1129,47 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>16777215</width>
-                <height>30</height>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="baseSize">
+               <size>
+                <width>80</width>
+                <height>0</height>
                </size>
               </property>
               <property name="text">
-               <string>Speichern</string>
+               <string/>
               </property>
              </widget>
             </item>
-            <item row="2" column="4">
+            <item row="2" column="1">
+             <widget class="QPushButton" name="pushButton_help_settings_vpn_password">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
              <widget class="QPushButton" name="pushButton_help_settings_vpn_config">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -1180,37 +1185,12 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>16777215</width>
-                <height>30</height>
+                <width>16</width>
+                <height>16</height>
                </size>
               </property>
               <property name="text">
-               <string>Hilfe</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_settings_vpn_config">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Pfad zur  Config: </string>
+               <string/>
               </property>
              </widget>
             </item>
@@ -1221,37 +1201,15 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>425</width>
-             <height>215</height>
+             <width>628</width>
+             <height>277</height>
             </rect>
            </property>
            <attribute name="label">
             <string>3. Wachendisplay</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_8">
-            <item row="1" column="1">
-             <widget class="QLineEdit" name="lineEdit_wachendisplay_contend_id">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>16777215</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
+            <item row="3" column="2">
              <widget class="QLineEdit" name="lineEdit_settings_wachendisplay_user">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -1271,92 +1229,13 @@
                 <height>16777215</height>
                </size>
               </property>
-             </widget>
-            </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="label_settings_wachendisplay_password">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Passwort:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="8" column="0" colspan="4">
-             <widget class="QLabel" name="label_4">
-              <property name="text">
-               <string>Cookies gennerieren (dauert einige Sekunden):</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="2">
-             <widget class="QPushButton" name="pushButton_safe_settings_wachendisplay_url">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Speichern</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="2">
-             <widget class="QPushButton" name="pushButton_safe_wachendisplay_password">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Speichern</string>
+              <property name="placeholderText">
+               <string>wd-benutzername</string>
               </property>
              </widget>
             </item>
             <item row="1" column="0">
-             <widget class="QLabel" name="label_settings_wachendisplay_contend_id">
+             <widget class="QLabel" name="label_settings_wachendisplay_url">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -1376,58 +1255,11 @@
                </size>
               </property>
               <property name="text">
-               <string>ContendID:</string>
+               <string>URL:</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="2">
-             <widget class="QPushButton" name="pushButton_safe_wachendisplay_contend_id">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Speichern</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="1">
-             <widget class="QLineEdit" name="lineEdit_wachendisplay_password">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>16777215</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item row="10" column="1">
+            <item row="11" column="2">
              <spacer name="verticalSpacer_4">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
@@ -1440,15 +1272,8 @@
               </property>
              </spacer>
             </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="label_3">
-              <property name="text">
-               <string>Headless:</string>
-              </property>
-             </widget>
-            </item>
             <item row="2" column="2">
-             <widget class="QPushButton" name="pushButton_safe_ettings_wachendisplay_user">
+             <widget class="QLineEdit" name="lineEdit_wachendisplay_contend_id">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -1464,15 +1289,54 @@
               <property name="maximumSize">
                <size>
                 <width>16777215</width>
-                <height>30</height>
+                <height>16777215</height>
                </size>
               </property>
-              <property name="text">
-               <string>Speichern</string>
+              <property name="placeholderText">
+               <string>Feuerwehr Bad Säckingen</string>
               </property>
              </widget>
             </item>
-            <item row="2" column="0">
+            <item row="10" column="0" colspan="4">
+             <widget class="QPushButton" name="pushButton_settings_gennerat_cookie">
+              <property name="text">
+               <string>Cookies gennerieren!</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="label_3">
+              <property name="text">
+               <string>Headless:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QLineEdit" name="lineEdit_settings_wachendisplay_url">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="placeholderText">
+               <string>http://172.16.24.3:8080/</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
              <widget class="QLabel" name="label_settings_wachendisplay_user">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -1509,40 +1373,44 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="3">
-             <widget class="QPushButton" name="pushButton_help_wachendisplay_contend_id">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>30</height>
-               </size>
+            <item row="0" column="0" colspan="3">
+             <widget class="QLabel" name="label_31">
+              <property name="font">
+               <font>
+                <family>MS Shell Dlg 2</family>
+                <bold>true</bold>
+               </font>
               </property>
               <property name="text">
-               <string>Hilfe</string>
+               <string>3.1 Einstellungen Wachendisplay</string>
               </property>
              </widget>
             </item>
-            <item row="4" column="2">
-             <widget class="QPushButton" name="pushButton_safe_headless_browser">
+            <item row="0" column="3">
+             <widget class="QPushButton" name="pushButton_safe_settings_wachendisplay">
+              <property name="styleSheet">
+               <string notr="true">QPushButton {
+    font-weight: bold;
+    background-color: #fb0006;
+    color: white;
+    border: 2px solid #a0a0a0a0;
+    padding: 4px 8px;
+    text-align: center;
+    border-radius: 8px;
+}
+QPushButton:hover {
+    background-color: #ae0004;
+	border: 2px solid #202123;
+}
+</string>
+              </property>
               <property name="text">
                <string>Speichern</string>
               </property>
              </widget>
             </item>
-            <item row="3" column="3">
-             <widget class="QPushButton" name="pushButton_help_wachendisplay_password">
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_settings_wachendisplay_contend_id">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -1551,69 +1419,30 @@
               </property>
               <property name="minimumSize">
                <size>
-                <width>0</width>
+                <width>93</width>
                 <height>0</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
                 <width>16777215</width>
-                <height>30</height>
+                <height>16777215</height>
                </size>
               </property>
               <property name="text">
-               <string>Hilfe</string>
+               <string>ContendID:</string>
               </property>
              </widget>
             </item>
-            <item row="2" column="3">
-             <widget class="QPushButton" name="pushButton_help_settings_wachendisplay_user">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Hilfe</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="1">
-             <widget class="QComboBox" name="comboBox_settings_headless_browser">
-              <item>
-               <property name="text">
-                <string>Nein (Browser sichtbar)</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Ja(Browser nicht sichtbar)</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-            <item row="7" column="0" colspan="4">
+            <item row="8" column="0" colspan="4">
              <widget class="Line" name="line_2">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
              </widget>
             </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_settings_wachendisplay_url">
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_settings_wachendisplay_password">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -1633,11 +1462,63 @@
                </size>
               </property>
               <property name="text">
-               <string>URL:</string>
+               <string>Passwort:</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="3">
+            <item row="4" column="2">
+             <widget class="QLineEdit" name="lineEdit_wachendisplay_password">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="placeholderText">
+               <string>*************</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="2">
+             <widget class="QComboBox" name="comboBox_settings_headless_browser">
+              <item>
+               <property name="text">
+                <string>Nein (Browser sichtbar)</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Ja(Browser nicht sichtbar)</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="9" column="0" colspan="4">
+             <widget class="QLabel" name="label_4">
+              <property name="font">
+               <font>
+                <family>MS Shell Dlg 2</family>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>3.1 Cookies gennerieren (dauert einige Sekunden):</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
              <widget class="QPushButton" name="pushButton_help_settings_wachendisplay_url">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -1653,19 +1534,19 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>16777215</width>
-                <height>30</height>
+                <width>16</width>
+                <height>16</height>
                </size>
               </property>
               <property name="text">
-               <string>Hilfe</string>
+               <string/>
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
-             <widget class="QLineEdit" name="lineEdit_settings_wachendisplay_url">
+            <item row="2" column="1">
+             <widget class="QPushButton" name="pushButton_help_wachendisplay_contend_id">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -1678,16 +1559,62 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>16777215</width>
-                <height>16777215</height>
+                <width>16</width>
+                <height>16</height>
                </size>
+              </property>
+              <property name="text">
+               <string/>
               </property>
              </widget>
             </item>
-            <item row="9" column="0" colspan="4">
-             <widget class="QPushButton" name="pushButton_settings_gennerat_cookie">
+            <item row="3" column="1">
+             <widget class="QPushButton" name="pushButton_help_settings_wachendisplay_user">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
               <property name="text">
-               <string>Cookies gennerieren!</string>
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QPushButton" name="pushButton_help_wachendisplay_password">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
               </property>
              </widget>
             </item>
@@ -1698,8 +1625,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>630</width>
-             <height>383</height>
+             <width>628</width>
+             <height>277</height>
             </rect>
            </property>
            <property name="whatsThis">
@@ -1712,127 +1639,119 @@
             <string>4. E-Mail Postfach und Alarmauswertung</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_4">
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_5">
-              <property name="text">
-               <string>E-Mail Benutzer:</string>
+            <item row="5" column="2">
+             <widget class="QLineEdit" name="lineEdit_settings_dag_alternative">
+              <property name="placeholderText">
+               <string>KLEIN</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
-             <widget class="QLineEdit" name="lineEdit_setting_email_user"/>
-            </item>
-            <item row="0" column="2">
-             <widget class="QPushButton" name="pushButton_settings_safe_email_user">
-              <property name="text">
-               <string>Speichern</string>
+            <item row="4" column="2">
+             <widget class="QLineEdit" name="lineEdit_settings_kdo_alarm">
+              <property name="placeholderText">
+               <string>KDO-BadSäckingen-DAG</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="3">
-             <widget class="QPushButton" name="pushButton_settings_help_email_user">
-              <property name="text">
-               <string>Hilfe</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_6">
-              <property name="text">
-               <string>E-Mail Passwort: </string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QLineEdit" name="lineEdit_settings_email_password"/>
-            </item>
-            <item row="1" column="2">
-             <widget class="QPushButton" name="pushButton_settings_safe_email_password">
-              <property name="text">
-               <string>Speichern</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="3">
-             <widget class="QPushButton" name="pushButton_settings_help_email_password">
-              <property name="text">
-               <string>Hilfe</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_7">
-              <property name="text">
-               <string>E-Mail Server: </string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QLineEdit" name="lineEdit_setings_email_server"/>
-            </item>
-            <item row="2" column="2">
-             <widget class="QPushButton" name="pushButton_settings_safe_email_server">
-              <property name="text">
-               <string>Speichern</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="3">
-             <widget class="QPushButton" name="pushButton_settings_help_email_server">
-              <property name="text">
-               <string>Hilfe</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="0">
+            <item row="4" column="0">
              <widget class="QLabel" name="label_8">
               <property name="text">
                <string>KDO-Alarm RIC: </string>
               </property>
              </widget>
             </item>
-            <item row="3" column="1">
-             <widget class="QLineEdit" name="lineEdit_settings_kdo_alarm"/>
-            </item>
             <item row="3" column="2">
-             <widget class="QPushButton" name="pushButton_settings_safe_kdo_alarm">
+             <widget class="QLineEdit" name="lineEdit_setings_email_server">
+              <property name="placeholderText">
+               <string>https://mail.serverdomain.org</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_6">
+              <property name="text">
+               <string>E-Mail Passwort: </string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0" colspan="3">
+             <widget class="QLabel" name="label_30">
+              <property name="font">
+               <font>
+                <family>MS Shell Dlg 2</family>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>4. Einstellungen E-Mail Postfach und Alarmauswertung:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="3">
+             <widget class="QPushButton" name="pushButton_safe_settings_email">
+              <property name="styleSheet">
+               <string notr="true">QPushButton {
+    font-weight: bold;
+    background-color: #fb0006;
+    color: white;
+    border: 2px solid #a0a0a0a0;
+    padding: 4px 8px;
+    text-align: center;
+    border-radius: 8px;
+}
+QPushButton:hover {
+    background-color: #ae0004;
+	border: 2px solid #202123;
+}
+</string>
+              </property>
               <property name="text">
                <string>Speichern</string>
               </property>
              </widget>
             </item>
-            <item row="3" column="3">
-             <widget class="QPushButton" name="pushButton_settings_help_kdo_alarm">
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_5">
+              <property name="minimumSize">
+               <size>
+                <width>93</width>
+                <height>0</height>
+               </size>
+              </property>
               <property name="text">
-               <string>Hilfe</string>
+               <string>E-Mail Benutzer:</string>
               </property>
              </widget>
             </item>
-            <item row="4" column="0">
+            <item row="5" column="0">
              <widget class="QLabel" name="label_9">
               <property name="text">
                <string>DAG Alternative</string>
               </property>
              </widget>
             </item>
-            <item row="4" column="1">
-             <widget class="QLineEdit" name="lineEdit_settings_dag_alternative"/>
-            </item>
-            <item row="4" column="2">
-             <widget class="QPushButton" name="pushButton_settings_safe_dag_alternative">
-              <property name="text">
-               <string>Speichern</string>
+            <item row="2" column="2">
+             <widget class="QLineEdit" name="lineEdit_settings_email_password">
+              <property name="placeholderText">
+               <string>*************</string>
               </property>
              </widget>
             </item>
-            <item row="4" column="3">
-             <widget class="QPushButton" name="pushButton_settings_help_dag_alternative">
-              <property name="text">
-               <string>Hilfe</string>
+            <item row="1" column="2">
+             <widget class="QLineEdit" name="lineEdit_setting_email_user">
+              <property name="placeholderText">
+               <string>Benutzername</string>
               </property>
              </widget>
             </item>
-            <item row="5" column="1">
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_7">
+              <property name="text">
+               <string>E-Mail Server: </string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="2">
              <spacer name="verticalSpacer">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
@@ -1845,6 +1764,71 @@
               </property>
              </spacer>
             </item>
+            <item row="1" column="1">
+             <widget class="QPushButton" name="pushButton_settings_help_email_user">
+              <property name="maximumSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QPushButton" name="pushButton_settings_help_email_password">
+              <property name="maximumSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QPushButton" name="pushButton_settings_help_email_server">
+              <property name="maximumSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QPushButton" name="pushButton_settings_help_kdo_alarm">
+              <property name="maximumSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QPushButton" name="pushButton_settings_help_dag_alternative">
+              <property name="maximumSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
            </layout>
           </widget>
           <widget class="QWidget" name="page_2">
@@ -1852,15 +1836,51 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>88</width>
-             <height>88</height>
+             <width>628</width>
+             <height>277</height>
             </rect>
            </property>
            <attribute name="label">
             <string>5. Feuersoftware Connect Tokens</string>
            </attribute>
-           <layout class="QGridLayout" name="gridLayout_11">
-            <item row="0" column="1">
+           <layout class="QGridLayout" name="gridLayout_34">
+            <item row="1" column="4">
+             <widget class="QPushButton" name="pushButton_safe_settings_alltokens">
+              <property name="styleSheet">
+               <string notr="true">QPushButton {
+    font-weight: bold;
+    background-color: #fb0006;
+    color: white;
+    border: 2px solid #a0a0a0a0;
+    padding: 4px 8px;
+    text-align: center;
+    border-radius: 8px;
+}
+QPushButton:hover {
+    background-color: #ae0004;
+	border: 2px solid #202123;
+}
+</string>
+              </property>
+              <property name="text">
+               <string>Speichern</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0" colspan="3">
+             <widget class="QLabel" name="label_34">
+              <property name="font">
+               <font>
+                <family>MS Shell Dlg 2</family>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>5. Einstellungen Connect Tokens (Feuersoftware)</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0" colspan="5">
              <widget class="QScrollArea" name="scrollArea">
               <property name="widgetResizable">
                <bool>true</bool>
@@ -1870,281 +1890,75 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>460</width>
-                 <height>762</height>
+                 <width>591</width>
+                 <height>1228</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_12">
-                <item row="6" column="0">
-                 <widget class="QGroupBox" name="groupBox_2">
-                  <property name="title">
-                   <string>Abteilung 1 (wird immer alarmiert):</string>
-                  </property>
-                  <layout class="QGridLayout" name="gridLayout_16">
-                   <item row="0" column="0">
-                    <layout class="QGridLayout" name="gridLayout_15">
-                     <item row="0" column="2">
-                      <widget class="QPushButton" name="pushButton_safe_settings_token_abt1">
-                       <property name="text">
-                        <string>Speichern</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="0">
-                      <widget class="QLabel" name="label_18">
-                       <property name="text">
-                        <string>Token:</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="1">
-                      <widget class="QLineEdit" name="lineEdit_settings_token_abt1"/>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-                <item row="7" column="0">
+                <item row="12" column="0">
                  <widget class="QGroupBox" name="groupBox_3">
                   <property name="title">
                    <string>Abteilung 2 (Alarm bei eigentragenen Fahrzeugen):</string>
                   </property>
-                  <layout class="QGridLayout" name="gridLayout_18">
-                   <item row="0" column="0">
-                    <layout class="QGridLayout" name="gridLayout_17">
-                     <item row="0" column="2">
-                      <widget class="QLineEdit" name="lineEdit_settings_token_abt2"/>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="label_20">
-                       <property name="text">
-                        <string>Fahrzeuge: </string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="3">
-                      <widget class="QPushButton" name="pushButton_safe_settings_token_abt2">
-                       <property name="text">
-                        <string>Speichern</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="0">
-                      <widget class="QLabel" name="label_17">
-                       <property name="text">
-                        <string>Token: </string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="2" colspan="2">
-                      <widget class="QLineEdit" name="lineEdit_settings_fahrzeuge_abt2"/>
-                     </item>
-                    </layout>
+                  <layout class="QGridLayout" name="gridLayout_11">
+                   <item row="3" column="0">
+                    <widget class="QLabel" name="label_20">
+                     <property name="text">
+                      <string>Fahrzeuge: </string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QLabel" name="label_17">
+                     <property name="text">
+                      <string>Token: </string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="1">
+                    <widget class="QTextEdit" name="lineEdit_settings_token_abt2">
+                     <property name="acceptRichText">
+                      <bool>false</bool>
+                     </property>
+                     <property name="placeholderText">
+                      <string>Token</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="1" rowspan="2">
+                    <widget class="QLineEdit" name="lineEdit_settings_fahrzeuge_abt2">
+                     <property name="placeholderText">
+                      <string>1/10;1/11;2/40</string>
+                     </property>
+                    </widget>
                    </item>
                   </layout>
                  </widget>
                 </item>
-                <item row="0" column="0">
-                 <layout class="QGridLayout" name="gridLayout_10">
-                  <item row="1" column="2">
-                   <widget class="QPushButton" name="pushButton_help_settings_token">
-                    <property name="text">
-                     <string>Hilfe</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QPushButton" name="pushButton_safe_settings_token">
-                    <property name="text">
-                     <string>Speichern</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QLineEdit" name="lineEdit_settings_token"/>
-                  </item>
-                  <item row="0" column="0" colspan="3">
-                   <widget class="QLabel" name="label_10">
-                    <property name="text">
-                     <string>5.1 Token der Organisations-API hinzufügen (Für den Fahrzeugstatus)</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-                <item row="10" column="0">
-                 <widget class="QGroupBox" name="groupBox_6">
-                  <property name="title">
-                   <string>Abteilung 5 (Alarm bei eigentragenen Fahrzeugen):</string>
-                  </property>
-                  <layout class="QGridLayout" name="gridLayout_24">
-                   <item row="0" column="0">
-                    <layout class="QGridLayout" name="gridLayout_23">
-                     <item row="0" column="3">
-                      <widget class="QPushButton" name="pushButton_safe_settings_token_abt5">
-                       <property name="text">
-                        <string>Speichern</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="2">
-                      <widget class="QLineEdit" name="lineEdit_settings_token_abt5"/>
-                     </item>
-                     <item row="0" column="0">
-                      <widget class="QLabel" name="label_14">
-                       <property name="text">
-                        <string>Token: </string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="label_23">
-                       <property name="text">
-                        <string>Fahrzeuge: </string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="2" colspan="2">
-                      <widget class="QLineEdit" name="lineEdit_settings_fahrzeuge_abt5"/>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-                <item row="2" column="0">
-                 <widget class="Line" name="line_3">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                 </widget>
-                </item>
-                <item row="9" column="0">
-                 <widget class="QGroupBox" name="groupBox_5">
-                  <property name="title">
-                   <string>Abteilung 4 (Alarm bei eigentragenen Fahrzeugen):</string>
-                  </property>
-                  <layout class="QGridLayout" name="gridLayout_22">
-                   <item row="0" column="0">
-                    <layout class="QGridLayout" name="gridLayout_21">
-                     <item row="0" column="1">
-                      <widget class="QLineEdit" name="lineEdit_settings_token_abt4"/>
-                     </item>
-                     <item row="0" column="2">
-                      <widget class="QPushButton" name="pushButton_safe_settings_token_abt4">
-                       <property name="text">
-                        <string>Speichern</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="0">
-                      <widget class="QLabel" name="label_15">
-                       <property name="text">
-                        <string>Token: </string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="label_22">
-                       <property name="text">
-                        <string>Fahrzeuge: </string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="1" colspan="2">
-                      <widget class="QLineEdit" name="lineEdit_settings_fahrzeuge_abt4"/>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-                <item row="3" column="0">
-                 <widget class="QLabel" name="label_11">
-                  <property name="text">
-                   <string>5.2 für jede Abteilung den persönlichen Token der Connect API hinzufügen (Alarm):</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="8" column="0">
-                 <widget class="QGroupBox" name="groupBox_4">
-                  <property name="title">
-                   <string>Abteilung 3 (Alarm bei eigentragenen Fahrzeugen):</string>
-                  </property>
-                  <layout class="QGridLayout" name="gridLayout_20">
-                   <item row="0" column="0">
-                    <layout class="QGridLayout" name="gridLayout_19">
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="label_21">
-                       <property name="text">
-                        <string>Fahrzeuge: </string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="2">
-                      <widget class="QLineEdit" name="lineEdit_settings_token_abt3"/>
-                     </item>
-                     <item row="0" column="0">
-                      <widget class="QLabel" name="label_16">
-                       <property name="text">
-                        <string>Token: </string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="3">
-                      <widget class="QPushButton" name="pushButton_safe_settings_token_abt3">
-                       <property name="text">
-                        <string>Speichern</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="2" colspan="2">
-                      <widget class="QLineEdit" name="lineEdit_settings_fahrzeuge_abt3"/>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-                <item row="11" column="0">
+                <item row="20" column="0">
                  <widget class="QGroupBox" name="groupBox_7">
                   <property name="title">
                    <string>Abteilung 6 (Alarm bei eigentragenen Fahrzeugen):</string>
                   </property>
                   <layout class="QGridLayout" name="gridLayout_26">
-                   <item row="0" column="0">
-                    <layout class="QGridLayout" name="gridLayout_25">
-                     <item row="0" column="0">
-                      <widget class="QLabel" name="label_13">
-                       <property name="text">
-                        <string>Token: </string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="2">
-                      <widget class="QPushButton" name="pushButton_safe_settings_token_abt6">
-                       <property name="text">
-                        <string>Speichern</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="1">
-                      <widget class="QLineEdit" name="lineEdit_settings_token_abt6"/>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="label_24">
-                       <property name="text">
-                        <string>Fahrzeuge: </string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="1" colspan="2">
-                      <widget class="QLineEdit" name="lineEdit_settings_fahrzeuge_abt6"/>
-                     </item>
-                    </layout>
+                   <item row="2" column="0">
+                    <widget class="QLabel" name="label_24">
+                     <property name="text">
+                      <string>Fahrzeuge: </string>
+                     </property>
+                    </widget>
                    </item>
-                   <item row="1" column="0">
+                   <item row="1" column="1">
+                    <widget class="QTextEdit" name="lineEdit_settings_token_abt6">
+                     <property name="acceptRichText">
+                      <bool>false</bool>
+                     </property>
+                     <property name="placeholderText">
+                      <string>Token</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="1">
                     <spacer name="verticalSpacer_6">
                      <property name="orientation">
                       <enum>Qt::Vertical</enum>
@@ -2157,49 +1971,446 @@
                      </property>
                     </spacer>
                    </item>
-                  </layout>
-                 </widget>
-                </item>
-                <item row="5" column="0">
-                 <widget class="QGroupBox" name="TestAPI">
-                  <property name="title">
-                   <string>Test-API (Wird im Testmodus alarmiert):</string>
-                  </property>
-                  <layout class="QGridLayout" name="gridLayout_14">
-                   <item row="0" column="0">
-                    <layout class="QHBoxLayout" name="horizontalLayout">
-                     <item>
-                      <widget class="QLabel" name="label_12">
-                       <property name="text">
-                        <string>Token:</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLineEdit" name="lineEdit_settings_token_test"/>
-                     </item>
-                     <item>
-                      <widget class="QPushButton" name="pushButton_safe_settings_token_test">
-                       <property name="text">
-                        <string>Speichern</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
+                   <item row="1" column="0">
+                    <widget class="QLabel" name="label_13">
+                     <property name="text">
+                      <string>Token: </string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="1">
+                    <widget class="QLineEdit" name="lineEdit_settings_fahrzeuge_abt6">
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="placeholderText">
+                      <string>1/10;1/11;2/40</string>
+                     </property>
+                    </widget>
                    </item>
                   </layout>
                  </widget>
                 </item>
-                <item row="4" column="0">
+                <item row="3" column="0">
+                 <widget class="Line" name="line_3">
+                  <property name="font">
+                   <font>
+                    <family>MS Shell Dlg 2</family>
+                   </font>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Sunken</enum>
+                  </property>
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item row="16" column="0">
+                 <widget class="QGroupBox" name="groupBox_5">
+                  <property name="title">
+                   <string>Abteilung 4 (Alarm bei eigentragenen Fahrzeugen):</string>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout_22">
+                   <item row="0" column="1">
+                    <widget class="QTextEdit" name="lineEdit_settings_token_abt4">
+                     <property name="acceptRichText">
+                      <bool>false</bool>
+                     </property>
+                     <property name="placeholderText">
+                      <string>Token</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="label_15">
+                     <property name="text">
+                      <string>Token: </string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="1">
+                    <widget class="QLineEdit" name="lineEdit_settings_fahrzeuge_abt4">
+                     <property name="placeholderText">
+                      <string>1/10;1/11;2/40</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="0">
+                    <widget class="QLabel" name="label_22">
+                     <property name="text">
+                      <string>Fahrzeuge: </string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item row="6" column="0">
                  <widget class="QPushButton" name="pushButton_5_help_settings_connect_tokens_all">
                   <property name="text">
                    <string>Hilfe</string>
                   </property>
                  </widget>
                 </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_10">
+                  <property name="font">
+                   <font>
+                    <family>MS Shell Dlg 2</family>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>5.1 Token der Organisations-API hinzufügen (Für den Fahrzeugstatus)</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="13" column="0">
+                 <spacer name="verticalSpacer_12">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>10</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="15" column="0">
+                 <spacer name="verticalSpacer_13">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>10</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="4" column="0">
+                 <spacer name="verticalSpacer_8">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>10</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="17" column="0">
+                 <spacer name="verticalSpacer_14">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>10</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="5" column="0">
+                 <widget class="QLabel" name="label_11">
+                  <property name="font">
+                   <font>
+                    <family>MS Shell Dlg 2</family>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>5.2 für jede Abteilung den persönlichen Token der Connect API hinzufügen (Alarm):</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <spacer name="verticalSpacer_7">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>10</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="14" column="0">
+                 <widget class="QGroupBox" name="groupBox_4">
+                  <property name="title">
+                   <string>Abteilung 3 (Alarm bei eigentragenen Fahrzeugen):</string>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout_18">
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="label_16">
+                     <property name="text">
+                      <string>Token: </string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="QTextEdit" name="lineEdit_settings_token_abt3">
+                     <property name="acceptRichText">
+                      <bool>false</bool>
+                     </property>
+                     <property name="placeholderText">
+                      <string>Token</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QLabel" name="label_21">
+                     <property name="text">
+                      <string>Fahrzeuge: </string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="1">
+                    <widget class="QLineEdit" name="lineEdit_settings_fahrzeuge_abt3">
+                     <property name="placeholderText">
+                      <string>1/10;1/11;2/40</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item row="9" column="0">
+                 <spacer name="verticalSpacer_10">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>10</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="19" column="0">
+                 <spacer name="verticalSpacer_15">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>10</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="7" column="0">
+                 <spacer name="verticalSpacer_9">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>10</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="18" column="0">
+                 <widget class="QGroupBox" name="groupBox_6">
+                  <property name="title">
+                   <string>Abteilung 5 (Alarm bei eigentragenen Fahrzeugen):</string>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout_17">
+                   <item row="2" column="1">
+                    <widget class="QTextEdit" name="lineEdit_settings_token_abt5">
+                     <property name="acceptRichText">
+                      <bool>false</bool>
+                     </property>
+                     <property name="placeholderText">
+                      <string>Token</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="1">
+                    <widget class="QLineEdit" name="lineEdit_settings_fahrzeuge_abt5">
+                     <property name="placeholderText">
+                      <string>1/10;1/11;2/40</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="0">
+                    <widget class="QLabel" name="label_23">
+                     <property name="text">
+                      <string>Fahrzeuge: </string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="0">
+                    <widget class="QLabel" name="label_14">
+                     <property name="text">
+                      <string>Token: </string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <layout class="QGridLayout" name="gridLayout_10">
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_28">
+                    <property name="minimumSize">
+                     <size>
+                      <width>93</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>Token:            </string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="2">
+                   <widget class="QTextEdit" name="lineEdit_settings_token">
+                    <property name="acceptRichText">
+                     <bool>false</bool>
+                    </property>
+                    <property name="placeholderText">
+                     <string>Token</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QPushButton" name="pushButton_help_settings_token">
+                    <property name="maximumSize">
+                     <size>
+                      <width>16</width>
+                      <height>16</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item row="11" column="0">
+                 <spacer name="verticalSpacer_11">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>10</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="10" column="0">
+                 <widget class="QGroupBox" name="groupBox_2">
+                  <property name="title">
+                   <string>Abteilung 1 (wird immer alarmiert):</string>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout_15">
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="label_18">
+                     <property name="text">
+                      <string>Token:         </string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="QTextEdit" name="lineEdit_settings_token_abt1">
+                     <property name="acceptRichText">
+                      <bool>false</bool>
+                     </property>
+                     <property name="placeholderText">
+                      <string>Token</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item row="8" column="0">
+                 <widget class="QGroupBox" name="TestAPI">
+                  <property name="title">
+                   <string>Test-API (Wird im Testmodus alarmiert):</string>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout_14">
+                   <item row="1" column="1">
+                    <widget class="QTextEdit" name="lineEdit_settings_token_test">
+                     <property name="acceptRichText">
+                      <bool>false</bool>
+                     </property>
+                     <property name="placeholderText">
+                      <string>Token</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QLabel" name="label_12">
+                     <property name="text">
+                      <string>Token:         </string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
                </layout>
               </widget>
              </widget>
+            </item>
+            <item row="1" column="3">
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
             </item>
            </layout>
           </widget>
@@ -2222,8 +2433,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>634</width>
-             <height>407</height>
+             <width>632</width>
+             <height>306</height>
             </rect>
            </property>
            <attribute name="label">
@@ -2268,7 +2479,17 @@
                </widget>
               </item>
               <item row="2" column="0" colspan="3">
-               <widget class="QTextBrowser" name="textEdit_log_main"/>
+               <widget class="QTextBrowser" name="textEdit_log_main">
+                <property name="styleSheet">
+                 <string notr="true">background-color: white; border: 2px solid #a0a0a0a0;</string>
+                </property>
+                <property name="lineWidth">
+                 <number>5</number>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
@@ -2279,8 +2500,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>294</width>
-             <height>120</height>
+             <width>632</width>
+             <height>306</height>
             </rect>
            </property>
            <attribute name="label">
@@ -2322,7 +2543,36 @@
                </widget>
               </item>
               <item row="1" column="0" colspan="3">
-               <widget class="QTextBrowser" name="textEdit_log_vpn"/>
+               <widget class="QTextBrowser" name="textEdit_log_vpn">
+                <property name="contextMenuPolicy">
+                 <enum>Qt::DefaultContextMenu</enum>
+                </property>
+                <property name="layoutDirection">
+                 <enum>Qt::LeftToRight</enum>
+                </property>
+                <property name="autoFillBackground">
+                 <bool>true</bool>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true"/>
+                </property>
+                <property name="lineWidth">
+                 <number>1</number>
+                </property>
+                <property name="autoFormatting">
+                 <set>QTextEdit::AutoNone</set>
+                </property>
+                <property name="html">
+                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
@@ -2333,8 +2583,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>634</width>
-             <height>407</height>
+             <width>632</width>
+             <height>306</height>
             </rect>
            </property>
            <attribute name="label">
@@ -2377,6 +2627,9 @@
               </item>
               <item row="1" column="0" colspan="3">
                <widget class="QTextBrowser" name="textEdit_log_crawler">
+                <property name="styleSheet">
+                 <string notr="true">background-color: white;border: 2px solid #a0a0a0a0;</string>
+                </property>
                 <property name="autoFormatting">
                  <set>QTextEdit::AutoNone</set>
                 </property>
@@ -2391,8 +2644,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>345</width>
-             <height>120</height>
+             <width>632</width>
+             <height>306</height>
             </rect>
            </property>
            <attribute name="label">
@@ -2434,7 +2687,11 @@
                </widget>
               </item>
               <item row="1" column="0" colspan="3">
-               <widget class="QTextBrowser" name="textEdit_log_EM"/>
+               <widget class="QTextBrowser" name="textEdit_log_EM">
+                <property name="styleSheet">
+                 <string notr="true">background-color: white;border: 2px solid #a0a0a0a0;</string>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
@@ -2455,7 +2712,7 @@
      <x>0</x>
      <y>0</y>
      <width>674</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="sizePolicy">
