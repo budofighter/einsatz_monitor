@@ -8,7 +8,7 @@
 #define MyAppAssocName MyAppName + " File"
 #define MyAppAssocExt ".myp"
 #define MyAppAssocKey StringChange(MyAppAssocName, " ", "") + MyAppAssocExt
-#define MyAppVersion "0.9.9.41"
+#define MyAppVersion "0.9.9.42"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -28,7 +28,7 @@ InfoBeforeFile=C:\Users\Public\PycharmProjects\einsatz_monitor\README.md
 PrivilegesRequired=admin
 OutputDir=C:\Users\Public\PycharmProjects\einsatz_monitor\Installer
 OutputBaseFilename="Setup_{#MyAppVersion}"
-SetupIconFile=C:\Users\Public\PycharmProjects\einsatz_monitor\resources\Feuerwehrsignet_rot.gif
+SetupIconFile=C:\Users\Public\PycharmProjects\einsatz_monitor\resources\fwsignet.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern

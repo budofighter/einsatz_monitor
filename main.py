@@ -84,7 +84,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Icon und Taskbar:
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(os.path.join(resources, "Feuerwehrsignet_rot.gif")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.On)
+        icon.addPixmap(QtGui.QPixmap(os.path.join(resources, "fwsignet.ico")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.On)
         self.setWindowIcon(icon)
 
         #self.actionGrundeinrichtung_starten.triggered.connect(self.wizzard)
@@ -378,7 +378,10 @@ class MainWindow(QtWidgets.QMainWindow):
         # Spezielle Validierung für Funkrufname
         input_to_save  = self.ui.lineEdit_settings_funkrufname.text()
         if self.validate_and_save( "funkrufname", input_to_save , "funkrufname", "Bitte die richtige Schreibweise von <b>Funkrufnamen</b> beachten", self.ui.lineEdit_settings_funkrufname):
-            self.save_settings("fw_kurz", input_to_save.split("-")[1])
+            if input_to_save:
+                self.save_settings("fw_kurz", input_to_save.split("-")[1])
+            else:
+                self.save_settings("fw_kurz", "")
 
         # Spezielle Behandlung für Fahrzeugliste
         fahrzeuge_input = str(self.ui.textEdit_fahrzeuge.toMarkdown())

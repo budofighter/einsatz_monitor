@@ -48,7 +48,7 @@ class MyWizard(QWizard):
         self.skip_validation = False  # Zustandsvariable für Skip Button hinzufügen
         
         self.logo_label = QLabel(self)
-        pixmap = QPixmap(os.path.join(basedir, "resources/Feuerwehrsignet_rot.gif"))
+        pixmap = QPixmap(os.path.join(basedir, "resources/fwsignet.ico"))
         scaled_pixmap = pixmap.scaled(50, 50, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
         self.logo_label.setPixmap(scaled_pixmap)
         self.update_logo_position()
