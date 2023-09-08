@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'C:\Users\Public\PycharmProjects\einsatz_monitor\ui\new\mainwindow.ui'
+# Form implementation generated from reading ui file 'c:\Users\Public\PycharmProjects\einsatz_monitor\ui\new\mainwindow.ui'
 #
 # Created by: PyQt6 UI code generator 6.5.2
 #

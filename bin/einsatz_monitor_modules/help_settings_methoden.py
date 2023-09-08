@@ -64,18 +64,6 @@ def help_settings_vpn_password():
     )
 
 
-#def help_settings_vpn_path_to_exe():
-#    create_message_box(
-#        "Einstellung: OpenVPN Programm",
-#        "Bitte den <b>Pfad</b> zur openvpn.exe angeben, welcher von der Leitstelle zur "
-#                               "Verfügung gestellt wird.",
-#        "Der Standardpfad ist:\n C:\\Program Files (x86)\\Sophos\\Sophos SSL VPN "
-#                            "Client\\bin\\openvpn.exe \nZusammen mit den Zugangsdaten wird mit diesem Programm das "
-#                            "sichere VPN aufgebaut. Die Installationsdatei wird von der ILS zusammen mit den "
-#                            "Zugangsdaten zur Verfügung gestellt."
-#    )
-
-
 def help_settings_vpn_config():
     create_message_box(
         "Einstellung: OpenVPN Config",

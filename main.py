@@ -13,10 +13,9 @@ from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import QFileDialog, QApplication, QStyle, QDialog, QTextEdit, QVBoxLayout, QLineEdit
 
-from bin.einsatz_monitor_modules import init, close_methode, database_class, gennerate_cookie_module # init wird benötigt!
+from bin.einsatz_monitor_modules import init, close_methode, database_class, gennerate_cookie_module, wizzard_class, validation_utils # init wird benötigt!
 from bin.einsatz_monitor_modules.help_settings_methoden import *
 from ui.mainwindow import Ui_MainWindow
-
 
 
 # Konfigurationen importieren:
@@ -85,9 +84,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Icon und Taskbar:
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(os.path.join(resources, "fwsignet.ico")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.On)
+        icon.addPixmap(QtGui.QPixmap(os.path.join(resources, "Feuerwehrsignet_rot.gif")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.On)
         self.setWindowIcon(icon)
 
+        #self.actionGrundeinrichtung_starten.triggered.connect(self.wizzard)
 
         # Fwbs Logo einbinden:
         logo_fwbs = QPixmap(resources + "/logo_fwbs.png")
@@ -125,12 +125,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.label_status_versionnr.setText(version_nr)
         else:
             self.ui.label_status_versionnr.setText("Version nicht verfügbar")
-
-
-        # Hintergrundfarbe der Logs anpassen:
-        textedit_widgets = [self.ui.textEdit_log_main, self.ui.textEdit_log_vpn, self.ui.textEdit_log_crawler, self.ui.textEdit_log_EM]
-        for widget in textedit_widgets:
-            widget.setStyleSheet("background-color: rgb(240, 240,240)")
 
         # Einstellungen zu Beginn einlesen:
         def set_ui_elements_from_database(ui, config_keys):
@@ -200,11 +194,11 @@ class MainWindow(QtWidgets.QMainWindow):
             ('pushButton_start_auswretung', self.start_status_auswertung_local),
             ('pushButton_start_einsatzauswertung', self.start_einsatzauswertung),
             ('pushButton_testmode', self.activate_testmode),
-            ('pushButton_safe_settings_allgemein', self.safe_settings_allgemein),
-            ('pushButton_safe_settings_vpn', self.safe_settings_vpn),
-            ('pushButton_safe_settings_wachendisplay', self.settings_wachendisplay),
-            ('pushButton_safe_settings_email', self.safe_settings_email),
-            ('pushButton_safe_settings_alltokens', self.safe_settings_alltokens),
+            ('pushButton_save_settings_allgemein', self.save_settings_allgemein),
+            ('pushButton_save_settings_vpn', self.save_settings_vpn),
+            ('pushButton_save_settings_wachendisplay', self.settings_wachendisplay),
+            ('pushButton_save_settings_email', self.save_settings_email),
+            ('pushButton_save_settings_alltokens', self.save_settings_alltokens),
             ('pushButton_settings_gennerat_cookie', self.generate_cookie),
             ('pushButton_browse_settings_vpn_config', self.browse_settings_vpn_config),
             ('pushButton_help_settings_funkrufname', help_settings_funkrufname),
@@ -231,10 +225,26 @@ class MainWindow(QtWidgets.QMainWindow):
             ('pushButton_open_log_main', self.open_main_log),
             ('pushButton_open_log_crawler', self.open_crawler_log),
             ('pushButton_open_log_vpn', self.open_ovpn_log),
-            ('pushButton_open_log_em', self.open_em_log)
+            ('pushButton_open_log_em', self.open_em_log),
 
             
         ]
+
+        # Menüeintrag Grundeinrichtung starten:
+        grundeinrichtung_action = QAction('Grundeinrichtung starten', self)
+        grundeinrichtung_action.setStatusTip('Startet die Grundeinrichtung')
+        grundeinrichtung_action.triggered[bool].connect(self.wizzard)
+        self.ui.menu.addAction(grundeinrichtung_action)
+
+
+        # Exit:
+        exit_action = QAction(self.style().standardIcon(QStyle.StandardPixmap.SP_DialogCancelButton), '&Exit', self)
+        exit_action.setStatusTip('Exit application')
+        exit_action.setShortcut('Ctrl+Q')
+        exit_action.triggered[bool].connect(QApplication.instance().quit)
+        self.ui.menu.addAction(exit_action)
+
+
 
         # Verbinde die Buttons mit ihren Methoden
         connect_buttons_to_methods(self.ui, button_connections)
@@ -300,15 +310,49 @@ class MainWindow(QtWidgets.QMainWindow):
 
 # ####### Methoden auf der Einstellungsseite:
 
-    def safe_settings(self, setting_name, setting_value):
-        database.update_config(setting_name, setting_value.strip())
-        #self.safe_success(setting_value)
+    def save_settings(self, key, value):
+        try:
+            database.update_config(key, value)
+            logger.info(f"Einstellung {key} wurde erfolgreich auf {value} gesetzt.")
+        except Exception as e:
+            logger.error(f"Fehler beim Speichern der Einstellung {key}: {e}")
 
-    def update_setting_with_validation(self, setting_name, setting_value, regex_pattern, error_message):
-        if re.match(regex_pattern, setting_value):
-            self.safe_settings(setting_name, setting_value)
+
+    def validate_and_save(self, key, input_value, validation_type, error_message, widget=None):
+        if key=="fahrzeuge":
+            is_valid = validation_utils.validate_input(input_value, validation_type)
+            if is_valid:
+                return True
+            else:
+                self.show_error_message("Fehler - falsche Syntax!", error_message)
+                fahrzeuge = database.select_all_fahrzeuge()
+                fahrzeug_str = ";".join(fahrzeuge)
+                self.ui.textEdit_fahrzeuge.setText(fahrzeug_str.replace(";", "\n"))
+                return False
+            
+        if input_value == "":
+            self.save_settings(key, input_value)
+            return True
         else:
-            self.show_error_message("Fehler - falsche Syntax!", error_message)
+            is_valid = validation_utils.validate_input(input_value, validation_type)
+
+            # hier ist der Ablauf, wenn die Synthay falsch ist, um den Ursprungswert wieder zu setzen.
+            if not is_valid:
+                self.show_error_message("Fehler - falsche Syntax!", error_message)
+                if widget:  # Wenn ein Widget angegeben ist:
+                    config_value = database.select_config(key)  # Wert aus der Datenbank holen
+                    if config_value is not None:  # Wenn der Wert nicht None ist
+                        widget.setText(str(config_value))  # Setzen Sie den Wert im Widget
+                    else:
+                        logger.error(f"Konnte den Wert für {key} nicht aus der Datenbank abrufen.")
+            else:
+                #und schlussendlich speichern
+                if key == "openvpn_config":
+                    pass
+                else:
+                    self.save_settings(key, input_value)  # Wenn die Validierung erfolgreich ist, speichern Sie die Einstellung
+
+            return is_valid
 
     def show_error_message(self, title, message):
         msg = QMessageBox()
@@ -317,41 +361,38 @@ class MainWindow(QtWidgets.QMainWindow):
         msg.setText(message)
         msg.exec()
 
-    def safe_success(self, einstellung):
+    def save_success(self, einstellung):
         msg = QMessageBox()
         msg.setWindowTitle("Erfolgreich gespeichert")
-        msg.setText(f"Die Einstellung {einstellung} wurde erfolgreich gespeichert!")
+        msg.setText(f"Die Einstellung der korrekt ausgefüllten {einstellung} wurde erfolgreich gespeichert!")
         msg.setIcon(QMessageBox.Icon.Information)
         msg.exec()
 
 
 
-    def safe_settings_allgemein(self):
-        # Mapping für allgemeine Einstellungen
-        settings_mapping = {
-            "autostart": self.ui.comboBox,
-        }
-        # Speichern der allgemeinen Einstellungen
-        for key, ui_element in settings_mapping.items():
-            input_to_save = ui_element.currentText()
-            self.safe_settings(key, input_to_save)
+    def save_settings_allgemein(self):
+        # Speichern der allgemeinen Einstellungen für Autostart
+        autostart_input = self.ui.comboBox.currentText()
+        self.save_settings("autostart", autostart_input)
+
         # Spezielle Validierung für Funkrufname
-        set_funkrufname = self.ui.lineEdit_settings_funkrufname.text()
-        regex_pattern = "^[A-Z][A-Z]-[A-Z][A-Z]$"
-        error_message = "Bitte den Funkrufnamen nach dieser Syntax eingeben: <br><b> FL-BS</b>"
-        self.update_setting_with_validation("funkrufname", set_funkrufname, regex_pattern, error_message)
-        if re.match(regex_pattern, set_funkrufname):
-            self.safe_settings("fw_kurz", set_funkrufname.split("-")[1])
+        input_to_save  = self.ui.lineEdit_settings_funkrufname.text()
+        if self.validate_and_save( "funkrufname", input_to_save , "funkrufname", "Bitte die richtige Schreibweise von <b>Funkrufnamen</b> beachten", self.ui.lineEdit_settings_funkrufname):
+            self.save_settings("fw_kurz", input_to_save.split("-")[1])
+
         # Spezielle Behandlung für Fahrzeugliste
-        set_fahrzeuge = str(self.ui.textEdit_fahrzeuge.toMarkdown())
-        fahrzeuge_list = set_fahrzeuge.split("\n\n")
-        fahrzeuge_list_clean = [feld.strip() for feld in fahrzeuge_list if feld != '']
-        database.safe_status_fahrzeuge(fahrzeuge_list_clean)
+        fahrzeuge_input = str(self.ui.textEdit_fahrzeuge.toMarkdown())
+        if self.validate_and_save("fahrzeuge", fahrzeuge_input,  "fahrzeuge", "Bitte die richtige Schreibweise von <b>Fahrzeugliste</b> beachten", self.ui.textEdit_fahrzeuge):
+            fahrzeuge_list = fahrzeuge_input.split("\n\n")
+            fahrzeuge_list_clean = [feld.strip() for feld in fahrzeuge_list if feld != '']
+            database.save_status_fahrzeuge(fahrzeuge_list_clean)
+        
 
-        self.safe_success("Allgemeine Einstellungen")
+
+        self.save_success("Allgemeine Einstellungen")
 
 
-    def safe_settings_vpn(self):
+    def save_settings_vpn(self):
         settings_mapping = {
             "ovpn_user": self.ui.lineEdit_settings_vpn_user,
             "ovpn_passwort": self.ui.lineEdit_settings_vpn_password,
@@ -360,38 +401,39 @@ class MainWindow(QtWidgets.QMainWindow):
         # Allgemeine Einstellungen
         for key, ui_element in settings_mapping.items():
             input_to_save = ui_element.text()
-            self.safe_settings(key, input_to_save)
-            self.update_vpn_pass_file()
-
-        # Spezielle Validierung für die VPN-Konfigurationsdatei
-        safe_settings_vpn_config_path = self.ui.lineEdit_settings_vpn_config.text()
-        _, filename = os.path.split(safe_settings_vpn_config_path)
-        file_root, file_ext = os.path.splitext(filename)
-
-        if file_ext.lower() == '.ovpn':
-            if os.path.isabs(safe_settings_vpn_config_path):
-                try:
-                    shutil.copy2(safe_settings_vpn_config_path, config_path)
-                    self.ui.lineEdit_settings_vpn_config.setText(filename)
-                    self.safe_settings("openvpn_config", filename)
-                except:
-                    self.show_error_message("Fehler", "Die Einstellung konnte nicht gespeichert werden.")
-        else:
-            self.show_error_message("Fehler",
-                                    "Die Einstellung konnte nicht gespeichert werden, da der Dateiname nicht auf .ovpn endet.")
-
-        self.safe_success("VPN Einstellungen")
-
-
-    def update_vpn_pass_file(self):
+            self.save_settings(key, input_to_save)
         with open(pass_file_vpn, "w", encoding="utf-8") as file:
             file.write(database.select_config("ovpn_user") + "\n" + database.select_config("ovpn_passwort"))
+
+        # Spezielle Validierung für die VPN-Konfigurationsdatei
+        vpn_config_path = self.ui.lineEdit_settings_vpn_config.text()
+        _, filename = os.path.split(vpn_config_path)
+        _, file_ext = os.path.splitext(filename)
+
+        if file_ext.lower() == '.ovpn':
+            if os.path.isabs(vpn_config_path):
+                try:
+                    self.validate_and_save("openvpn_config", vpn_config_path, "openvpn_config", "Die Einstellung konnte nicht gespeichert werden.", self.ui.lineEdit_settings_vpn_config)
+                    shutil.copy2(vpn_config_path, config_path)
+                    database.update_config("openvpn_config", filename)
+                    self.ui.lineEdit_settings_vpn_config.setText(filename)
+                except Exception as e:
+                    self.ui.lineEdit_settings_vpn_config.setText(database.select_config("openvpn_config"))
+                    self.show_error_message("Fehler", f"Die Einstellung konnte nicht gespeichert werden: {e}")
+            else:
+                self.ui.lineEdit_settings_vpn_config.setText(database.select_config("openvpn_config"))
+                self.show_error_message("Fehler", "Der Pfad ist nicht absolut.")
+        else:
+            self.ui.lineEdit_settings_vpn_config.setText(database.select_config("openvpn_config"))
+            self.show_error_message("Fehler", "Die Einstellung konnte nicht gespeichert werden, da der Dateiname nicht auf .ovpn endet.")
+
+        self.save_success("VPN Einstellungen")
+        
 
     def browse_settings_vpn_config(self):
         filepath, _ = QFileDialog.getOpenFileName(self, 'Öffne Datei', '', 'All files ()')
         if filepath:
             self.ui.lineEdit_settings_vpn_config.setText(filepath)
-
 
     def settings_wachendisplay(self):
         settings_mapping = {
@@ -402,20 +444,21 @@ class MainWindow(QtWidgets.QMainWindow):
         }
 
         # Spezielle Validierung für die URL
-        safe_settings_wachendisplay_url = self.ui.lineEdit_settings_wachendisplay_url.text()
-        regex_pattern = "^http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,4}/$"
-        error_message = "Bitte die URL nach dieser Syntax eingeben: <br><b> http://172.16.24.3:8080/</b>"
-        self.update_setting_with_validation("url_wachendisplay", safe_settings_wachendisplay_url, regex_pattern, error_message)
+        wachendisplay_url = self.ui.lineEdit_settings_wachendisplay_url.text()
+        self.validate_and_save("url_wachendisplay", wachendisplay_url, "url_wachendisplay", "Bitte die richtige Schreibweise von <b>URL Wachendisplay</b> beachten", self.ui.lineEdit_settings_wachendisplay_url)
 
         # Allgemeine Einstellungen
         for key, ui_element in settings_mapping.items():
             input_to_save = ui_element.text() if hasattr(ui_element, 'text') else ui_element.currentText()
-            self.safe_settings(key, input_to_save)
+            
+            if key == "wachendisplay_content_id":
+                self.validate_and_save("wachendisplay_content_id", input_to_save, "wachendisplay_content_id", "Bitte die richtige Schreibweise von <b>ContentID</b> beachten", self.ui.lineEdit_wachendisplay_contend_id)
+            else:
+                self.save_settings(key, input_to_save)
 
-        self.safe_success("Wachendisplay Einstellungen")
+        self.save_success("Wachendisplay Einstellungen")
 
-
-    def safe_settings_email(self):
+    def save_settings_email(self):
         settings_mapping = {
             "email_username": self.ui.lineEdit_setting_email_user,
             "email_password": self.ui.lineEdit_settings_email_password,
@@ -425,47 +468,53 @@ class MainWindow(QtWidgets.QMainWindow):
         }
 
         for key, line_edit in settings_mapping.items():
-            input_to_safe = line_edit.text()
-    
+            input_to_save = line_edit.text()
+
             if key == "email_server":
-                regex_pattern = "^[A-Za-z0-9]+.[A-Za-z0-9]+.[A-Za-z0-9]{1,4}$"
-                error_message = "Bitte die Server-URL nach dieser Syntax eingeben, ohne http(s) oder /: <br><b>imap.serverdomain.org</b>"
-                self.update_setting_with_validation(key, input_to_safe, regex_pattern, error_message)
+                self.validate_and_save("email_server", input_to_save, "email_server", "Bitte die richtige Schreibweise von <b>URL E-Mail Server</b> beachten", self.ui.lineEdit_setings_email_server)
+            
+            elif key == "kdo_alarm":
+                self.validate_and_save("kdo_alarm", input_to_save, "kdo_alarm", "Bitte die richtige Schreibweise von <b>KDO-Alarm RIC</b> beachten", self.ui.lineEdit_settings_kdo_alarm)
+            
             else:
+                self.save_settings(key, input_to_save)
 
-                self.safe_settings(key, input_to_safe)
+        self.save_success("E-Mail Einstellungen")
 
-        self.safe_success("E-Mail Einstellungen")
 
-    def safe_settings_alltokens(self):
+    def save_settings_alltokens(self):
         settings_mapping = {
             "connect_api_fahrzeuge": self.ui.lineEdit_settings_token,
             "token_test": self.ui.lineEdit_settings_token_test,
-            "token_abt1": self.ui.lineEdit_settings_token_abt1,
-            "token_abt2": self.ui.lineEdit_settings_token_abt2,
-            "fahrzeuge_abt2": self.ui.lineEdit_settings_fahrzeuge_abt2,
-            "token_abt3": self.ui.lineEdit_settings_token_abt3,
-            "fahrzeuge_abt3": self.ui.lineEdit_settings_fahrzeuge_abt3,
-            "token_abt4": self.ui.lineEdit_settings_token_abt4,
-            "fahrzeuge_abt4": self.ui.lineEdit_settings_fahrzeuge_abt4,
-            "token_abt5": self.ui.lineEdit_settings_token_abt5,
-            "fahrzeuge_abt5": self.ui.lineEdit_settings_fahrzeuge_abt5,
-            "token_abt6": self.ui.lineEdit_settings_token_abt6,
-            "fahrzeuge_abt6": self.ui.lineEdit_settings_fahrzeuge_abt6,
         }
 
+        # Dynamisch generierte Schlüssel und Widgets hinzufügen
+        for i in range(1, 7):
+            token_widget = getattr(self.ui, f"lineEdit_settings_token_abt{i}", None)
+            fahrzeuge_widget = getattr(self.ui, f"lineEdit_settings_fahrzeuge_abt{i}", None)
+            if token_widget is not None:
+                settings_mapping[f"token_abt{i}"] = token_widget
+            if fahrzeuge_widget is not None:
+                settings_mapping[f"fahrzeuge_abt{i}"] = fahrzeuge_widget
+
         for key, widget in settings_mapping.items():
+            if widget is None:
+                continue  # Überspringen, wenn das Widget nicht existiert
             if isinstance(widget, QLineEdit):
-                input_to_safe = widget.text()
+                input_to_save = widget.text()
             elif isinstance(widget, QTextEdit):
-                input_to_safe = widget.toPlainText()
+                input_to_save = widget.toPlainText()
             else:
                 continue  # Überspringen, wenn der Widget-Typ nicht unterstützt wird
 
+            # Der leere String wird jetzt auch gespeichert
+            if "fahrzeuge_abt" in key:
+                self.validate_and_save(key, input_to_save, "fahrzeuge_abt", "Bitte die richtige Schreibweise von <b>Fahrzeuge Abteilung</b> beachten", widget)
+            else:
+                database.update_config(key, input_to_save)
 
-            self.safe_settings(key, input_to_safe)
+        self.save_success("Tokens")
 
-        self.safe_success("Tokens")
 
 
     # methode um die Cookies zu gennerieren:
@@ -685,6 +734,11 @@ class MainWindow(QtWidgets.QMainWindow):
                 version = match.group(1).replace(',', '.')
                 return version
         return None
+    
+    # Methode für die Grundeinrichtung:
+    def wizzard(self):
+        self.my_wizard = wizzard_class.MyWizard(self)
+        self.my_wizard.show()
 
 try:
     window = MainWindow()

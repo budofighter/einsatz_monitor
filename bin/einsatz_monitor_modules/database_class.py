@@ -84,7 +84,7 @@ class Database:
         except Error as e:
             logger.error(e)
 
-    def safe_status_fahrzeuge(self, fahrzeuge):
+    def save_status_fahrzeuge(self, fahrzeuge):
         try:
             with self.con:
                 self.cursor_obj.execute('DELETE FROM status_db')

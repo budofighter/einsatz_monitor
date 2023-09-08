@@ -56,7 +56,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='resources/fwsignet.ico',
+    icon='resources/Feuerwehrsignet_rot.gif',
     uac_admin=True,
     version='versioninfo.rc',
 )

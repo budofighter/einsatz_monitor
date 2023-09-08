@@ -686,7 +686,7 @@
              </spacer>
             </item>
             <item row="0" column="3">
-             <widget class="QPushButton" name="pushButton_safe_settings_allgemein">
+             <widget class="QPushButton" name="pushButton_save_settings_allgemein">
               <property name="styleSheet">
                <string notr="true">QPushButton {
     font-weight: bold;
@@ -881,8 +881,8 @@ QPushButton:hover {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>628</width>
-             <height>277</height>
+             <width>315</width>
+             <height>132</height>
             </rect>
            </property>
            <attribute name="label">
@@ -890,7 +890,7 @@ QPushButton:hover {
            </attribute>
            <layout class="QGridLayout" name="gridLayout_7">
             <item row="0" column="4">
-             <widget class="QPushButton" name="pushButton_safe_settings_vpn">
+             <widget class="QPushButton" name="pushButton_save_settings_vpn">
               <property name="styleSheet">
                <string notr="true">QPushButton {
     font-weight: bold;
@@ -1387,7 +1387,7 @@ QPushButton:hover {
              </widget>
             </item>
             <item row="0" column="3">
-             <widget class="QPushButton" name="pushButton_safe_settings_wachendisplay">
+             <widget class="QPushButton" name="pushButton_save_settings_wachendisplay">
               <property name="styleSheet">
                <string notr="true">QPushButton {
     font-weight: bold;
@@ -1649,7 +1649,7 @@ QPushButton:hover {
             <item row="4" column="2">
              <widget class="QLineEdit" name="lineEdit_settings_kdo_alarm">
               <property name="placeholderText">
-               <string>KDO-BadSäckingen-DAG</string>
+               <string>KDO-BadSäckingen</string>
               </property>
              </widget>
             </item>
@@ -1688,7 +1688,7 @@ QPushButton:hover {
              </widget>
             </item>
             <item row="0" column="3">
-             <widget class="QPushButton" name="pushButton_safe_settings_email">
+             <widget class="QPushButton" name="pushButton_save_settings_email">
               <property name="styleSheet">
                <string notr="true">QPushButton {
     font-weight: bold;
@@ -1836,8 +1836,8 @@ QPushButton:hover {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>628</width>
-             <height>277</height>
+             <width>408</width>
+             <height>122</height>
             </rect>
            </property>
            <attribute name="label">
@@ -1845,7 +1845,7 @@ QPushButton:hover {
            </attribute>
            <layout class="QGridLayout" name="gridLayout_34">
             <item row="1" column="4">
-             <widget class="QPushButton" name="pushButton_safe_settings_alltokens">
+             <widget class="QPushButton" name="pushButton_save_settings_alltokens">
               <property name="styleSheet">
                <string notr="true">QPushButton {
     font-weight: bold;
@@ -1890,7 +1890,7 @@ QPushButton:hover {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>591</width>
+                 <width>523</width>
                  <height>1228</height>
                 </rect>
                </property>
@@ -2486,6 +2486,9 @@ QPushButton:hover {
                 <property name="lineWidth">
                  <number>5</number>
                 </property>
+                <property name="verticalScrollBarPolicy">
+                 <enum>Qt::ScrollBarAlwaysOn</enum>
+                </property>
                 <property name="readOnly">
                  <bool>true</bool>
                 </property>
@@ -2500,8 +2503,8 @@ QPushButton:hover {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>632</width>
-             <height>306</height>
+             <width>284</width>
+             <height>121</height>
             </rect>
            </property>
            <attribute name="label">
@@ -2559,6 +2562,9 @@ QPushButton:hover {
                 <property name="lineWidth">
                  <number>1</number>
                 </property>
+                <property name="verticalScrollBarPolicy">
+                 <enum>Qt::ScrollBarAlwaysOn</enum>
+                </property>
                 <property name="autoFormatting">
                  <set>QTextEdit::AutoNone</set>
                 </property>
@@ -2583,8 +2589,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>632</width>
-             <height>306</height>
+             <width>361</width>
+             <height>123</height>
             </rect>
            </property>
            <attribute name="label">
@@ -2630,6 +2636,12 @@ li.checked::marker { content: &quot;\2612&quot;; }
                 <property name="styleSheet">
                  <string notr="true">background-color: white;border: 2px solid #a0a0a0a0;</string>
                 </property>
+                <property name="verticalScrollBarPolicy">
+                 <enum>Qt::ScrollBarAlwaysOn</enum>
+                </property>
+                <property name="horizontalScrollBarPolicy">
+                 <enum>Qt::ScrollBarAsNeeded</enum>
+                </property>
                 <property name="autoFormatting">
                  <set>QTextEdit::AutoNone</set>
                 </property>
@@ -2644,8 +2656,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>632</width>
-             <height>306</height>
+             <width>335</width>
+             <height>123</height>
             </rect>
            </property>
            <attribute name="label">
@@ -2691,6 +2703,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
                 <property name="styleSheet">
                  <string notr="true">background-color: white;border: 2px solid #a0a0a0a0;</string>
                 </property>
+                <property name="verticalScrollBarPolicy">
+                 <enum>Qt::ScrollBarAlwaysOn</enum>
+                </property>
                </widget>
               </item>
              </layout>
@@ -2721,7 +2736,18 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>Menü</string>
+    </property>
+   </widget>
+   <addaction name="menu"/>
   </widget>
+  <action name="actionGrundeinrichtung_starten">
+   <property name="text">
+    <string>Grundeinrichtung starten</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
