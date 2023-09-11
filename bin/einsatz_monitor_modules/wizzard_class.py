@@ -1,4 +1,4 @@
-import sys, os, shutil
+import sys, os, shutil, subprocess
 
 from PyQt6.QtWidgets import QApplication, QWizard, QWizardPage, QLabel, QLineEdit, QTextEdit, QComboBox, QGridLayout, QMessageBox, QPushButton, QFileDialog
 from PyQt6.QtGui import QPixmap
@@ -6,6 +6,7 @@ from PyQt6.QtCore import Qt
 
 from .validation_utils import validate_input
 from . import database_class, gennerate_cookie_module
+from subprocess import DEVNULL
 
 database = database_class.Database()
 
@@ -15,6 +16,8 @@ else:
     basedir = os.path.join(os.path.dirname(__file__), "..", "..")
 
 config_path = os.path.join(basedir, "config")
+python_path = os.path.join(basedir, "EinsatzHandler_venv", "Scripts", "python.exe")
+vpn_file = os.path.join(basedir, "bin", "ovpn_process.py")
 
 class MyWizardPage(QWizardPage):
     def __init__(self, title, label_text, input_type='line_edit', setting=None):
@@ -51,7 +54,7 @@ class MyWizardPage(QWizardPage):
         elif input_type == "vpn_start":
             self.input_field = QPushButton("VPN jetzt starten")
             self.input_field.clicked.connect(self.vpn_start)
-        
+      
         layout.addWidget(label, 0, 0)  # das ist der Text
         if self.input_field is not None:
             layout.addWidget(self.input_field, 1, 0)
@@ -70,7 +73,13 @@ class MyWizardPage(QWizardPage):
             self.input_field.setText(filepath)
 
     def vpn_start(self):
-        print("VPN starten")
+        print("VPN starten neu")
+        with open(os.path.join(basedir,"logs", "logfile_ovpn.txt"), "a") as f:
+            print("1")
+            p = subprocess.Popen([python_path, vpn_file], stdout=f, stderr=f)
+            print("2")
+            database.update_aktiv_flag("vpn", p.pid)
+            print("3")
 
 
 class MyWizard(QWizard):
@@ -163,6 +172,7 @@ class MyWizard(QWizard):
             "Einrichtungsassistent <br> VPN Starten", 
             ("Um die VPN-Einstellungen zu testen und die weitere Konfiguration durchzuführen, muss eine VPN Verbindung zum Wachendisplay hergestellt werden."),
              "vpn_start",
+             "vpn_running"
         ))
 
         self.addPage(MyWizardPage(
@@ -311,6 +321,20 @@ class MyWizard(QWizard):
                 eingabewert = current_page.input_field.toPlainText()
             elif isinstance(current_page.input_field, QComboBox):
                 eingabewert = current_page.input_field.currentText()
+            elif isinstance(current_page.input_field, QPushButton):
+                button_text = current_page.input_field.text()
+                if button_text == "VPN jetzt starten":
+                    # Führe Ihre spezielle Überprüfung für VPN hier durch
+                    if self.special_vpn_validation():
+                        return True  # Erlaubt den Übergang zur nächsten Seite
+                    else:
+                        # Zeige eine Fehlermeldung an, falls die VPN-Überprüfung fehlschlägt
+                        msg = QMessageBox()
+                        msg.setIcon(QMessageBox.Icon.Warning)
+                        msg.setText("VPN-Start fehlgeschlagen. Bitte warten Sie mindestens 30 Sekunden. Auf der Etartseite können Sie den Ladekreis und die AKtivität des VPNS sehen")
+                        msg.setWindowTitle("Warnung")
+                        msg.exec()
+                        return False  # Verhindert den Übergang zur nächsten Seite
 
             # Überprüfen, ob die Eingabe leer ist
             if not eingabewert.strip():  # `.strip()` entfernt Leerzeichen am Anfang und am Ende
@@ -352,6 +376,7 @@ class MyWizard(QWizard):
                 else:
                     database.update_config(setting, eingabewert)  # Aktualisieren der Datenbank
                     print(f"{setting} , {eingabewert}")
+                
 
         return True  # Erlaubt den Übergang zur nächsten Seite
 
@@ -387,6 +412,13 @@ class MyWizard(QWizard):
  #           custom_button.show()
  #       else:
  #           custom_button.hide()
+    
+    def special_vpn_validation(self):
+        url = database.select_config("url_wachendisplay").split("/")
+        eingabe = url[2].split(":")
+        response = subprocess.call(["ping", "-n", "1", eingabe[0]], stdout=DEVNULL)
+        if response == 0:
+            return True
 
 
 if __name__ == '__main__':
