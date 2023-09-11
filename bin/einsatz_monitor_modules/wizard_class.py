@@ -102,7 +102,12 @@ class MyWizard(QWizard):
         
         self.addPage(MyWizardPage(
             "Einrichtungsassistent <br> Allgemein Informationen", 
-            ("Sie werden nun schrittweise durch alle Einstellungen des EInsatz Handlers geführt. Bitte nehmen Sie sich die Zeit, diese Ersteinrichtung vollständig durchzuführen. <br> Wenn SIe eine Information erst später hinzufügen wollen, können Sie den Punkt überspringen. <br> Alle Einstellungen können später manuell korrigiert oder angepasst werden."),
+            ("Sie werden nun schrittweise durch alle Einstellungen des Einsatz Handlers geführt. Bitte nehmen Sie sich die Zeit, diese Ersteinrichtung vollständig durchzuführen. <br> Wenn SIe eine Information erst später hinzufügen wollen, können Sie den Punkt überspringen. <br> Alle Einstellungen können später manuell korrigiert oder angepasst werden."
+             "<br><br>Für die Einrichtung benötigen Sie folgende Zugangsdaten: <br>"
+             "<b>VPN:</b> VPN-Configuration und VPN-Zugangsdaten (ILS) <br>"
+             "<b>Wachendisplay:</b> Zugangsdaten (ILS)<br>"
+             "<b>Einsatzauswertung:</b> E-Mail Zugangsdaten<br>"
+             "<b>Feuersoftware:</b> Connect-Tokens (feuersoftware.com)"),
             "none"
         ))
 
@@ -291,10 +296,17 @@ class MyWizard(QWizard):
 
         self.addPage(MyWizardPage(
             "Einrichtungsassistent <br>Token Einstellungen - Abteilung 1", 
-            "Hier den Token der Abteilungs API der Hauptabteilung eintragen. Diese wird immer alarmiert.<br>",
+            "Hier den Token der Abteilungs API der Hauptabteilung eintragen. Diese wird immer alarmiert.<br><br> Weitere Abteilungen und individuelle Alarmierungen können später in den Einstellungen ergänzt werden.",
             "line_edit",
             None
         ))
+
+        self.addPage(MyWizardPage(
+            "Einrichtungsassistent <br> Abschließende Informationen", 
+            ("Die Grundeinrichtung ist nun abgeschlossen. Sie können die Programme auf der Startseite ausführen. Beachten Sie, dass für die Statusauswertung immer zuerst das VPN gestartet werden muss."),
+            "none"
+        ))
+
 
 
 

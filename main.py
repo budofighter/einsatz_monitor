@@ -13,7 +13,7 @@ from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import QFileDialog, QApplication, QStyle, QDialog, QTextEdit, QVBoxLayout, QLineEdit
 
-from bin.einsatz_monitor_modules import init, close_methode, database_class, gennerate_cookie_module, wizzard_class, validation_utils # init wird benötigt!
+from bin.einsatz_monitor_modules import init, close_methode, database_class, gennerate_cookie_module, wizard_class, validation_utils # init wird benötigt!
 from bin.einsatz_monitor_modules.help_settings_methoden import *
 from ui.mainwindow import Ui_MainWindow
 
@@ -87,7 +87,7 @@ class MainWindow(QtWidgets.QMainWindow):
         icon.addPixmap(QtGui.QPixmap(os.path.join(resources, "fwsignet.ico")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.On)
         self.setWindowIcon(icon)
 
-        #self.actionGrundeinrichtung_starten.triggered.connect(self.wizzard)
+        #self.actionGrundeinrichtung_starten.triggered.connect(self.wizard)
 
         # Fwbs Logo einbinden:
         logo_fwbs = QPixmap(resources + "/logo_fwbs.png")
@@ -181,6 +181,16 @@ class MainWindow(QtWidgets.QMainWindow):
         # Logs zu Beginn auslesen:
         self.log_reload()
 
+
+        # Wizard anzeigen, wenn die Datenbank noch leer ist
+        if (database.select_config("funkrufname") == "" and
+            database.select_config("wachendisplay_content_id") == "" and
+            database.select_config("ovpn_user") == "" and
+            database.select_config("email_username") == ""):
+            self.wizard()
+
+
+
 ### Menüaufbau und aktionen
 
         def connect_buttons_to_methods(ui, button_connections):
@@ -233,7 +243,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Menüeintrag Grundeinrichtung starten:
         grundeinrichtung_action = QAction('Grundeinrichtung starten', self)
         grundeinrichtung_action.setStatusTip('Startet die Grundeinrichtung')
-        grundeinrichtung_action.triggered[bool].connect(self.wizzard)
+        grundeinrichtung_action.triggered[bool].connect(self.wizard)
         self.ui.menu.addAction(grundeinrichtung_action)
 
 
@@ -734,8 +744,8 @@ class MainWindow(QtWidgets.QMainWindow):
         return None
     
     # Methode für die Grundeinrichtung:
-    def wizzard(self):
-        self.my_wizard = wizzard_class.MyWizard(self)
+    def wizard(self):
+        self.my_wizard = wizard_class.MyWizard(self)
         self.my_wizard.show()
 
 try:
