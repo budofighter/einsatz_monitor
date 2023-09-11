@@ -387,7 +387,6 @@ class MainWindow(QtWidgets.QMainWindow):
             database.save_status_fahrzeuge(fahrzeuge_list_clean)
         
 
-
         self.save_success("Allgemeine Einstellungen")
 
 

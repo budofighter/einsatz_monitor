@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, shutil
 
 from PyQt6.QtWidgets import QApplication, QWizard, QWizardPage, QLabel, QLineEdit, QTextEdit, QComboBox, QGridLayout, QMessageBox, QPushButton, QFileDialog
 from PyQt6.QtGui import QPixmap
@@ -13,6 +13,8 @@ if getattr(sys, 'frozen', False):
     basedir = sys._MEIPASS
 else:
     basedir = os.path.join(os.path.dirname(__file__), "..", "..")
+
+config_path = os.path.join(basedir, "config")
 
 class MyWizardPage(QWizardPage):
     def __init__(self, title, label_text, input_type='line_edit', setting=None):
@@ -116,7 +118,6 @@ class MyWizard(QWizard):
             "Bei fehlenden Fahrzeugen kommt es zu einem Fehler!<br>"), 
             'text_edit', 
             "fahrzeuge"
-            # achtung - Einstelung fehlt noch!
         ))
 
         self.addPage(MyWizardPage(
@@ -333,11 +334,19 @@ class MyWizard(QWizard):
                 
                 return False  # Verhindert den Übergang zur nächsten Seite
 
+
             if setting:  # Überprüfen, ob eine Einstellung für diese Seite definiert ist
                 if setting == "openvpn_config":
-                    pass
+                    _, filename = os.path.split(eingabewert)
+                    shutil.copy2(eingabewert, config_path)
+                    database.update_config("openvpn_config", filename)
+
                 elif setting == "fahrzeuge":
-                    pass
+                    fahrzeuge_list = eingabewert.split("\n")
+                    fahrzeuge_list_clean = [feld.strip() for feld in fahrzeuge_list if feld != '']
+                    print(fahrzeuge_list_clean)
+                    r = database.save_status_fahrzeuge(fahrzeuge_list_clean)
+                    print(r)
                 elif setting == "":
                     pass
                 else:
