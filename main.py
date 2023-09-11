@@ -82,6 +82,7 @@ class MainWindow(QtWidgets.QMainWindow):
         timer_logs.timeout.connect(self.log_reload)
         timer_logs.start(800)
 
+
         # Icon und Taskbar:
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(os.path.join(resources, "fwsignet.ico")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.On)
@@ -127,47 +128,11 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.label_status_versionnr.setText("Version nicht verfügbar")
 
         # Einstellungen zu Beginn einlesen:
-        def set_ui_elements_from_database(ui, config_keys):
-            for ui_element, config_key in config_keys:
-                ui_object = getattr(ui, ui_element)
-                if isinstance(ui_object, QtWidgets.QComboBox):
-                    ui_object.setCurrentText(database.select_config(config_key))
-                else:
-                    ui_object.setText(database.select_config(config_key))
+
 
         # Verwenden Sie die neue Funktion, um die Einstellungen zu Beginn einzulesen:
-        config_keys = [
-            ("lineEdit_settings_funkrufname", "funkrufname"),
-            ("lineEdit_settings_token", "connect_api_fahrzeuge"),
-            ("lineEdit_wachendisplay_contend_id", "wachendisplay_content_id"),
-            ("lineEdit_settings_wachendisplay_url", "url_wachendisplay"),
-            ("lineEdit_settings_wachendisplay_user", "user_wachendisplay"),
-            ("lineEdit_wachendisplay_password", "passwort_wachendisplay"),
-            ("lineEdit_settings_vpn_user", "ovpn_user"),
-            ("lineEdit_settings_vpn_password", "ovpn_passwort"),
-            ("lineEdit_settings_vpn_config", "openvpn_config"),
-            ("comboBox_settings_headless_browser", "headless_browser"),
-            ("comboBox", "autostart"),
-            ("lineEdit_setting_email_user", "email_username"),
-            ("lineEdit_settings_email_password", "email_password"),
-            ("lineEdit_setings_email_server", "email_server"),
-            ("lineEdit_settings_kdo_alarm", "kdo_alarm"),
-            ("lineEdit_settings_dag_alternative", "dag_alternativ"),
-            ("lineEdit_settings_token_test", "token_test"),
-            ("lineEdit_settings_token_abt1", "token_abt1"),
-            ("lineEdit_settings_token_abt2", "token_abt2"),
-            ("lineEdit_settings_token_abt3", "token_abt3"),
-            ("lineEdit_settings_token_abt4", "token_abt4"),
-            ("lineEdit_settings_token_abt5", "token_abt5"),
-            ("lineEdit_settings_token_abt6", "token_abt6"),
-            ("lineEdit_settings_fahrzeuge_abt2", "fahrzeuge_abt2"),
-            ("lineEdit_settings_fahrzeuge_abt3", "fahrzeuge_abt3"),
-            ("lineEdit_settings_fahrzeuge_abt4", "fahrzeuge_abt4"),
-            ("lineEdit_settings_fahrzeuge_abt5", "fahrzeuge_abt5"),
-            ("lineEdit_settings_fahrzeuge_abt6", "fahrzeuge_abt6"),
-        ]
 
-        set_ui_elements_from_database(self.ui, config_keys)
+        self.set_ui_elements_from_database(self.ui)
 
         # Autostart:
         if self.ui.comboBox.currentText() == "Ja":
@@ -236,9 +201,10 @@ class MainWindow(QtWidgets.QMainWindow):
             ('pushButton_open_log_crawler', self.open_crawler_log),
             ('pushButton_open_log_vpn', self.open_ovpn_log),
             ('pushButton_open_log_em', self.open_em_log),
-
-            
         ]
+
+        # Verbinde die Buttons mit ihren Methoden
+        connect_buttons_to_methods(self.ui, button_connections)
 
         # Menüeintrag Grundeinrichtung starten:
         grundeinrichtung_action = QAction('Grundeinrichtung starten', self)
@@ -256,8 +222,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
 
-        # Verbinde die Buttons mit ihren Methoden
-        connect_buttons_to_methods(self.ui, button_connections)
+
 
     # ####### Methoden auf der Statusseite:
     # Methode, um das OpenVPN modul zu starten,  bzw. zu stoppen, wenn der openvpn Prozess schon ausgeführt wird.
@@ -746,7 +711,53 @@ class MainWindow(QtWidgets.QMainWindow):
     # Methode für die Grundeinrichtung:
     def wizard(self):
         self.my_wizard = wizard_class.MyWizard(self)
+        self.my_wizard.wizardCompleted.connect(lambda: self.set_ui_elements_from_database(self.ui))
         self.my_wizard.show()
+
+
+    def set_ui_elements_from_database(self, ui):
+        config_keys = [
+            ("lineEdit_settings_funkrufname", "funkrufname"),
+            ("lineEdit_settings_token", "connect_api_fahrzeuge"),
+            ("lineEdit_wachendisplay_contend_id", "wachendisplay_content_id"),
+            ("lineEdit_settings_wachendisplay_url", "url_wachendisplay"),
+            ("lineEdit_settings_wachendisplay_user", "user_wachendisplay"),
+            ("lineEdit_wachendisplay_password", "passwort_wachendisplay"),
+            ("lineEdit_settings_vpn_user", "ovpn_user"),
+            ("lineEdit_settings_vpn_password", "ovpn_passwort"),
+            ("lineEdit_settings_vpn_config", "openvpn_config"),
+            ("comboBox_settings_headless_browser", "headless_browser"),
+            ("comboBox", "autostart"),
+            ("lineEdit_setting_email_user", "email_username"),
+            ("lineEdit_settings_email_password", "email_password"),
+            ("lineEdit_setings_email_server", "email_server"),
+            ("lineEdit_settings_kdo_alarm", "kdo_alarm"),
+            ("lineEdit_settings_dag_alternative", "dag_alternativ"),
+            ("lineEdit_settings_token_test", "token_test"),
+            ("lineEdit_settings_token_abt1", "token_abt1"),
+            ("lineEdit_settings_token_abt2", "token_abt2"),
+            ("lineEdit_settings_token_abt3", "token_abt3"),
+            ("lineEdit_settings_token_abt4", "token_abt4"),
+            ("lineEdit_settings_token_abt5", "token_abt5"),
+            ("lineEdit_settings_token_abt6", "token_abt6"),
+            ("lineEdit_settings_fahrzeuge_abt2", "fahrzeuge_abt2"),
+            ("lineEdit_settings_fahrzeuge_abt3", "fahrzeuge_abt3"),
+            ("lineEdit_settings_fahrzeuge_abt4", "fahrzeuge_abt4"),
+            ("lineEdit_settings_fahrzeuge_abt5", "fahrzeuge_abt5"),
+            ("lineEdit_settings_fahrzeuge_abt6", "fahrzeuge_abt6"),
+        ]
+
+        for ui_element, config_key in config_keys:
+            ui_object = getattr(ui, ui_element)
+            if isinstance(ui_object, QtWidgets.QComboBox):
+                ui_object.setCurrentText(database.select_config(config_key))
+            else:
+                ui_object.setText(database.select_config(config_key))
+
+        fahrzeuge = database.select_all_fahrzeuge()
+        fahrzeug_str = ";".join(fahrzeuge)
+        self.ui.textEdit_fahrzeuge.setText(fahrzeug_str.replace(";", "\n"))
+
 
 try:
     window = MainWindow()

@@ -47,10 +47,10 @@ def get_cookie():
 
                 wait.until(EC.presence_of_element_located((By.ID, "btnLogin")))
                 driver.find_element(By.ID, "btnLogin").click()
-                time.sleep(1)
+                time.sleep(2)
 
                 wait.until(EC.presence_of_element_located((By.XPATH, "//*[contains(text(),'Ruhedarstellung')]")))
-                time.sleep(1)
+                time.sleep(2)
 
                 cookie_file = os.path.join(basedir, "config", "cookies_wachendisplay.pkl")
 

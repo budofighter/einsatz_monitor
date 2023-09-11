@@ -2,7 +2,7 @@ import sys, os, shutil, subprocess
 
 from PyQt6.QtWidgets import QApplication, QWizard, QWizardPage, QLabel, QLineEdit, QTextEdit, QComboBox, QGridLayout, QMessageBox, QPushButton, QFileDialog
 from PyQt6.QtGui import QPixmap
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, pyqtSignal
 
 from .validation_utils import validate_input
 from . import database_class, gennerate_cookie_module
@@ -18,6 +18,7 @@ else:
 config_path = os.path.join(basedir, "config")
 python_path = os.path.join(basedir, "EinsatzHandler_venv", "Scripts", "python.exe")
 vpn_file = os.path.join(basedir, "bin", "ovpn_process.py")
+pass_file_vpn = os.path.join(basedir, "config", "pass_ovpn_wachendisplay.txt")
 
 class MyWizardPage(QWizardPage):
     def __init__(self, title, label_text, input_type='line_edit', setting=None):
@@ -64,7 +65,6 @@ class MyWizardPage(QWizardPage):
     # Methode, cookies setzen (für den Button)
     def handle_cookie_button_click(self):
         gennerate_cookie_module.get_cookie()
-        print("Cookies werden gemacht")
 
 
     def browse_settings_vpn_config(self):
@@ -73,15 +73,22 @@ class MyWizardPage(QWizardPage):
             self.input_field.setText(filepath)
 
     def vpn_start(self):
-        print("VPN starten neu")
+        # Zugangsdaten gennerieren:
+        with open(pass_file_vpn, "w", encoding="utf-8") as file:
+            file.write(database.select_config("ovpn_user") + "\n" + database.select_config("ovpn_passwort"))
+        # VPN starten:
         with open(os.path.join(basedir,"logs", "logfile_ovpn.txt"), "a") as f:
             p = subprocess.Popen([python_path, vpn_file], stdout=f, stderr=f)
             database.update_aktiv_flag("vpn", p.pid)
 
 
 class MyWizard(QWizard):
+    wizardCompleted = pyqtSignal()
+    
     def __init__(self, parent=None):
         super(MyWizard, self).__init__(parent)
+
+        
 
         self.skip_validation = False  # Zustandsvariable für Skip Button hinzufügen
         
@@ -381,14 +388,12 @@ class MyWizard(QWizard):
                 elif setting == "fahrzeuge":
                     fahrzeuge_list = eingabewert.split("\n")
                     fahrzeuge_list_clean = [feld.strip() for feld in fahrzeuge_list if feld != '']
-                    print(fahrzeuge_list_clean)
                     r = database.save_status_fahrzeuge(fahrzeuge_list_clean)
-                    print(r)
+
                 elif setting == "":
                     pass
                 else:
                     database.update_config(setting, eingabewert)  # Aktualisieren der Datenbank
-                    print(f"{setting} , {eingabewert}")
                 
 
         return True  # Erlaubt den Übergang zur nächsten Seite
@@ -396,12 +401,14 @@ class MyWizard(QWizard):
 
     def finish_button_clicked(self):
         self.skip_validation = True  # Zustand setzen
+        self.wizardCompleted.emit()
 
     def skip_button_clicked(self):
         self.skip_validation = True  # Zustand setzen
         self.next()
         
     def cancel_button_clicked(self):
+        self.wizardCompleted.emit()
         pass
 
     def resizeEvent(self, event):
@@ -427,9 +434,7 @@ class MyWizard(QWizard):
  #           custom_button.hide()
     
     def special_vpn_validation(self):
-        url = database.select_config("url_wachendisplay").split("/")
-        eingabe = url[2].split(":")
-        response = subprocess.call(["ping", "-n", "1", eingabe[0]], stdout=DEVNULL)
+        response = subprocess.call(["ping", "-n", "1", "172.16.24.3"], stdout=DEVNULL)
         if response == 0:
             return True
 
