@@ -84,7 +84,7 @@ class MyWizardPage(QWizardPage):
 
 class MyWizard(QWizard):
     wizardCompleted = pyqtSignal()
-    
+
     def __init__(self, parent=None):
         super(MyWizard, self).__init__(parent)
 
@@ -291,21 +291,21 @@ class MyWizard(QWizard):
             "    --> Schnittstellen \n"
             "      --> Öffentliche Connect Schnittstelle<br>"),
             "line_edit",
-            None
+            "connect_api_fahrzeuge"
         ))
 
         self.addPage(MyWizardPage(
             "Einrichtungsassistent <br>Token Einstellungen - Test-API", 
             "Hier den Token einer Test-Abteilung hinzufügen, mit welcher man im Testmodus Probleme suchen und beheben kann.<br>",
             "line_edit",
-            None
+            "token_test"
         ))
 
         self.addPage(MyWizardPage(
             "Einrichtungsassistent <br>Token Einstellungen - Abteilung 1", 
             "Hier den Token der Abteilungs API der Hauptabteilung eintragen. Diese wird immer alarmiert.<br><br> Weitere Abteilungen und individuelle Alarmierungen können später in den Einstellungen ergänzt werden.",
             "line_edit",
-            None
+            "token_abt1"
         ))
 
         self.addPage(MyWizardPage(
