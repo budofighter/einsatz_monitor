@@ -63,10 +63,10 @@ class MyWizardPage(QWizardPage):
 
     # Methode, cookies setzen (für den Button)
     def handle_cookie_button_click(self):
-        #gennerate_cookie_module.get_cookie()
+        gennerate_cookie_module.get_cookie()
         print("Cookies werden gemacht")
 
-    # Methode, cookies setzen (für den Button)
+
     def browse_settings_vpn_config(self):
         filepath, _ = QFileDialog.getOpenFileName(self, 'Öffne Datei', '', 'All files ()')
         if filepath:
@@ -75,11 +75,8 @@ class MyWizardPage(QWizardPage):
     def vpn_start(self):
         print("VPN starten neu")
         with open(os.path.join(basedir,"logs", "logfile_ovpn.txt"), "a") as f:
-            print("1")
             p = subprocess.Popen([python_path, vpn_file], stdout=f, stderr=f)
-            print("2")
             database.update_aktiv_flag("vpn", p.pid)
-            print("3")
 
 
 class MyWizard(QWizard):
@@ -224,10 +221,10 @@ class MyWizard(QWizard):
 
         self.addPage(MyWizardPage(
             "Einrichtungsassistent <br>Wachendisplay - Cookies generieren", 
-            ("Möchten Sie jetzt mit Ihren Zugangsdaten die Cookies generieren?<br>"), 
+            ("Möchten Sie jetzt mit Ihren Zugangsdaten die Cookies generieren?<br><br> <b>Achtung!</b> <br>Die erstellung dauert ca eine Minute und das VPN muss aktiv sein. Bei der Erstellung keine Buttons oder Funktionen manuell klicken!"), 
             'cookie',
             None
-            # achtung - Einstelung fehlt noch!
+
         ))
 
         self.addPage(MyWizardPage(
@@ -335,6 +332,10 @@ class MyWizard(QWizard):
                         msg.setWindowTitle("Warnung")
                         msg.exec()
                         return False  # Verhindert den Übergang zur nächsten Seite
+                    
+                elif button_text == "Cookies jetzt generieren":
+                    return True
+                    
 
             # Überprüfen, ob die Eingabe leer ist
             if not eingabewert.strip():  # `.strip()` entfernt Leerzeichen am Anfang und am Ende
