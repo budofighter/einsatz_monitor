@@ -156,13 +156,16 @@ class Einsatz:
 
     # Methode um die AAO auszuwerten:
     def parse_aao(self, inhalt):
+
+        fw_kurz = database.select_config("funkrufname").split("-")[1]
+
         for line in inhalt:
             if not database.select_config("dag_alternativ") == "":
-                if re.match("((FL[.-]" + database.select_config("fw_kurz") + ")|" + database.select_config(
+                if re.match("((FL[.-]" + fw_kurz + ")|" + database.select_config(
                         "kdo_alarm") + ").*(DAG|" + database.select_config("dag_alternativ") + ").*", line):
                     self.rics.append(line.strip().split("  ")[0])
             else:
-                if re.match("((FL[.-]" + database.select_config("fw_kurz") + ")|" + database.select_config(
+                if re.match("((FL[.-]" + fw_kurz + ")|" + database.select_config(
                         "kdo_alarm") + ").*(DAG).*", line):
                     self.rics.append(line.strip().split("  ")[0])
         for ric in self.rics:

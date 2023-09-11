@@ -377,11 +377,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Spezielle Validierung für Funkrufname
         input_to_save  = self.ui.lineEdit_settings_funkrufname.text()
-        if self.validate_and_save( "funkrufname", input_to_save , "funkrufname", "Bitte die richtige Schreibweise von <b>Funkrufnamen</b> beachten", self.ui.lineEdit_settings_funkrufname):
-            if input_to_save:
-                self.save_settings("fw_kurz", input_to_save.split("-")[1])
-            else:
-                self.save_settings("fw_kurz", "")
+        self.validate_and_save( "funkrufname", input_to_save , "funkrufname", "Bitte die richtige Schreibweise von <b>Funkrufnamen</b> beachten", self.ui.lineEdit_settings_funkrufname)
 
         # Spezielle Behandlung für Fahrzeugliste
         fahrzeuge_input = str(self.ui.textEdit_fahrzeuge.toMarkdown())

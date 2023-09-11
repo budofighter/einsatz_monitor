@@ -1,11 +1,11 @@
 import sys, os
 
-from PyQt6.QtWidgets import QApplication, QWizard, QWizardPage, QLabel, QLineEdit, QTextEdit, QComboBox, QGridLayout, QMessageBox
+from PyQt6.QtWidgets import QApplication, QWizard, QWizardPage, QLabel, QLineEdit, QTextEdit, QComboBox, QGridLayout, QMessageBox, QPushButton, QFileDialog
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtCore import Qt
 
 from .validation_utils import validate_input
-from . import database_class
+from . import database_class, gennerate_cookie_module
 
 database = database_class.Database()
 
@@ -26,20 +26,50 @@ class MyWizardPage(QWizardPage):
         label.setWordWrap(True)  # Ermöglicht den Zeilenumbruch
         self.setting = setting
         
+        self.input_field = None
+        self.input_field2 = None  # Initialisieren Sie diese Variable
+        
         if input_type == 'line_edit':
             self.input_field = QLineEdit()
         elif input_type == 'text_edit':
             self.input_field = QTextEdit()
+        elif input_type == 'cookie':
+            self.input_field = QPushButton("Cookies jetzt generieren")
+            self.input_field.clicked.connect(self.handle_cookie_button_click)
         elif input_type == 'combo_box':
             self.input_field = QComboBox()
             self.input_field.addItem("Nein")
             self.input_field.addItem("Ja")
-        elif input_type == 'none':  # Kein Eingabefeld
+        elif input_type == 'none':
             self.input_field = None  # Kein Eingabefeld für diese Seite
+        elif input_type == 'vpn_config':
+            self.input_field = QLineEdit()
+            self.input_field2 = QPushButton(".ovpn Datei auswählen")
+            self.input_field2.clicked.connect(self.browse_settings_vpn_config)
+        elif input_type == "vpn_start":
+            self.input_field = QPushButton("VPN jetzt starten")
+            self.input_field.clicked.connect(self.vpn_start)
         
         layout.addWidget(label, 0, 0)  # das ist der Text
         if self.input_field is not None:
             layout.addWidget(self.input_field, 1, 0)
+        if self.input_field2 is not None:
+            layout.addWidget(self.input_field2, 2, 0)
+
+    # Methode, cookies setzen (für den Button)
+    def handle_cookie_button_click(self):
+        #gennerate_cookie_module.get_cookie()
+        print("Cookies werden gemacht")
+
+    # Methode, cookies setzen (für den Button)
+    def browse_settings_vpn_config(self):
+        filepath, _ = QFileDialog.getOpenFileName(self, 'Öffne Datei', '', 'All files ()')
+        if filepath:
+            self.input_field.setText(filepath)
+
+    def vpn_start(self):
+        print("VPN starten")
+
 
 class MyWizard(QWizard):
     def __init__(self, parent=None):
@@ -124,8 +154,14 @@ class MyWizard(QWizard):
             "<i>auth-user-pass ./config/pass_ovpn_wachendisplay.txt</i><br>"
             "einfügen und als Kopie speichern.<br>"
             "Benötigt wird der Pfad zur bearbeiteten Kopie.<br>"), 
-            "line_edit",
+            "vpn_config",
             "openvpn_config"
+        ))
+
+        self.addPage(MyWizardPage(
+            "Einrichtungsassistent <br> VPN Starten", 
+            ("Um die VPN-Einstellungen zu testen und die weitere Konfiguration durchzuführen, muss eine VPN Verbindung zum Wachendisplay hergestellt werden."),
+             "vpn_start",
         ))
 
         self.addPage(MyWizardPage(
@@ -178,7 +214,7 @@ class MyWizard(QWizard):
         self.addPage(MyWizardPage(
             "Einrichtungsassistent <br>Wachendisplay - Cookies generieren", 
             ("Möchten Sie jetzt mit Ihren Zugangsdaten die Cookies generieren?<br>"), 
-            'combo_box',
+            'cookie',
             None
             # achtung - Einstelung fehlt noch!
         ))
@@ -298,9 +334,15 @@ class MyWizard(QWizard):
                 return False  # Verhindert den Übergang zur nächsten Seite
 
             if setting:  # Überprüfen, ob eine Einstellung für diese Seite definiert ist
-                #database.update_config(setting, eingabewert)  # Aktualisieren der Datenbank
-                print(setting)
-                print(eingabewert)
+                if setting == "openvpn_config":
+                    pass
+                elif setting == "fahrzeuge":
+                    pass
+                elif setting == "":
+                    pass
+                else:
+                    database.update_config(setting, eingabewert)  # Aktualisieren der Datenbank
+                    print(f"{setting} , {eingabewert}")
 
         return True  # Erlaubt den Übergang zur nächsten Seite
 
@@ -336,6 +378,7 @@ class MyWizard(QWizard):
  #           custom_button.show()
  #       else:
  #           custom_button.hide()
+
 
 if __name__ == '__main__':
     app = QApplication([])
