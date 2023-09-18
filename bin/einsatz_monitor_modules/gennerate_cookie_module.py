@@ -11,7 +11,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.expected_conditions import visibility_of_element_located
 from selenium.webdriver.support import expected_conditions as EC
 
-from ..einsatz_monitor_modules import database_class
+from ..einsatz_monitor_modules import database_class, chromedriver
 
 if getattr(sys, 'frozen', False):
     basedir = sys._MEIPASS
@@ -28,6 +28,10 @@ def get_cookie():
             not database.select_config("url_wachendisplay") == ""):
 
         try:
+            # überprüfen, ob der Chromedriver da und aktuell ist:
+            chromedriver.is_chromedriver_current()
+            print("Chromedriver wurde überprüft und geupdatet")
+
             with webdriver.Chrome() as driver:
                 driver.get(database.select_config("url_wachendisplay"))
                 
