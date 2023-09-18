@@ -55,8 +55,8 @@ del .\EinsatzHandler.spec
 
 echo ##### Step 5: Compile with Inno Setup
 :: Abfrage vor Schritt 5
-set /p UserInput=Step 5: Soll der Installer mit Inno Setup compiliert werden? (J/N): 
-if /i "%UserInput%"=="J" (
+set /p UserInput=Step 5: Soll der Installer mit Inno Setup compiliert werden? (Y/N): 
+if /i "%UserInput%"=="Y" (
     echo Compiling with Inno Setup...
     "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" ".\bin\install\EinsatzHandler2.iss"
     :: Check if Inno Setup ran successfully

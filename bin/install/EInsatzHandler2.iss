@@ -8,7 +8,7 @@
 #define MyAppAssocName MyAppName + " File"
 #define MyAppAssocExt ".myp"
 #define MyAppAssocKey StringChange(MyAppAssocName, " ", "") + MyAppAssocExt
-#define MyAppVersion "0.9.9.42"
+#define MyAppVersion "1.0.0.1"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -40,9 +40,11 @@ Name: "german"; MessagesFile: "compiler:Languages\German.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\dist\EinsatzHandler\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\dist\EinsatzHandler\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\EinsatzHandler_venv\*"; DestDir: "{app}\EinsatzHandler_venv"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\dist\EinsatzHandler\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion;
+Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\dist\EinsatzHandler\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs;
+Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\python-3.11.5-amd64.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall;
+Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\bin\install\requirements.txt"; DestDir: "{app}"; Flags: ignoreversion deleteafterinstall;
+Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\setup_venv.bat"; DestDir: "{app}"; Flags: ignoreversion deleteafterinstall
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]
@@ -61,9 +63,41 @@ Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent runascurrentuser
+; Python installieren
+Filename: "{tmp}\python-3.11.5-amd64.exe"; Parameters: "/quiet InstallAllUsers=1 PrependPath=1"; StatusMsg: "Installing Python..."; Flags: waituntilterminated runascurrentuser; Check: ShouldInstallPython
+
+; Virtual Environment erstellen
+Filename: "{app}\setup_venv.bat"; Description: "Richte virtuelle Umgebung ein und installiere Abhängigkeiten"; Flags: waituntilterminated runascurrentuser;
+
+; Nach Installation das Programm starten
+Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent runascurrentuser;
+
 
 [Code]
+
+// Funktion um zu prüfen, ob Python schon installiert ist:
+function ShouldInstallPython(): Boolean;
+var
+  InstallPath: String;
+  UserReply: Integer;
+begin
+  // Prüfen Sie die Registry für die Installation von Python 3.11.5
+  if RegQueryStringValue(HKEY_LOCAL_MACHINE, 'Software\Python\PythonCore\3.11\InstallPath', '', InstallPath) then begin
+    MsgBox('Python 3.11.5 ist bereits installiert - überspringe Installation', mbInformation, MB_OK);
+    Result := False;
+  end else if RegQueryStringValue(HKEY_CURRENT_USER, 'Software\Python\PythonCore\3.11\InstallPath', '', InstallPath) then begin
+    MsgBox('Python 3.11.5 ist bereits installiert - überspringe Installation', mbInformation, MB_OK);
+    Result := False;
+  end else begin
+    UserReply := MsgBox('Python 3.11.5 ist noch nicht vorhanden - wird installiert', mbConfirmation, MB_OKCANCEL);
+    if UserReply = IDOK then
+      Result := True
+    else
+      Result := False;
+  end;
+end;
+
+
 const
   MyPascalExeName = '{#MyAppExeName}';
   MyPascalAppVersion = '{#MyAppVersion}';  // Diese Zeile könnte durch ein externes Skript gesetzt werden
@@ -109,9 +143,6 @@ begin
   end;
 end;
 
-
-
-
 //Funktion um die Versionen zu vergleichen
 function CompareVersions(Version1, Version2: String): Integer;
 var
@@ -143,9 +174,6 @@ begin
   else if Build1 < Build2 then Result := -1
   else Result := 0;
 end;
-
-
-
 
 //Installieren oder abbrechen
 procedure CurStepChanged(CurStep: TSetupStep);

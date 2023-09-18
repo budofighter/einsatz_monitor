@@ -1,0 +1,6 @@
+selenium
+PyQt6
+requests
+psutil
+webdriver_manager
+packaging
