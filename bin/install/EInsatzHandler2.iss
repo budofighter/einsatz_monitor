@@ -44,7 +44,7 @@ Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\dist\EinsatzHandler\{#M
 Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\dist\EinsatzHandler\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs;
 Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\python-3.11.5-amd64.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall;
 Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\bin\install\requirements.txt"; DestDir: "{app}"; Flags: ignoreversion deleteafterinstall;
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\setup_venv.bat"; DestDir: "{app}"; Flags: ignoreversion deleteafterinstall
+Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\bin\install\setup_venv.bat"; DestDir: "{app}"; Flags: ignoreversion deleteafterinstall
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]
