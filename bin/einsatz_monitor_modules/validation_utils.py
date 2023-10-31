@@ -3,7 +3,6 @@ import re
 # Regex-Dictionary
 regex_dict = {
     "kdo_alarm": r"^(?!.*DAG)[a-zA-Z0-9_\:,.-]+$",
-    "fahrzeuge": r"^(([A-Z]{2}[- /][A-Z]{2,3} )?((\d[-/])?\d{2}([-/]\d{1,2})?|EL)\n{0,2})+",
     "funkrufname": r"^[A-Z]{2}-[A-Z]{2,3}$", 
     "url_wachendisplay": r"^http://(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):(\d+)/?$",
     "wachendisplay_content_id": r"^[a-zA-Z0-9äöüÄÖÜß]+([a-zA-Z0-9äöüÄÖÜß\s]*[a-zA-Z0-9äöüÄÖÜß]+)?$",

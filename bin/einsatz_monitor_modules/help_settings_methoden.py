@@ -23,17 +23,6 @@ def help_settings_funkrufname():
     )
 
 
-def help_setting_fahrzeuge():
-    create_message_box(
-        "Einstellung: Fahrzeugliste",
-        "Alle <u>Fahrzeuge</u> eintragen nach Format <br> z.b. <b>FL BS 2/10</b></br> oder "
-                           "<b>1/19/1</b>. <br>Ein Fahrzeug je Zeile!</br>",
-        "Bitte ALLE Fahrzeuge aus dem Wachendisplay angeben, welche aufgeführt sind und der "
-                        "entsprechenden Syntax entsprechen. \nBei fehlenden Fahrzeugen, kommt es zu einem "
-                        "Fehler!"
-    )
-
-
 def help_settings_token():
     create_message_box(
         "Einstellung: Connect Token",

@@ -97,7 +97,6 @@ class MainWindow(QtWidgets.QMainWindow):
         help_logo = QIcon(resources + "/information.png")
         button_names = [
             "pushButton_help_settings_funkrufname",
-            "pushButton_help_setting_fahrzeuge",
             "pushButton_help_autostart",
             "pushButton_help_settings_vpn_user",
             "pushButton_help_settings_vpn_password",
@@ -177,7 +176,6 @@ class MainWindow(QtWidgets.QMainWindow):
             ('pushButton_settings_gennerat_cookie', self.generate_cookie),
             ('pushButton_browse_settings_vpn_config', self.browse_settings_vpn_config),
             ('pushButton_help_settings_funkrufname', help_settings_funkrufname),
-            ('pushButton_help_setting_fahrzeuge', help_setting_fahrzeuge),
             ('pushButton_help_settings_token', help_settings_token),
             ('pushButton_help_settings_vpn_user', help_settings_vpn_user),
             ('pushButton_help_settings_vpn_password', help_settings_vpn_password),
@@ -293,18 +291,7 @@ class MainWindow(QtWidgets.QMainWindow):
             logger.error(f"Fehler beim Speichern der Einstellung {key}: {e}")
 
 
-    def validate_and_save(self, key, input_value, validation_type, error_message, widget=None):
-        if key=="fahrzeuge":
-            is_valid = validation_utils.validate_input(input_value, validation_type)
-            if is_valid:
-                return True
-            else:
-                self.show_error_message("Fehler - falsche Syntax!", error_message)
-                fahrzeuge = database.select_all_fahrzeuge()
-                fahrzeug_str = ";".join(fahrzeuge)
-                self.ui.textEdit_fahrzeuge.setText(fahrzeug_str.replace(";", "\n"))
-                return False
-            
+    def validate_and_save(self, key, input_value, validation_type, error_message, widget=None):            
         if input_value == "":
             self.save_settings(key, input_value)
             return True
@@ -353,14 +340,6 @@ class MainWindow(QtWidgets.QMainWindow):
         # Spezielle Validierung für Funkrufname
         input_to_save  = self.ui.lineEdit_settings_funkrufname.text()
         self.validate_and_save( "funkrufname", input_to_save , "funkrufname", "Bitte die richtige Schreibweise von <b>Funkrufnamen</b> beachten", self.ui.lineEdit_settings_funkrufname)
-
-        # Spezielle Behandlung für Fahrzeugliste
-        fahrzeuge_input = str(self.ui.textEdit_fahrzeuge.toMarkdown())
-        if self.validate_and_save("fahrzeuge", fahrzeuge_input,  "fahrzeuge", "Bitte die richtige Schreibweise von <b>Fahrzeugliste</b> beachten", self.ui.textEdit_fahrzeuge):
-            fahrzeuge_list = fahrzeuge_input.split("\n\n")
-            fahrzeuge_list_clean = [feld.strip() for feld in fahrzeuge_list if feld != '']
-            database.save_status_fahrzeuge(fahrzeuge_list_clean)
-        
 
         self.save_success("Allgemeine Einstellungen")
 

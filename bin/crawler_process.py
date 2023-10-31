@@ -113,27 +113,35 @@ def crawl_wachendisplay(driver, database):
                 wait_before_retrying(10)
 
             # Extrahieren der Fahrzeug-IDs und deren Status aus dem Text
-            fahrzeuge_list = re.findall(database.select_config("funkrufname") + " [1-4]/[0-9][0-9]/?[0-9]? [1-6]",
-                                        output_wachendisplay_string)
-
+            fahrzeuge_tulp = re.findall("((([1-9]/[0-9]{2}([/-][0-9])?)|EL) [1-6])", output_wachendisplay_string)
+            
+            fahrzeuge_list = [tupel[0] for tupel in fahrzeuge_tulp]
+            
             fahrzeug_dictionary_new_status = {}
             for fahrzeug in fahrzeuge_list:
                 fahrzeug_split = fahrzeug.split(" ")
-                fahrzeug_dictionary_new_status[fahrzeug_split[0] + " " + fahrzeug_split[1]] = fahrzeug_split[2]
+                fahrzeug_dictionary_new_status[fahrzeug_split[0]] = fahrzeug_split[1]
 
             # Überprüfen, ob sich der Status eines Fahrzeugs geändert hat
             for fahrzeug, status_new in fahrzeug_dictionary_new_status.items():
+                # Überprüfen, ob das Fahrzeug in der Datenbank existiert
+                if not database.exists_fahrzeug(fahrzeug):
+                    # Wenn das Fahrzeug nicht existiert, fügen Sie es zur Datenbank hinzu
+                    database.add_fahrzeug(fahrzeug)
+                    logger.info(f"Fahrzeug {fahrzeug} wurde zur Datenbank hinzugefügt")
 
+                # Den alten Status aus der Datenbank abrufen
                 status_old = database.select_status(fahrzeug)
 
+                # Überprüfen, ob sich der Status geändert hat
                 if not status_new == str(status_old):
-                    radioid = fahrzeug.replace(" ", "").replace("-", "").replace("/", "")
+                    funkrufname = database.select_config("funkrufname")
+                    radioid = funkrufname + fahrzeug.replace(" ", "").replace("-", "").replace("/", "")
+
                     try:
                         api_class.post_fahrzeug_status(radioid, status_new)
                         database.update_status(fahrzeug, status_new)
-                        logger.info(
-                            "neue Statusänderung erfolgreich übergeben - {0}  Status : {1}".format(radioid,
-                                                                                                   status_new))
+                        logger.info(f"neue Statusänderung erfolgreich übergeben - {radioid} Status: {status_new}")
                     except:
                         logger.exception("Übergabe an ConnectAPI war nicht möglich.")
 

@@ -128,17 +128,6 @@ class MyWizard(QWizard):
         ))
 
         self.addPage(MyWizardPage(
-            "Einrichtungsassistent <br>Allgemein Einstellungen - Fahrzeuge", 
-            ("Alle <u>Fahrzeuge</u> eintragen nach Format:<br>"
-            "z.B. <b>FL BS 2/10</b> oder <b>1/19/1</b>.<br>"
-            "Ein Fahrzeug je Zeile!<br>"
-            "Bitte ALLE Fahrzeuge aus dem Wachendisplay angeben, welche aufgeführt sind und der entsprechenden Syntax entsprechen.<br>"
-            "Bei fehlenden Fahrzeugen kommt es zu einem Fehler!<br>"), 
-            'text_edit', 
-            "fahrzeuge"
-        ))
-
-        self.addPage(MyWizardPage(
             "Einrichtungsassistent <br>Allgemein Einstellungen - Autostart", 
             ("Bei <b>Ja</b> werden bei Programmstart alle Subprozesse automatisch gestartet.<br>"), 
             'combo_box',
@@ -384,11 +373,6 @@ class MyWizard(QWizard):
                     _, filename = os.path.split(eingabewert)
                     shutil.copy2(eingabewert, config_path)
                     database.update_config("openvpn_config", filename)
-
-                elif setting == "fahrzeuge":
-                    fahrzeuge_list = eingabewert.split("\n")
-                    fahrzeuge_list_clean = [feld.strip() for feld in fahrzeuge_list if feld != '']
-                    r = database.save_status_fahrzeuge(fahrzeuge_list_clean)
 
                 elif setting == "":
                     pass

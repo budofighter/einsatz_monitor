@@ -75,6 +75,23 @@ class Database:
         except Error as e:
             logger.error(e)
 
+    def add_fahrzeug(self, fahrzeug, initial_status=2):
+        try:
+            with self.con:
+                self.cursor_obj.execute('INSERT INTO status_db (fahrzeug, status) VALUES (?, ?)', (fahrzeug, initial_status))
+            logger.debug(f"Fahrzeug hinzugefügt: {fahrzeug} mit Anfangsstatus {initial_status}")
+        except Error as e:
+            logger.error(f"Fehler beim Hinzufügen des Fahrzeugs {fahrzeug}: {e}")
+
+
+    def exists_fahrzeug(self, fahrzeug):
+        with self.con:
+            self.cursor_obj.execute('SELECT COUNT(*) FROM status_db WHERE fahrzeug = ?', (fahrzeug,))
+            count = self.cursor_obj.fetchone()[0]
+            return count > 0
+
+
+
     def select_status(self, fahrzeug):
         try:
             with self.con:
