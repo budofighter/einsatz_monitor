@@ -544,13 +544,10 @@ class MainWindow(QtWidgets.QMainWindow):
         dialog = QDialog()
         dialog.setWindowTitle(f"Logfile: {log_file}")
 
-        # Erstelle den Texteditor und lese die Logdatei
         text_edit = QTextEdit()
         with open(os.path.join(logfile_path, log_file), "r", encoding="utf-8") as f:
             log_content = f.read()
             text_edit.setPlainText(log_content)
-
-        # Füge den Texteditor dem Dialog hinzu
         layout = QVBoxLayout()
         layout.addWidget(text_edit)
         dialog.setLayout(layout)
@@ -629,11 +626,12 @@ class MainWindow(QtWidgets.QMainWindow):
                 active_flag = database.select_aktiv_flag(application_type)
 
                 # Spezielle Routine für VPN
-                if application_type == 'vpn' and active_flag not in [0, 2]:
+                if application_type == 'vpn' and active_flag not in [0, 1, 2]:
                     with open(os.path.join(basedir, "logs", self.LOG_FILES["vpn"]), "r") as f:
                         last_lines = f.readlines()[-1:]  # Lesen der letzte Zeilen
                         if any("Initialization Sequence Completed" in line for line in last_lines):
                             self.set_led(status_widget, 'green')
+                            database.update_aktiv_flag(application_type, "1")
                         else:
                             self.set_led(status_widget, 'loading')
                     continue  # Überspringen Sie den Rest der Schleife für diesen Fall
