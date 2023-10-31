@@ -137,10 +137,6 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.ui.comboBox.currentText() == "Ja":
             self.autostart()
 
-        # Fahrzeugliste zu Beginn einlesen:
-        fahrzeuge = database.select_all_fahrzeuge()
-        fahrzeug_str = ";".join(fahrzeuge)
-        self.ui.textEdit_fahrzeuge.setText(fahrzeug_str.replace(";", "\n"))
 
         # Logs zu Beginn auslesen:
         self.log_reload()
@@ -152,8 +148,6 @@ class MainWindow(QtWidgets.QMainWindow):
             database.select_config("ovpn_user") == "" and
             database.select_config("email_username") == ""):
             self.wizard()
-
-
 
 ### Menüaufbau und aktionen
 
@@ -199,6 +193,7 @@ class MainWindow(QtWidgets.QMainWindow):
             ('pushButton_open_log_crawler', self.open_crawler_log),
             ('pushButton_open_log_vpn', self.open_ovpn_log),
             ('pushButton_open_log_em', self.open_em_log),
+            ('pushButton_logs_fahrzeugliste', self.pushButton_logs_fahrzeugliste),
         ]
 
         # Verbinde die Buttons mit ihren Methoden
@@ -290,7 +285,6 @@ class MainWindow(QtWidgets.QMainWindow):
         except Exception as e:
             logger.error(f"Fehler beim Speichern der Einstellung {key}: {e}")
 
-
     def validate_and_save(self, key, input_value, validation_type, error_message, widget=None):            
         if input_value == "":
             self.save_settings(key, input_value)
@@ -329,8 +323,6 @@ class MainWindow(QtWidgets.QMainWindow):
         msg.setText(f"Die Einstellung der korrekt ausgefüllten {einstellung} wurde erfolgreich gespeichert!")
         msg.setIcon(QMessageBox.Icon.Information)
         msg.exec()
-
-
 
     def save_settings_allgemein(self):
         # Speichern der allgemeinen Einstellungen für Autostart
@@ -581,6 +573,26 @@ class MainWindow(QtWidgets.QMainWindow):
     def open_em_log(self):
         self.open_log_file(self.LOG_FILES["em"])
 
+    def pushButton_logs_fahrzeugliste(self):
+        dialog = QDialog()
+        dialog.setWindowTitle(f"Fahrzeugliste")
+
+        text_edit = QTextEdit()
+        # Fahrzeugliste zu Beginn einlesen:
+        fahrzeuge = database.select_all_fahrzeuge()
+        fahrzeug_str = ";".join(fahrzeuge)
+        fahrzeugliste = fahrzeug_str.replace(";", "\n")
+
+        text_edit.setPlainText(fahrzeugliste)
+        
+        # Füge den Texteditor dem Dialog hinzu
+        layout = QVBoxLayout()
+        layout.addWidget(text_edit)
+        dialog.setLayout(layout)
+
+        # Zeige den Dialog an
+        dialog.exec()
+
 # ####### Sonstige Methoden:
 
     # Methode im zu prüfen, ob ein bestimmter Prozess ausgeführt wird. Return: True/False
@@ -732,10 +744,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 ui_object.setCurrentText(database.select_config(config_key))
             else:
                 ui_object.setText(database.select_config(config_key))
-
-        fahrzeuge = database.select_all_fahrzeuge()
-        fahrzeug_str = ";".join(fahrzeuge)
-        self.ui.textEdit_fahrzeuge.setText(fahrzeug_str.replace(";", "\n"))
 
 
 try:
