@@ -135,7 +135,7 @@ def crawl_wachendisplay(driver, database):
 
                 # Überprüfen, ob sich der Status geändert hat
                 if not status_new == str(status_old):
-                    funkrufname = database.select_config("funkrufname")
+                    funkrufname = database.select_config("funkrufname").replace(" ", "").replace("-", "").replace("/", "")
                     radioid = funkrufname + fahrzeug.replace(" ", "").replace("-", "").replace("/", "")
 
                     try:
