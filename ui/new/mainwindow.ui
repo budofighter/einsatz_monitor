@@ -461,7 +461,7 @@
              </size>
             </property>
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Testmodus:&lt;/span&gt;&lt;br/&gt;Wenn rot, keine Live alarmierung!!!&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Testmodus:&lt;/span&gt;&lt;br/&gt;Wenn Achtung, keine Live alarmierung!!!&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
@@ -657,133 +657,25 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>628</width>
-             <height>277</height>
+             <width>630</width>
+             <height>281</height>
             </rect>
            </property>
            <attribute name="label">
             <string>1. Allgemeine Einstellungen:</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_6">
-            <item row="3" column="2">
-             <widget class="QTextEdit" name="textEdit_fahrzeuge">
-              <property name="placeholderText">
-               <string>FL-BS 1/10</string>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="2">
-             <spacer name="verticalSpacer_2">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
+            <item row="3" column="1">
+             <widget class="QPushButton" name="pushButton_help_autostart">
+              <property name="maximumSize">
                <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="0" column="3">
-             <widget class="QPushButton" name="pushButton_save_settings_allgemein">
-              <property name="styleSheet">
-               <string notr="true">QPushButton {
-    font-weight: bold;
-    background-color: #fb0006;
-    color: white;
-    border: 2px solid #a0a0a0a0;
-    padding: 4px 8px;
-    text-align: center;
-    border-radius: 8px;
-}
-QPushButton:hover {
-    background-color: #ae0004;
-	border: 2px solid #202123;
-}
-</string>
-              </property>
-              <property name="text">
-               <string>Speichern</string>
-              </property>
-              <property name="checkable">
-               <bool>false</bool>
-              </property>
-              <property name="autoDefault">
-               <bool>false</bool>
-              </property>
-              <property name="default">
-               <bool>false</bool>
-              </property>
-              <property name="flat">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="Autostart">
-              <property name="text">
-               <string>Autostart:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="label_setting_fahrzeuge">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Fahrzeuge:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0" colspan="3">
-             <widget class="QLabel" name="label_33">
-              <property name="font">
-               <font>
-                <family>MS Shell Dlg 2</family>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>1. Einstellungen Allgemein</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_settings_funkrufname">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>93</width>
-                <height>0</height>
+                <width>16</width>
+                <height>16</height>
                </size>
               </property>
               <property name="text">
-               <string>Funkrufname:</string>
+               <string/>
               </property>
-             </widget>
-            </item>
-            <item row="4" column="2">
-             <widget class="QComboBox" name="comboBox">
-              <item>
-               <property name="text">
-                <string>Nein</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Ja</string>
-               </property>
-              </item>
              </widget>
             </item>
             <item row="1" column="1">
@@ -800,44 +692,6 @@ QPushButton:hover {
                 <height>0</height>
                </size>
               </property>
-              <property name="maximumSize">
-               <size>
-                <width>16</width>
-                <height>16</height>
-               </size>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="1">
-             <widget class="QPushButton" name="pushButton_help_setting_fahrzeuge">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16</width>
-                <height>16</height>
-               </size>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="1">
-             <widget class="QPushButton" name="pushButton_help_autostart">
               <property name="maximumSize">
                <size>
                 <width>16</width>
@@ -874,6 +728,162 @@ QPushButton:hover {
               </property>
              </widget>
             </item>
+            <item row="0" column="0" colspan="3">
+             <widget class="QLabel" name="label_33">
+              <property name="font">
+               <font>
+                <family>MS Shell Dlg 2</family>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>1. Einstellungen Allgemein</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_settings_funkrufname">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>93</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Funkrufname:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="2">
+             <widget class="QComboBox" name="comboBox">
+              <item>
+               <property name="text">
+                <string>Nein</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Ja</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="5" column="2">
+             <spacer name="verticalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="0" column="4">
+             <widget class="QPushButton" name="pushButton_save_settings_allgemein">
+              <property name="styleSheet">
+               <string notr="true">QPushButton {
+    font-weight: bold;
+    background-color: #fb0006;
+    color: white;
+    border: 2px solid #a0a0a0a0;
+    padding: 4px 8px;
+    text-align: center;
+    border-radius: 8px;
+}
+QPushButton:hover {
+    background-color: #ae0004;
+	border: 2px solid #202123;
+}
+</string>
+              </property>
+              <property name="text">
+               <string>Speichern</string>
+              </property>
+              <property name="checkable">
+               <bool>false</bool>
+              </property>
+              <property name="autoDefault">
+               <bool>false</bool>
+              </property>
+              <property name="default">
+               <bool>false</bool>
+              </property>
+              <property name="flat">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="Autostart">
+              <property name="text">
+               <string>Autostart:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="3">
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_35">
+              <property name="text">
+               <string>Externes Script:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="2">
+             <widget class="QLineEdit" name="lineEdit_settings_exScript"/>
+            </item>
+            <item row="4" column="1">
+             <widget class="QPushButton" name="PushButton_help_exScript">
+              <property name="minimumSize">
+               <size>
+                <width>10</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="3">
+             <widget class="QPushButton" name="pushButton_brows_exScript">
+              <property name="maximumSize">
+               <size>
+                <width>30</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </widget>
           <widget class="QWidget" name="OpenVPN">
@@ -881,8 +891,8 @@ QPushButton:hover {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>315</width>
-             <height>132</height>
+             <width>630</width>
+             <height>281</height>
             </rect>
            </property>
            <attribute name="label">
@@ -1201,8 +1211,8 @@ QPushButton:hover {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>628</width>
-             <height>277</height>
+             <width>391</width>
+             <height>247</height>
             </rect>
            </property>
            <attribute name="label">
@@ -1625,8 +1635,8 @@ QPushButton:hover {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>628</width>
-             <height>277</height>
+             <width>420</width>
+             <height>190</height>
             </rect>
            </property>
            <property name="whatsThis">
@@ -1836,8 +1846,8 @@ QPushButton:hover {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>408</width>
-             <height>122</height>
+             <width>389</width>
+             <height>120</height>
             </rect>
            </property>
            <attribute name="label">
@@ -1890,8 +1900,8 @@ QPushButton:hover {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>523</width>
-                 <height>1228</height>
+                 <width>493</width>
+                 <height>1276</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_12">
@@ -2433,8 +2443,8 @@ QPushButton:hover {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>632</width>
-             <height>306</height>
+             <width>634</width>
+             <height>305</height>
             </rect>
            </property>
            <attribute name="label">
@@ -2503,8 +2513,8 @@ QPushButton:hover {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>284</width>
-             <height>121</height>
+             <width>294</width>
+             <height>120</height>
             </rect>
            </property>
            <attribute name="label">
@@ -2589,8 +2599,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>361</width>
-             <height>123</height>
+             <width>371</width>
+             <height>152</height>
             </rect>
            </property>
            <attribute name="label">
@@ -2649,6 +2659,13 @@ li.checked::marker { content: &quot;\2612&quot;; }
               </item>
              </layout>
             </item>
+            <item row="1" column="0">
+             <widget class="QPushButton" name="pushButton_logs_fahrzeugliste">
+              <property name="text">
+               <string>Fahrzeugliste</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </widget>
           <widget class="QWidget" name="page_6">
@@ -2656,8 +2673,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>335</width>
-             <height>123</height>
+             <width>345</width>
+             <height>122</height>
             </rect>
            </property>
            <attribute name="label">
@@ -2727,7 +2744,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <x>0</x>
      <y>0</y>
      <width>674</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="sizePolicy">
