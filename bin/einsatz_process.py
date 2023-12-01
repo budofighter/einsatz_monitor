@@ -9,6 +9,10 @@ from einsatz_monitor_modules.einsatz_auswertung_class import *
 from einsatz_monitor_modules.database_class import *
 from einsatz_monitor_modules.modul_fwbs import *
 
+
+
+python_path = os.path.join(basedir, "EinsatzHandler_venv", "Scripts", "python.exe")
+
 if getattr(sys, 'frozen', False):
     basedir = sys._MEIPASS
 else:
@@ -18,6 +22,7 @@ else:
 database = database_class.Database()
 tmp_path = os.path.abspath(os.path.join(basedir , "tmp"))
 XPDF_PATH = os.path.abspath(os.path.join(basedir, "resources", "pdftotext.exe"))
+python_path = os.path.join(basedir, "EinsatzHandler_venv", "Scripts", "python.exe")
 
 # Logginginformationen
 logger = logging.getLogger(__name__)
@@ -147,14 +152,16 @@ try:
 
                 # Modul FWBS übergabe
                 if testmode:
-                    logger.info("Testmode, daher keine Übergabe an Modul FWBS")
+                    logger.info("Testmode, daher keine Übergabe an Externes Script")
                 else:
-                    x = modul_fwbs(einsatz.stichwort, einsatz.meldebild, einsatz.strasse, einsatz.ort, einsatz.alarm_ric)
-                    logger.info ("\n####################################################\n\n")
-    time.sleep(1)
-    
+                    exScript_path = database.select_config("ex_script")
+                    print(exScript_path)
+                    if exScript_path != "":
+                        args = [python_path] + [exScript_path] + [einsatz.stichwort, einsatz.meldebild, einsatz.strasse, einsatz.ort, einsatz.alarm_ric]
+                        subprocess.Popen(args)
+                        logger.info("\nExternes Script wurde aufgerufen.\n####################################################\n\n")
+        time.sleep(1)
+   
 except Exception as e:
     logger.exception(f"Ein Fehler im einsatz_process.py ist aufgetreten, wodurch die exception ausgelöst wurde: {e}")
     database.update_aktiv_flag("auswertung", "2")
-
-    

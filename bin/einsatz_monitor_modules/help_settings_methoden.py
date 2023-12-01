@@ -22,6 +22,12 @@ def help_settings_funkrufname():
         "\nBitte gebe den Funkrufnahmen an, wie er im Wachendisplay hinterlegt ist."
     )
 
+def help_exscript():
+    create_message_box(
+        "Einstellung: Externer Script",
+        "Hier besteht die Möglichkeit einen externen Script zu starten. Dieser muss als Python Datei (.py) hochgeladen werden. \nDer Script wird immer ausgeführt, außer im Testmodus."
+    )
+
 
 def help_settings_token():
     create_message_box(

@@ -111,7 +111,8 @@ class MainWindow(QtWidgets.QMainWindow):
             "pushButton_settings_help_kdo_alarm",
             "pushButton_settings_help_dag_alternative",
             "pushButton_help_settings_token",
-            "pushButton_5_help_settings_connect_tokens_all"
+            "pushButton_5_help_settings_connect_tokens_all",
+            "PushButton_help_exScript",
         ]
         for button_name in button_names:
             button = getattr(self.ui, button_name)
@@ -185,6 +186,8 @@ class MainWindow(QtWidgets.QMainWindow):
             ('pushButton_settings_help_kdo_alarm', help_kdo_alarm),
             ('pushButton_settings_help_dag_alternative', help_dag_alternativ),
             ('pushButton_5_help_settings_connect_tokens_all', help_connect_tokens_all),
+            ('PushButton_help_exScript', help_exscript),
+            ('pushButton_brows_exScript', self.brows_exScript),
             ('pushButton_logs_reset_mainlog', self.reset_log_main),
             ('pushButton_logs_reset_vpnlog', self.reset_log_vpn),
             ('pushButton_logs_reset_crawlerlog', self.reset_log_crawler),
@@ -329,6 +332,9 @@ class MainWindow(QtWidgets.QMainWindow):
         autostart_input = self.ui.comboBox.currentText()
         self.save_settings("autostart", autostart_input)
 
+        exScript_input = self.ui.lineEdit_settings_exScript.text()
+        self.save_settings("ex_script", exScript_input)
+
         # Spezielle Validierung für Funkrufname
         input_to_save  = self.ui.lineEdit_settings_funkrufname.text()
         self.validate_and_save( "funkrufname", input_to_save , "funkrufname", "Bitte die richtige Schreibweise von <b>Funkrufnamen</b> beachten", self.ui.lineEdit_settings_funkrufname)
@@ -378,6 +384,11 @@ class MainWindow(QtWidgets.QMainWindow):
         filepath, _ = QFileDialog.getOpenFileName(self, 'Öffne Datei', '', 'All files ()')
         if filepath:
             self.ui.lineEdit_settings_vpn_config.setText(filepath)
+
+    def brows_exScript(self):
+        filepath, _ = QFileDialog.getOpenFileName(self, 'Öffne Datei', '', 'Python files (*.py)')
+        if filepath:
+            self.ui.lineEdit_settings_exScript.setText(filepath)
 
     def settings_wachendisplay(self):
         settings_mapping = {
@@ -717,6 +728,7 @@ class MainWindow(QtWidgets.QMainWindow):
             ("lineEdit_settings_vpn_config", "openvpn_config"),
             ("comboBox_settings_headless_browser", "headless_browser"),
             ("comboBox", "autostart"),
+            ("lineEdit_settings_exScript","ex_script"),
             ("lineEdit_setting_email_user", "email_username"),
             ("lineEdit_settings_email_password", "email_password"),
             ("lineEdit_setings_email_server", "email_server"),
