@@ -59,6 +59,7 @@ class Einsatz:
         self.geo_bw = ""
         self.geo_lw = ""
         self.alarm_ric = ""
+        self.einsatznummer = ""
 
     # Methode um die Texte in eine Liste zu packen.
     def get_text_to_list(self):
@@ -137,6 +138,13 @@ class Einsatz:
                         self.geo_lw = self.geo1
                 except:
                     pass
+            elif "EinsatzNrn" in line:
+                match = re.search("(F\d+)", line)
+                if match:
+                    self.einsatznummer = match.group(1)
+                else:
+                    self.einsatznummer = None
+
             # sobald die Eskalationsstufe erreicht ist, wird die Schleife abgebrochen.
             elif "Eskalationsstufe" in line:
                 break

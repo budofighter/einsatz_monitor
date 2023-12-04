@@ -104,14 +104,14 @@ try:
                 # Ausgabe:
                 alarminhalt = [einsatz.meldebild, einsatz.stichwort, einsatz.objekt, einsatz.bemerkung1, einsatz.bemerkung2,
                             einsatz.sondersignal, einsatz.ort, einsatz.plz, einsatz.strasse, einsatz.ortsteil,
-                            einsatz.geo_bw, einsatz.geo_lw, einsatz.alarm_ric]
+                            einsatz.geo_bw, einsatz.geo_lw, einsatz.alarm_ric, einsatz.einsatznummer]
 
                 logger.info(
                     f"Neuer Alarm: {alarm_number}\n\tStichwort: {einsatz.stichwort}\n\tMeldebild: {einsatz.meldebild}"
                     f"\n\tObjekt: {einsatz.objekt}\n\tSondersignal: {einsatz.sondersignal}\n\tAdresse: {einsatz.strasse}, "
                     f"{einsatz.ort} - {einsatz.ortsteil} [{einsatz.plz}]\n\tGeo (Breite ; Länge): {einsatz.geo_bw} ; "
                     f"{einsatz.geo_lw}\n\tBemerkung 1: {einsatz.bemerkung1}\n\tBemerkung 2: {einsatz.bemerkung2}\n\tRICs: "
-                    f"{einsatz.alarm_ric}")
+                    f"{einsatz.alarm_ric}\n\tEinsatznummer: {einsatz.einsatznummer}")
 
                 # Textdatei wieder löschen:
                 try:
@@ -131,7 +131,7 @@ try:
                     'alarmenabled': True,
                     'address': f"{einsatz.strasse}, {einsatz.ort} - {einsatz.ortsteil}",
                     'facts': einsatz.meldebild,
-                    'number': alarm_number,
+                    'number': einsatz.einsatznummer,
                     'properties': [
                         {'key': 'Objekt', 'value': einsatz.objekt},
                         {'key': 'Sondersignal', 'value': einsatz.sondersignal},
