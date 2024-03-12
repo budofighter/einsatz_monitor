@@ -225,7 +225,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def start_vpn(self):
         if self.check_prozess("openvpn.exe"):
             # prüfen ob die Auswertung noch läuft:
-            if database.select_aktiv_flag("crawler") in [1, 3]:
+            if database.select_aktiv_flag("crawler") in ["running", "starting"]:
                 msg = QMessageBox()
                 msg.setWindowTitle("Fehler - Auswertung noch aktiv")
                 msg.setIcon(QMessageBox.Icon.Critical)
@@ -235,7 +235,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 pid = list(item.pid for item in psutil.process_iter() if item.name() == 'openvpn.exe')
                 for i in pid:
                     psutil.Process(i).terminate()
-                    database.update_aktiv_flag("vpn", "0")
+                    database.update_aktiv_flag("vpn", "off")
                     with open(os.path.join(basedir,"logs", self.LOG_FILES["vpn"]), "a") as f:
                         f.write("###########\nVPN wird beendet \n\n\n")
         else:
@@ -246,13 +246,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
     # Methode um die Crawler Methode zu starten/stoppen
     def start_status_auswertung_local(self):
-        if database.select_aktiv_flag("crawler") in [1, 3]:
-            database.update_aktiv_flag("crawler", "0")
+        if database.select_aktiv_flag("crawler") in ["running", "starting"]:
+            database.update_aktiv_flag("crawler", "off")
 
         else:
             # Testen ob das VPN schon steht
-            if database.select_aktiv_flag("vpn") != 0:
-                database.update_aktiv_flag("crawler", "3")
+            if database.select_aktiv_flag("vpn") != "off":
+                database.update_aktiv_flag("crawler", "starting")
                 subprocess.Popen([python_path, crawler_file])
 
             else:
@@ -264,10 +264,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
     # Methode um die Einsatzauswertung zu starten:
     def start_einsatzauswertung(self):
-        if database.select_aktiv_flag("auswertung") == 1:
-            database.update_aktiv_flag("auswertung", "0")
+        if database.select_aktiv_flag("auswertung") == "running":
+            database.update_aktiv_flag("auswertung", "off")
         else:
-            database.update_aktiv_flag("auswertung", "1")
+            database.update_aktiv_flag("auswertung", "running")
             subprocess.Popen([python_path, einsatz_process_file])
 
     # Methode um den Testmodus zu aktivieren:
@@ -637,22 +637,22 @@ class MainWindow(QtWidgets.QMainWindow):
                 active_flag = database.select_aktiv_flag(application_type)
 
                 # Spezielle Routine für VPN
-                if application_type == 'vpn' and active_flag not in [0, 1, 2]:
+                if application_type == 'vpn' and active_flag not in ["off", "running", "error"]:
                     with open(os.path.join(basedir, "logs", self.LOG_FILES["vpn"]), "r") as f:
                         last_lines = f.readlines()[-1:]  # Lesen der letzte Zeilen
                         if any("Initialization Sequence Completed" in line for line in last_lines):
                             self.set_led(status_widget, 'green')
-                            database.update_aktiv_flag(application_type, "1")
+                            database.update_aktiv_flag(application_type, "running")
                         else:
                             self.set_led(status_widget, 'loading')
                     continue  # Überspringen Sie den Rest der Schleife für diesen Fall
 
                 # Allgemeine Routine
-                if active_flag == 0:
+                if active_flag == "off":
                     self.set_led(status_widget, 'red')
-                elif active_flag == 2:
+                elif active_flag == "error":
                     self.set_led(status_widget, 'attention')
-                elif active_flag == 3:
+                elif active_flag == "starting":
                     log_file = self.LOG_FILES.get(application_type)
                     if log_file:
                         with open(os.path.join(basedir, "logs", log_file), "r") as f:
@@ -664,13 +664,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
                             if keyword and any(keyword in line for line in last_lines):
                                 self.set_led(status_widget, 'green')
-                                database.update_aktiv_flag(application_type, "1")
+                                database.update_aktiv_flag(application_type, "running")
                             else:
                                 self.set_led(status_widget, 'loading')
                 else:
                     self.set_led(status_widget, 'green')
 
-            if database.select_aktiv_flag('testmode') == 1:
+            if database.select_aktiv_flag('testmode') == "running":
                 self.set_led(self.ui.status_testmodus, 'attention')
             else:
                 self.set_led(self.ui.status_testmodus, 'red')

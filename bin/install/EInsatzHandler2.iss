@@ -23,12 +23,12 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={autopf}\{#MyAppName}
 ChangesAssociations=yes
 DisableProgramGroupPage=yes
-InfoBeforeFile=C:\Users\Public\PycharmProjects\einsatz_monitor\README.md
+InfoBeforeFile=C:\Users\chris\PycharmProjects\einsatz_monitor\README.md
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 PrivilegesRequired=admin
-OutputDir=C:\Users\Public\PycharmProjects\einsatz_monitor\Installer
+OutputDir=C:\Users\chris\PycharmProjects\einsatz_monitor\Installer
 OutputBaseFilename="Setup_{#MyAppVersion}"
-SetupIconFile=C:\Users\Public\PycharmProjects\einsatz_monitor\resources\fwsignet.ico
+SetupIconFile=C:\Users\chris\PycharmProjects\einsatz_monitor\resources\fwsignet.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -40,11 +40,11 @@ Name: "german"; MessagesFile: "compiler:Languages\German.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\dist\EinsatzHandler\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion;
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\dist\EinsatzHandler\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs;
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\python-3.11.5-amd64.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall;
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\bin\install\requirements.txt"; DestDir: "{app}"; Flags: ignoreversion deleteafterinstall;
-Source: "C:\Users\Public\PycharmProjects\einsatz_monitor\bin\install\setup_venv.bat"; DestDir: "{app}"; Flags: ignoreversion deleteafterinstall
+Source: "C:\Users\chris\PycharmProjects\einsatz_monitor\dist\EinsatzHandler\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion;
+Source: "C:\Users\chris\PycharmProjects\einsatz_monitor\dist\EinsatzHandler\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs;
+Source: "C:\Users\chris\PycharmProjects\einsatz_monitor\python-3.11.5-amd64.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall;
+Source: "C:\Users\chris\PycharmProjects\einsatz_monitor\bin\install\requirements.txt"; DestDir: "{app}"; Flags: ignoreversion deleteafterinstall;
+Source: "C:\Users\chris\PycharmProjects\einsatz_monitor\bin\install\setup_venv.bat"; DestDir: "{app}"; Flags: ignoreversion deleteafterinstall
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]

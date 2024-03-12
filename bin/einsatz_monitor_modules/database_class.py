@@ -56,7 +56,7 @@ class Database:
                                             config_data)
 
 
-                pid_data = [("monitoring", "0"), ("vpn", "0"), ("crawler", "0"), ("auswertung", "0"), ("wachendisplay", "0"), ("alarm_server", "0"), ("testmode", "0")]
+                pid_data = [("monitoring", "off"), ("vpn", "off"), ("crawler", "off"), ("auswertung", "off"), ("wachendisplay", "off"), ("alarm_server", "off"), ("testmode", "off")]
                 self.cursor_obj.executemany("INSERT or IGNORE INTO pid_db(dienst,aktiv_flag) VALUES (?, ?)", pid_data)
 
                 self.con.commit()
@@ -182,8 +182,8 @@ class Database:
         try:
             with self.con:
                 # Setze alle aktiv_flag auf 0
-                self.cursor_obj.execute('UPDATE pid_db SET aktiv_flag = 0')
-                logger.debug("Alle aktiv_flag Werte wurden auf 0 gesetzt")
+                self.cursor_obj.execute('UPDATE pid_db SET aktiv_flag = off')
+                logger.debug("Alle aktiv_flag Werte wurden auf off gesetzt")
 
             # Commit die Änderungen
             self.con.commit()

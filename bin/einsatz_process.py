@@ -7,7 +7,7 @@ from einsatz_monitor_modules import mail, Xpdf
 from einsatz_monitor_modules.api_class import *
 from einsatz_monitor_modules.einsatz_auswertung_class import *
 from einsatz_monitor_modules.database_class import *
-from einsatz_monitor_modules.modul_fwbs import *
+
 
 
 
@@ -61,7 +61,7 @@ def get_tokens_for_departments(database, alarm_ric):
     return tokens
 
 try:
-    while database.select_aktiv_flag("auswertung") == 1:
+    while database.select_aktiv_flag("auswertung") == "running":
 
         testmode = database.select_config("testmode") != "False"
 

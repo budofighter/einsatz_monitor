@@ -43,7 +43,7 @@ def terminate_processes(process_name):
 
 def update_database_flag(flag_name):
     try:
-        database.update_aktiv_flag(flag_name, "0")
+        database.update_aktiv_flag(flag_name, "off")
         logger.debug(f"Programmende: Aktivdatei der {flag_name} erfolgreich gelöscht.")
     except Exception as e:
         logger.exception(f"Programmende: Aktivdatei der {flag_name} konnte nicht gelöscht werden! ({str(e)})")
@@ -52,7 +52,7 @@ def update_database_flag(flag_name):
 def close_all():
 
     # 1. Alle Buttons auf rot setzen und das schließen der Anwendungen starten
-    for button in ["monitoring","vpn", "crawler","auswertung", "wachendisplay",  "alarm_server", "testmodus"]:
+    for button in ["monitoring","vpn", "crawler","auswertung", "wachendisplay",  "alarm_server", "testmode"]:
         update_database_flag(button)
 
     # 2. OpenVPN beenden

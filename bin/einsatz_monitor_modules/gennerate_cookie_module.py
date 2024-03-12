@@ -21,8 +21,8 @@ else:
 database = database_class.Database()
 
 def get_cookie():
-    if (database.select_aktiv_flag("vpn") != 0 and
-            database.select_aktiv_flag("wachendisplay") == 1 and
+    if (database.select_aktiv_flag("vpn") != "off" and
+            database.select_aktiv_flag("wachendisplay") == "running" and
             not database.select_config("user_wachendisplay") == "" and
             not database.select_config("passwort_wachendisplay") == "" and
             not database.select_config("url_wachendisplay") == ""):
@@ -68,7 +68,7 @@ def get_cookie():
             print(f"Exception occurred: {e}")
             return "nicht erfolgreich"
 
-    elif database.select_aktiv_flag("vpn") == 0 or database.select_aktiv_flag("wachendisplay") == 0:
+    elif database.select_aktiv_flag("vpn") == "off" or database.select_aktiv_flag("wachendisplay") == "off":
         return "fehler vpn"
 
     else:

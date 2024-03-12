@@ -33,7 +33,7 @@ def check_website_availability():
         url = database.select_config("url_wachendisplay").split("/")
         eingabe = url[2].split(":")
         response = subprocess.call(["ping", "-n", "1", eingabe[0]], stdout=DEVNULL)
-        database.update_aktiv_flag("wachendisplay", "1" if response == 0 else "0")
+        database.update_aktiv_flag("wachendisplay", "running" if response == 0 else "off")
     except:
         logger.debug("Monitoring Error: URL Wachendisplay")
 
@@ -41,12 +41,12 @@ def check_website_availability():
 def check_evaluation_server():
     try:
         response = subprocess.call(["ping", "-n", "1", "28016.whserv.de"], stdout=DEVNULL)
-        database.update_aktiv_flag("alarm_server", "1" if response == 0 else "0")
+        database.update_aktiv_flag("alarm_server", "running" if response == 0 else "off")
     except:
         logger.debug("Monitoring Error: Auswerteserver")
 
 def check_test_mode():
-    database.update_aktiv_flag("testmode", "1" if database.select_config("testmode") == "True" else "0")
+    database.update_aktiv_flag("testmode", "running" if database.select_config("testmode") == "True" else "off")
 
 def check_evaluation_status_and_reset():
     try:
@@ -65,13 +65,13 @@ def check_evaluation_status_and_reset():
                     logger.error(f"Failed to delete {file_path}. Reason: {e}")
 
             # Setze den Status auf 0
-            database.update_aktiv_flag("auswertung", "0")
+            database.update_aktiv_flag("auswertung", "off")
 
             # Warte 30 Sekunden
             time.sleep(30)
 
             # Setze den Status zurück auf 1 und starte
-            database.update_aktiv_flag("auswertung", "1")
+            database.update_aktiv_flag("auswertung", "running")
             subprocess.Popen([python_path, einsatz_process])
 
     except Exception as e:
