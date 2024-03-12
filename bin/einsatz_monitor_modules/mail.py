@@ -67,8 +67,9 @@ def pull_mails():
                                     logger.debug("E-Mailanhänge erfolgreich heruntergeladen und als gelesen markiert")
                                     return filename
     except Exception as e:
+        database2 = database_class.Database()
+        database2.update_aktiv_flag("auswertung", 2)
         logger.exception(f"Error beim Aufbau der IMAP Verbindung: {e}")
-        database.update_aktiv_flag("auswertung", "2")
     finally:
         try:
             imap.close()

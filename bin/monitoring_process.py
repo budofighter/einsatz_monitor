@@ -19,7 +19,7 @@ else:
     basedir = os.path.join(os.path.dirname(__file__), "..")
 
 python_path = os.path.join(basedir, "EinsatzHandler_venv", "Scripts", "python.exe")
-einsatz_process = os.path.join(basedir, "einsatz_process.py")
+einsatz_process = os.path.join(basedir, "bin", "einsatz_process.py")
 
 # Logging
 logger = logging.getLogger(__name__)
@@ -67,10 +67,10 @@ def check_evaluation_status_and_reset():
             # Setze den Status auf 0
             database.update_aktiv_flag("auswertung", "0")
 
-            # Warte 10 Sekunden
-            time.sleep(10)
+            # Warte 30 Sekunden
+            time.sleep(30)
 
-            # Setze den Status zurück auf 1
+            # Setze den Status zurück auf 1 und starte
             database.update_aktiv_flag("auswertung", "1")
             subprocess.Popen([python_path, einsatz_process])
 
