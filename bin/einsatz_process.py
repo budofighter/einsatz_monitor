@@ -164,4 +164,4 @@ try:
    
 except Exception as e:
     logger.exception(f"Ein Fehler im einsatz_process.py ist aufgetreten, wodurch die exception ausgelöst wurde: {e}")
-    database.update_aktiv_flag("auswertung", "2")
+    database.update_aktiv_flag("auswertung", "error")

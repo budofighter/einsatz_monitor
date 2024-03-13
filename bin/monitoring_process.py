@@ -20,6 +20,7 @@ else:
 
 python_path = os.path.join(basedir, "EinsatzHandler_venv", "Scripts", "python.exe")
 einsatz_process = os.path.join(basedir, "bin", "einsatz_process.py")
+crawler_process = os.path.join(basedir, "bin", "crawler_process.py")
 
 # Logging
 logger = logging.getLogger(__name__)
@@ -28,7 +29,7 @@ file_handler = logging.FileHandler(os.path.join(basedir, "logs", "logfile_main.t
 file_handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(message)s'))
 logger.addHandler(file_handler)
 
-def check_website_availability():
+def check_website_wachendisplay():
     try:
         url = database.select_config("url_wachendisplay").split("/")
         eingabe = url[2].split(":")
@@ -38,7 +39,7 @@ def check_website_availability():
         logger.debug("Monitoring Error: URL Wachendisplay")
 
 
-def check_evaluation_server():
+def check_server_who():
     try:
         response = subprocess.call(["ping", "-n", "1", "28016.whserv.de"], stdout=DEVNULL)
         database.update_aktiv_flag("alarm_server", "running" if response == 0 else "off")
@@ -48,10 +49,11 @@ def check_evaluation_server():
 def check_test_mode():
     database.update_aktiv_flag("testmode", "running" if database.select_config("testmode") == "True" else "off")
 
-def check_evaluation_status_and_reset():
+def check_einsatzauswertung():
     try:
         status = database.select_aktiv_flag("auswertung")
-        if status == 2:
+        if status == "error":
+            logger.info("Einsatzauswertung ist abgebrochen. Daher wird dieser neu gestartet")
             # Lösche alle Dateien im Ordner tmp
             tmp_folder = os.path.abspath(os.path.join(basedir, "tmp"))
             for filename in os.listdir(tmp_folder):
@@ -75,12 +77,33 @@ def check_evaluation_status_and_reset():
             subprocess.Popen([python_path, einsatz_process])
 
     except Exception as e:
-        logger.error(f"Error in check_evaluation_status_and_reset: {e}")
+        logger.error(f"Error in check_einsatzauswertung: {e}")
 
+
+def check_statusauswertung():
+    try:
+        status = database.select_aktiv_flag("crawler")
+        if status == "error":
+            logger.info("Statusauswertung ist abgebrochen. Daher wird dieser neu gestartet")
+            # Setze den Status auf 0
+            database.update_aktiv_flag("crawler", "off")
+            # Warte 20 Sekunden
+            time.sleep(20)
+            # Setze den Status zurück auf 1 und starte
+            database.update_aktiv_flag("crawler", "running")
+            subprocess.Popen([python_path, crawler_process])
+    except Exception as e:
+        logger.error(f"Error beim Neustart in check_statusauswertung: {e}")
 
 while True:
-    check_website_availability()
-    check_evaluation_server()
+    # Wachendisplay:
+    check_website_wachendisplay()
+    # Mailserver:
+    check_server_who()
+    # Testmode:
     check_test_mode()
-    check_evaluation_status_and_reset()
+    # Statusauswertung
+    check_statusauswertung()
+    # Einsatzauswertung:
+    check_einsatzauswertung()
     time.sleep(3)

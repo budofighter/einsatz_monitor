@@ -57,14 +57,11 @@ def is_chromedriver_current(chromedriver_path=CHROMEDRIVER_PATH):
     chrome_main_version = get_chrome_version()
 
     if chrome_main_version is not None and local_version.startswith(chrome_main_version + "."):
+        logger.info("Die Hauptversion von chromedriver.exe stimmt mit der Hauptversion von Chrome überein.")
         return True
     elif version.parse(local_version) < version.parse(chrome_main_version + ".0"):
+        logger.info("Die Versionen stimmen nicht überein, daher Update vom Chromedriver:")
         update_chromedriver(chromedriver_path)
         return False
     else:
         return False
-
-if is_chromedriver_current():
-    logger.info("Die Hauptversion von chromedriver.exe stimmt mit der Hauptversion von Chrome überein.")
-else:
-    logger.info("Chromedriver wurde aktualisiert.")
