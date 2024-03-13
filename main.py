@@ -209,6 +209,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.menu.addAction(grundeinrichtung_action)
 
 
+
+
+
         # Exit:
         exit_action = QAction(self.style().standardIcon(QStyle.StandardPixmap.SP_DialogCancelButton), '&Exit', self)
         exit_action.setStatusTip('Exit application')
@@ -216,9 +219,12 @@ class MainWindow(QtWidgets.QMainWindow):
         exit_action.triggered[bool].connect(QApplication.instance().quit)
         self.ui.menu.addAction(exit_action)
 
-
-
-
+    # Autostart:
+    def showEvent(self, event):
+        super().showEvent(event)
+        # Führen Sie hier den Autostart durch
+        if self.ui.comboBox.currentText() == "Ja":
+            self.autostart()
 
     # ####### Methoden auf der Statusseite:
     # Methode, um das OpenVPN modul zu starten,  bzw. zu stoppen, wenn der openvpn Prozess schon ausgeführt wird.
@@ -681,10 +687,8 @@ class MainWindow(QtWidgets.QMainWindow):
     # Methode Autostart
     def autostart(self):
         self.start_vpn()
-        time.sleep(30)
-        self.start_einsatzauswertung()
-        time.sleep(30)
-        self.start_status_auswertung_local()
+        QTimer.singleShot(30000, self.start_einsatzauswertung)
+        QTimer.singleShot(60000, self.start_status_auswertung_local)
         logging.info("Autostart durchgeführt")
 
     # Methode um alle Subprozesse des Programms nach einem bestimmen Prozess zu durchsuchen

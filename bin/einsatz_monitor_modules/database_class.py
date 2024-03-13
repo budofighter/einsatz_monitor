@@ -161,11 +161,18 @@ class Database:
 # Close:
     def close_connection(self):
         try:
-            self.cursor_obj.close()
-            self.con.close()
-            logger.debug("Die Datenbankverbindung wurde erfolgreich geschlossen")
-        except Error as e:
+            if self.cursor_obj is not None:
+                self.cursor_obj.close()
+                self.cursor_obj = None  # Setzen Sie den Cursor auf None nach dem Schließen
+                logger.debug("Cursor erfolgreich geschlossen.")
+            
+            if self.con is not None:
+                self.con.close()
+                self.con = None  # Setzen Sie con auf None nach dem Schließen
+                logger.debug("Die Datenbankverbindung wurde erfolgreich geschlossen.")
+        except Exception as e:  # Fängt alle Ausnahmen, die während des Schließens auftreten könnten
             logger.error("Die Datenbankverbindung konnte nicht erfolgreich geschlossen werden! " + str(e))
+
 
     def get_all_configs(self):
         try:
@@ -182,7 +189,7 @@ class Database:
         try:
             with self.con:
                 # Setze alle aktiv_flag auf 0
-                self.cursor_obj.execute('UPDATE pid_db SET aktiv_flag = off')
+                self.cursor_obj.execute('UPDATE pid_db SET aktiv_flag = "off"')
                 logger.debug("Alle aktiv_flag Werte wurden auf off gesetzt")
 
             # Commit die Änderungen
