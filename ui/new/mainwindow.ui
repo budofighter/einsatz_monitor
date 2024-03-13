@@ -658,7 +658,7 @@
              <x>0</x>
              <y>0</y>
              <width>630</width>
-             <height>281</height>
+             <height>276</height>
             </rect>
            </property>
            <attribute name="label">
@@ -892,7 +892,7 @@ QPushButton:hover {
              <x>0</x>
              <y>0</y>
              <width>630</width>
-             <height>281</height>
+             <height>276</height>
             </rect>
            </property>
            <attribute name="label">
@@ -1211,8 +1211,8 @@ QPushButton:hover {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>391</width>
-             <height>247</height>
+             <width>630</width>
+             <height>276</height>
             </rect>
            </property>
            <attribute name="label">
@@ -1635,8 +1635,8 @@ QPushButton:hover {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>420</width>
-             <height>190</height>
+             <width>630</width>
+             <height>276</height>
             </rect>
            </property>
            <property name="whatsThis">
@@ -1649,51 +1649,23 @@ QPushButton:hover {
             <string>4. E-Mail Postfach und Alarmauswertung</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_4">
-            <item row="5" column="2">
-             <widget class="QLineEdit" name="lineEdit_settings_dag_alternative">
+            <item row="2" column="2">
+             <widget class="QLineEdit" name="lineEdit_settings_email_password">
               <property name="placeholderText">
-               <string>KLEIN</string>
+               <string>*************</string>
               </property>
              </widget>
             </item>
-            <item row="4" column="2">
-             <widget class="QLineEdit" name="lineEdit_settings_kdo_alarm">
-              <property name="placeholderText">
-               <string>KDO-BadSäckingen</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="label_8">
-              <property name="text">
-               <string>KDO-Alarm RIC: </string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="2">
-             <widget class="QLineEdit" name="lineEdit_setings_email_server">
-              <property name="placeholderText">
-               <string>https://mail.serverdomain.org</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_6">
-              <property name="text">
-               <string>E-Mail Passwort: </string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0" colspan="3">
-             <widget class="QLabel" name="label_30">
-              <property name="font">
-               <font>
-                <family>MS Shell Dlg 2</family>
-                <bold>true</bold>
-               </font>
+            <item row="1" column="1">
+             <widget class="QPushButton" name="pushButton_settings_help_email_user">
+              <property name="maximumSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
               </property>
               <property name="text">
-               <string>4. Einstellungen E-Mail Postfach und Alarmauswertung:</string>
+               <string/>
               </property>
              </widget>
             </item>
@@ -1733,24 +1705,76 @@ QPushButton:hover {
               </property>
              </widget>
             </item>
-            <item row="5" column="0">
-             <widget class="QLabel" name="label_9">
+            <item row="4" column="1">
+             <widget class="QPushButton" name="pushButton_settings_help_kdo_alarm">
+              <property name="maximumSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
               <property name="text">
-               <string>DAG Alternative</string>
+               <string/>
               </property>
              </widget>
             </item>
-            <item row="2" column="2">
-             <widget class="QLineEdit" name="lineEdit_settings_email_password">
-              <property name="placeholderText">
-               <string>*************</string>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_8">
+              <property name="text">
+               <string>KDO-Alarm RIC: </string>
               </property>
              </widget>
             </item>
-            <item row="1" column="2">
-             <widget class="QLineEdit" name="lineEdit_setting_email_user">
+            <item row="5" column="1">
+             <widget class="QPushButton" name="pushButton_settings_help_dag_alternative">
+              <property name="maximumSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="2">
+             <widget class="QLineEdit" name="lineEdit_settings_smtp_server"/>
+            </item>
+            <item row="3" column="2">
+             <widget class="QLineEdit" name="lineEdit_setings_email_server">
               <property name="placeholderText">
-               <string>Benutzername</string>
+               <string>https://mail.serverdomain.org</string>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="2">
+             <widget class="QLineEdit" name="lineEdit_settings_smtp_password"/>
+            </item>
+            <item row="8" column="0">
+             <widget class="QLabel" name="label_38">
+              <property name="text">
+               <string>SMTP-Passwort</string>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="1">
+             <widget class="QPushButton" name="pushButton_settings_help_smtp_password">
+              <property name="maximumSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="2">
+             <widget class="QLineEdit" name="lineEdit_settings_kdo_alarm">
+              <property name="placeholderText">
+               <string>KDO-BadSäckingen</string>
               </property>
              </widget>
             </item>
@@ -1761,7 +1785,14 @@ QPushButton:hover {
               </property>
              </widget>
             </item>
-            <item row="6" column="2">
+            <item row="1" column="2">
+             <widget class="QLineEdit" name="lineEdit_setting_email_user">
+              <property name="placeholderText">
+               <string>Benutzername</string>
+              </property>
+             </widget>
+            </item>
+            <item row="9" column="2">
              <spacer name="verticalSpacer">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
@@ -1774,8 +1805,18 @@ QPushButton:hover {
               </property>
              </spacer>
             </item>
-            <item row="1" column="1">
-             <widget class="QPushButton" name="pushButton_settings_help_email_user">
+            <item row="7" column="2">
+             <widget class="QLineEdit" name="lineEdit_settings_smtp_user"/>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_6">
+              <property name="text">
+               <string>E-Mail Passwort: </string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="1">
+             <widget class="QPushButton" name="pushButton_settings_help_smtp_user">
               <property name="maximumSize">
                <size>
                 <width>16</width>
@@ -1784,6 +1825,13 @@ QPushButton:hover {
               </property>
               <property name="text">
                <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="label_9">
+              <property name="text">
+               <string>DAG Alternative</string>
               </property>
              </widget>
             </item>
@@ -1813,8 +1861,22 @@ QPushButton:hover {
               </property>
              </widget>
             </item>
-            <item row="4" column="1">
-             <widget class="QPushButton" name="pushButton_settings_help_kdo_alarm">
+            <item row="7" column="0">
+             <widget class="QLabel" name="label_37">
+              <property name="text">
+               <string>SMTP-Benutzer:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="2">
+             <widget class="QLineEdit" name="lineEdit_settings_dag_alternative">
+              <property name="placeholderText">
+               <string>KLEIN</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="1">
+             <widget class="QPushButton" name="pushButton_settings_help_smtp_server">
               <property name="maximumSize">
                <size>
                 <width>16</width>
@@ -1826,16 +1888,23 @@ QPushButton:hover {
               </property>
              </widget>
             </item>
-            <item row="5" column="1">
-             <widget class="QPushButton" name="pushButton_settings_help_dag_alternative">
-              <property name="maximumSize">
-               <size>
-                <width>16</width>
-                <height>16</height>
-               </size>
+            <item row="6" column="0">
+             <widget class="QLabel" name="label_36">
+              <property name="text">
+               <string>SMTP-Server:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0" colspan="3">
+             <widget class="QLabel" name="label_30">
+              <property name="font">
+               <font>
+                <family>MS Shell Dlg 2</family>
+                <bold>true</bold>
+               </font>
               </property>
               <property name="text">
-               <string/>
+               <string>4. Einstellungen E-Mail Postfach und Alarmauswertung:</string>
               </property>
              </widget>
             </item>
@@ -1846,8 +1915,8 @@ QPushButton:hover {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>389</width>
-             <height>120</height>
+             <width>630</width>
+             <height>276</height>
             </rect>
            </property>
            <attribute name="label">
@@ -1900,8 +1969,8 @@ QPushButton:hover {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>493</width>
-                 <height>1276</height>
+                 <width>596</width>
+                 <height>1279</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_12">

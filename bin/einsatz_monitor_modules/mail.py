@@ -80,16 +80,29 @@ def pull_mails():
 
 def send_email(subject, body, recipient):
     try:
+        # Überprüfen, ob SMTP-Server-Konfiguration vorhanden ist:
+        smtp_server = database.select_config("smtp_server")
+        if not smtp_server:
+            logger.info("Keine SMTP-Server-Konfiguration gefunden.")
+            return
+
+        # Überprüfen, ob Benutzername und Passwort vorhanden sind:
+        smtp_user = database.select_config("smtp_user")
+        smtp_password = database.select_config("smtp_password")
+        if not smtp_user or not smtp_password:
+            logger.info("SMTP-Benutzername oder Passwort nicht konfiguriert.")
+            return
+
         # SMTP Verbindung aufbauen:
-        server = smtplib.SMTP(database.select_config("email_server"), 587)
+        server = smtplib.SMTP(smtp_server, 587)
         server.starttls()
 
         # einloggen:
-        server.login(database.select_config("email_username"), database.select_config("email_password"))
+        server.login(smtp_user, smtp_password)
 
         # erstellen der Email:
         msg = MIMEMultipart()
-        msg["From"] = database.select_config("email_username")
+        msg["From"] = "alarm-test@fw-wallbach.de"
         msg["To"] = recipient
         msg["Subject"] = subject
 
@@ -106,4 +119,6 @@ def send_email(subject, body, recipient):
 
     except Exception as e:
         logger.exception(f"Fehler beim Senden der Email: {e}")
-        database.update_aktiv_flag("auswertung", "2")
+
+
+

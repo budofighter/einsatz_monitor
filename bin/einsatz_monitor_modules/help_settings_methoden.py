@@ -180,3 +180,21 @@ def installationsanleitung():
         'Die Installationsanleitung ist zu finden unter: <br><a '
                     'href="https://github.com/budofighter/EM_Statusplugin.git">Github</a>'
     )
+
+def help_smtp_password():
+    create_message_box(
+        "Einstellung: SMTP E-Mail Passwort",
+        "Bitte das Passwort des E-Mail Postfaches eingeben, um per SMTP E-Mails zu versenden."
+    )
+
+def help_smtp_user():
+    create_message_box(
+        "Einstellung: SMTP E-Mail Benutzer",
+        "Bitte den Benutzer des E-Mail Postfaches eingeben, um per SMTP E-Mails zu versenden."
+    )
+
+def help_smtp_server():
+    create_message_box(
+        "Einstellung: SMTP Server",
+        "Bitte Server des E-Mail Postfaches eingeben, um per SMTP E-Mails zu versenden. Das Postfach muss mittels STARTTLS auf Port 587 nutzbar sein"
+    )

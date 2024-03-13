@@ -5,11 +5,8 @@ import subprocess
 import logging
 import os
 import shutil
-from einsatz_monitor_modules import database_class
+from einsatz_monitor_modules import database_class, mail
 from subprocess import DEVNULL
-
-
-
 
 database = database_class.Database()
 
@@ -54,6 +51,7 @@ def check_einsatzauswertung():
         status = database.select_aktiv_flag("auswertung")
         if status == "error":
             logger.info("Einsatzauswertung ist abgebrochen. Daher wird dieser neu gestartet")
+            mail.send_email("Einsatzhandler Monitoring", "Die Einsatzauswertung wurde neu gestartet", "cs@csiebold.de")
             # Lösche alle Dateien im Ordner tmp
             tmp_folder = os.path.abspath(os.path.join(basedir, "tmp"))
             for filename in os.listdir(tmp_folder):
@@ -85,6 +83,7 @@ def check_statusauswertung():
         status = database.select_aktiv_flag("crawler")
         if status == "error":
             logger.info("Statusauswertung ist abgebrochen. Daher wird dieser neu gestartet")
+            mail.send_email("Einsatzhandler Monitoring", "Die Einsatzauswertung wurde neu gestartet", "cs@csiebold.de")
             # Setze den Status auf 0
             database.update_aktiv_flag("crawler", "off")
             # Warte 20 Sekunden
@@ -94,6 +93,8 @@ def check_statusauswertung():
             subprocess.Popen([python_path, crawler_process])
     except Exception as e:
         logger.error(f"Error beim Neustart in check_statusauswertung: {e}")
+
+
 
 while True:
     # Wachendisplay:

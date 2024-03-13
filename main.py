@@ -113,6 +113,9 @@ class MainWindow(QtWidgets.QMainWindow):
             "pushButton_help_settings_token",
             "pushButton_5_help_settings_connect_tokens_all",
             "PushButton_help_exScript",
+            "pushButton_settings_help_smtp_server",
+            "pushButton_settings_help_smtp_user",
+            "pushButton_settings_help_smtp_password",
         ]
         for button_name in button_names:
             button = getattr(self.ui, button_name)
@@ -187,6 +190,9 @@ class MainWindow(QtWidgets.QMainWindow):
             ('pushButton_settings_help_dag_alternative', help_dag_alternativ),
             ('pushButton_5_help_settings_connect_tokens_all', help_connect_tokens_all),
             ('PushButton_help_exScript', help_exscript),
+            ('pushButton_settings_help_smtp_server', help_smtp_server),
+            ('pushButton_settings_help_smtp_user', help_smtp_user),
+            ('pushButton_settings_help_smtp_password', help_smtp_password),
             ('pushButton_brows_exScript', self.brows_exScript),
             ('pushButton_logs_reset_mainlog', self.reset_log_main),
             ('pushButton_logs_reset_vpnlog', self.reset_log_vpn),
@@ -426,6 +432,9 @@ class MainWindow(QtWidgets.QMainWindow):
             "email_server": self.ui.lineEdit_setings_email_server,
             "kdo_alarm": self.ui.lineEdit_settings_kdo_alarm,
             "dag_alternativ": self.ui.lineEdit_settings_dag_alternative,
+            "smtp_server": self.ui.lineEdit_settings_smtp_server,
+            "smtp_user": self.ui.lineEdit_settings_smtp_user,
+            "smtp_password": self.ui.lineEdit_settings_smtp_password
         }
 
         for key, line_edit in settings_mapping.items():
@@ -738,6 +747,9 @@ class MainWindow(QtWidgets.QMainWindow):
             ("lineEdit_setings_email_server", "email_server"),
             ("lineEdit_settings_kdo_alarm", "kdo_alarm"),
             ("lineEdit_settings_dag_alternative", "dag_alternativ"),
+            ("lineEdit_settings_smtp_server", "smtp_server"),
+            ("lineEdit_settings_smtp_user", "smtp_user"),
+            ("lineEdit_settings_smtp_password", "smtp_password"),
             ("lineEdit_settings_token_test", "token_test"),
             ("lineEdit_settings_token_abt1", "token_abt1"),
             ("lineEdit_settings_token_abt2", "token_abt2"),
