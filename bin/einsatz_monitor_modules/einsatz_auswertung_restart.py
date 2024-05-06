@@ -52,7 +52,7 @@ def neustarten():
 
         prozess = subprocess.Popen([python_path, einsatz_process_datei])
         database.update_aktiv_flag("auswertung", "running")
-        logger.info("Prozess erfolgreich neu gestartet.")
+        logger.debug("Prozess erfolgreich neu gestartet.")
 
     except Exception as e:
         logger.error(f"Fehler beim Neustart des Prozesses: {e}")
