@@ -77,6 +77,7 @@ try:
         if not pdfs:
             pass
         else:
+            database.update_aktiv_flag("auswertung", "processing")
             for pdf in pdfs:
                 inp = os.path.join(tmp_path, pdf)
 
@@ -161,6 +162,7 @@ try:
                         args = [python_path] + [exScript_path] + [einsatz.stichwort, einsatz.meldebild, einsatz.strasse, einsatz.ort, einsatz.alarm_ric]
                         subprocess.Popen(args)
                         logger.info("\nExternes Script wurde aufgerufen.\n####################################################\n\n")
+            database.update_aktiv_flag("auswertung", "running")
         time.sleep(1)
    
 except Exception as e:

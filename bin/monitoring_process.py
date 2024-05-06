@@ -46,36 +46,35 @@ def check_server_who():
 def check_test_mode():
     database.update_aktiv_flag("testmode", "running" if database.select_config("testmode") == "True" else "off")
 
-def check_einsatzauswertung():
-    try:
-        status = database.select_aktiv_flag("auswertung")
-        if status == "error":
-            logger.info("Einsatzauswertung ist abgebrochen. Daher wird dieser neu gestartet")
-            mail.send_email("Einsatzhandler Monitoring", "Die Einsatzauswertung wurde neu gestartet", "cs@csiebold.de")
-            # Lösche alle Dateien im Ordner tmp
-            tmp_folder = os.path.abspath(os.path.join(basedir, "tmp"))
-            for filename in os.listdir(tmp_folder):
-                file_path = os.path.join(tmp_folder, filename)
-                try:
-                    if os.path.isfile(file_path) or os.path.islink(file_path):
-                        os.unlink(file_path)
-                    elif os.path.isdir(file_path):
-                        shutil.rmtree(file_path)
-                except Exception as e:
-                    logger.error(f"Failed to delete {file_path}. Reason: {e}")
+#def check_einsatzauswertung():
+#    try:
+#        status = database.select_aktiv_flag("auswertung")
+#        if status == "error":
+#            logger.info("Einsatzauswertung ist abgebrochen. Daher wird dieser neu gestartet")
+#            mail.send_email("Einsatzhandler Monitoring", "Die Einsatzauswertung wurde neu gestartet", "cs@csiebold.de")
+#            # Lösche alle Dateien im Ordner tmp
+#            tmp_folder = os.path.abspath(os.path.join(basedir, "tmp"))
+#            for filename in os.listdir(tmp_folder):
+#                file_path = os.path.join(tmp_folder, filename)
+#                try:
+#                    if os.path.isfile(file_path) or os.path.islink(file_path):
+#                        os.unlink(file_path)
+#                    elif os.path.isdir(file_path):
+#                        shutil.rmtree(file_path)
+#                except Exception as e:
+#                    logger.error(f"Failed to delete {file_path}. Reason: {e}")
 
-            # Setze den Status auf 0
-            database.update_aktiv_flag("auswertung", "off")
-
-            # Warte 30 Sekunden
-            time.sleep(30)
-
-            # Setze den Status zurück auf 1 und starte
-            database.update_aktiv_flag("auswertung", "running")
-            subprocess.Popen([python_path, einsatz_process])
-
-    except Exception as e:
-        logger.error(f"Error in check_einsatzauswertung: {e}")
+#           # Setze den Status auf 0
+#            database.update_aktiv_flag("auswertung", "off")
+#            # Warte 30 Sekunden
+#            time.sleep(30)
+#
+#            # Setze den Status zurück auf 1 und starte
+#            database.update_aktiv_flag("auswertung", "running")
+#            subprocess.Popen([python_path, einsatz_process])
+#
+#    except Exception as e:
+#        logger.error(f"Error in check_einsatzauswertung: {e}")
 
 
 def check_statusauswertung():
@@ -106,5 +105,5 @@ while True:
     # Statusauswertung
     check_statusauswertung()
     # Einsatzauswertung:
-    check_einsatzauswertung()
+#    check_einsatzauswertung()
     time.sleep(3)

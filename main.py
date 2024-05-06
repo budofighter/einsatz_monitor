@@ -37,6 +37,7 @@ pass_file_vpn = os.path.join(basedir, "config", "pass_ovpn_wachendisplay.txt")
 einsatz_process_file = os.path.join(basedir, "bin", "einsatz_process.py" )
 python_path = os.path.join(basedir, "EinsatzHandler_venv", "Scripts", "python.exe")
 rc_file_path = os.path.join(basedir, "versioninfo.rc")
+einsatz_restart_file = os.path.join(basedir, "bin", "einsatz_monitor_modules", "einsatz_auswertung_restart.py")
 
 # Logging
 logger = logging.getLogger(__name__)
@@ -281,6 +282,8 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             database.update_aktiv_flag("auswertung", "running")
             subprocess.Popen([python_path, einsatz_process_file])
+            subprocess.Popen([python_path, einsatz_restart_file])
+
 
     # Methode um den Testmodus zu aktivieren:
     def activate_testmode(self):
@@ -695,8 +698,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
     # Methode Autostart
     def autostart(self):
-        self.start_vpn()
-        QTimer.singleShot(30000, self.start_einsatzauswertung)
+        self.start_einsatzauswertung()
+        QTimer.singleShot(30000, self.start_vpn)
         QTimer.singleShot(60000, self.start_status_auswertung_local)
         logging.info("Autostart durchgeführt")
 

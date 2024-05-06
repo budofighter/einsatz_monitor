@@ -1,4 +1,3 @@
-# Optimiert 31.03.23
 import os
 import sys
 import logging
@@ -24,7 +23,9 @@ def terminate_all_child_processes(parent_pid):
     for child in parent.children(recursive=True):  # für jeden Kindprozess
         try:
             child.terminate()  # versuche, den Prozess zu beenden
-            child.wait()  # wartet, bis der Prozess tatsächlich beendet ist
+            child.wait(timeout=5)  # wartet, bis der Prozess tatsächlich beendet ist
+        except psutil.TimeoutExpired:
+            child.kill()  # Prozess gewaltsam beenden
         except psutil.NoSuchProcess:
             pass  # der Prozess ist bereits beendet
 
@@ -52,7 +53,7 @@ def update_database_flag(flag_name):
 def close_all():
 
     # 1. Alle Buttons auf rot setzen und das schließen der Anwendungen starten
-    for button in ["monitoring","vpn", "crawler","auswertung", "wachendisplay",  "alarm_server", "testmode"]:
+    for button in ["monitoring","vpn", "crawler","auswertung", "wachendisplay",  "alarm_server", "testmode", ""]:
         update_database_flag(button)
 
     # 2. OpenVPN beenden
