@@ -127,9 +127,18 @@ class Einsatz:
                     pass
             elif "GEO" in line:
                 try:
-                    self.geo_raw = re.sub("\s{2,}", "#", line).strip().split("#")[1]
-                    self.geo1 = self.geo_raw.split("-")[1]
-                    self.geo2 = self.geo_raw.split("-")[2]
+                    #self.geo_raw = re.sub("\s{2,}", "#", line).strip().split("#")[1]
+                    #self.geo1 = self.geo_raw.split("-")[1]
+                    #self.geo2 = self.geo_raw.split("-")[2]
+                     # Regex-Muster zur Extraktion der GEO-Information
+                    pattern = r"GEO-([\d.]+)-([\d.]+)"
+                    match = re.search(pattern, line)
+                
+                    if match:
+                        # GEO-Information extrahieren
+                        self.geo1 = match.group(1)
+                        self.geo2 = match.group(2)
+                    
                     if float(self.geo1) > 40:
                         self.geo_bw = self.geo1
                         self.geo_lw = self.geo2
@@ -177,7 +186,7 @@ class Einsatz:
                         "kdo_alarm") + ").*(DAG).*", line):
                     self.rics.append(line.strip().split("  ")[0])
         for ric in self.rics:
-            clean_ric = re.sub("(([ -]?DAG)|([ -]KLEIN))", "", ric).strip().upper().replace(" ", "-").replace(".", "-")
+            clean_ric = re.sub("(([ -]?DAG)|([ -]?" + database.select_config("dag_alternativ") + ".*))", "", ric).strip().upper().replace(" ", "-").replace(".", "-")
             self.clean_rics.append(clean_ric)
 
         self.alarm_ric = " ".join(self.clean_rics)

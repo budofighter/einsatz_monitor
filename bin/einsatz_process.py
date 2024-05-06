@@ -99,6 +99,7 @@ try:
                 einsatz_text = einsatz.get_text_to_list()
                 # Parsing:
                 einsatz.parse_alarm(einsatz_text)
+
                 einsatz.parse_aao(einsatz_text)
 
                 # Ausgabe:
@@ -112,7 +113,7 @@ try:
                     f"{einsatz.ort} - {einsatz.ortsteil} [{einsatz.plz}]\n\tGeo (Breite ; Länge): {einsatz.geo_bw} ; "
                     f"{einsatz.geo_lw}\n\tBemerkung 1: {einsatz.bemerkung1}\n\tBemerkung 2: {einsatz.bemerkung2}\n\tRICs: "
                     f"{einsatz.alarm_ric}\n\tEinsatznummer: {einsatz.einsatznummer}")
-
+                
                 # Textdatei wieder löschen:
                 try:
                     os.remove(os.path.join(tmp_path, alarm_number + ".txt"))
