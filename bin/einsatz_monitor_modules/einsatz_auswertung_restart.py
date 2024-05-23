@@ -7,6 +7,7 @@ import subprocess
 import time
 import shutil
 import database_class
+import mail
 
 # Einstellungen laden:
 database = database_class.Database()
@@ -55,6 +56,7 @@ def neustarten():
         logger.debug("Prozess erfolgreich neu gestartet.")
 
     except Exception as e:
+        database.update_aktiv_flag("auswertung", "error")
         logger.error(f"Fehler beim Neustart des Prozesses: {e}")
 
 def ueberwachungsprozess():
@@ -62,6 +64,9 @@ def ueberwachungsprozess():
         time.sleep(60) 
         if database.select_aktiv_flag("auswertung") != "processing": 
             if database.select_aktiv_flag("auswertung") == "running":
+                neustarten()
+            elif database.select_aktiv_flag("auswertung") == "error":
+                mail.send_email("Einsatzhandler Monitoring", "Die Einsatzauswertung (Handy Alarm) wurde durch einen Errorneu gestartet", "cs@csiebold.de")
                 neustarten()
         
 

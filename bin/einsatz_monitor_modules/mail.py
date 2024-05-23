@@ -68,7 +68,7 @@ def pull_mails():
                                     return filename
     except Exception as e:
         database2 = database_class.Database()
-        database2.update_aktiv_flag("auswertung", 2)
+        database2.update_aktiv_flag("auswertung", "error")
         logger.exception(f"Error beim Aufbau der IMAP Verbindung: {e}")
     finally:
         try:
