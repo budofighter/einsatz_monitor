@@ -2,5 +2,5 @@ selenium
 PyQt6
 requests
 psutil
-webdriver_manager
+webdriver_manager>=4.0.2
 packaging

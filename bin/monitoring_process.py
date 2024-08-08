@@ -5,10 +5,11 @@ import subprocess
 import logging
 import os
 import shutil
-from einsatz_monitor_modules import database_class, mail
+import einsatz_monitor_modules.database_class
+import einsatz_monitor_modules.mail
 from subprocess import DEVNULL
 
-database = database_class.Database()
+database = einsatz_monitor_modules.database_class.Database()
 
 if getattr(sys, 'frozen', False):
     basedir = sys._MEIPASS
@@ -82,7 +83,7 @@ def check_statusauswertung():
         status = database.select_aktiv_flag("crawler")
         if status == "error":
             logger.info("Statusauswertung ist abgebrochen. Daher wird dieser neu gestartet")
-            mail.send_email("Einsatzhandler Monitoring", "Die Statusauswertung wurde neu gestartet", "cs@csiebold.de")
+            einsatz_monitor_modules.mail.send_email("Einsatzhandler Monitoring", "Die Statusauswertung wurde neu gestartet", "cs@csiebold.de")
             # Setze den Status auf 0
             database.update_aktiv_flag("crawler", "off")
             # Warte 20 Sekunden

@@ -8,7 +8,7 @@
 #define MyAppAssocName MyAppName + " File"
 #define MyAppAssocExt ".myp"
 #define MyAppAssocKey StringChange(MyAppAssocName, " ", "") + MyAppAssocExt
-#define MyAppVersion "1.0.2.0"
+#define MyAppVersion "1.0.3.0"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -42,7 +42,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "C:\Users\chris\PycharmProjects\einsatz_monitor\dist\EinsatzHandler\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion;
 Source: "C:\Users\chris\PycharmProjects\einsatz_monitor\dist\EinsatzHandler\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs;
-Source: "C:\Users\chris\PycharmProjects\einsatz_monitor\python-3.11.5-amd64.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall;
+Source: "C:\Users\chris\PycharmProjects\einsatz_monitor\python-3.12.5-amd64.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall;
 Source: "C:\Users\chris\PycharmProjects\einsatz_monitor\bin\install\requirements.txt"; DestDir: "{app}"; Flags: ignoreversion deleteafterinstall;
 Source: "C:\Users\chris\PycharmProjects\einsatz_monitor\bin\install\setup_venv.bat"; DestDir: "{app}"; Flags: ignoreversion deleteafterinstall
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
@@ -64,7 +64,7 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: de
 
 [Run]
 ; Python installieren
-Filename: "{tmp}\python-3.11.5-amd64.exe"; Parameters: "/quiet InstallAllUsers=1 PrependPath=1"; StatusMsg: "Installing Python..."; Flags: waituntilterminated runascurrentuser; Check: ShouldInstallPython
+Filename: "{tmp}\python-3.12.5-amd64.exe"; Parameters: "/quiet InstallAllUsers=1 PrependPath=1"; StatusMsg: "Installing Python..."; Flags: waituntilterminated runascurrentuser; Check: ShouldInstallPython
 
 ; Virtual Environment erstellen
 Filename: "{app}\setup_venv.bat"; Description: "Richte virtuelle Umgebung ein und installiere Abhängigkeiten"; Flags: waituntilterminated runascurrentuser;
@@ -81,15 +81,15 @@ var
   InstallPath: String;
   UserReply: Integer;
 begin
-  // Prüfen Sie die Registry für die Installation von Python 3.11.5
-  if RegQueryStringValue(HKEY_LOCAL_MACHINE, 'Software\Python\PythonCore\3.11\InstallPath', '', InstallPath) then begin
-    MsgBox('Python 3.11.5 ist bereits installiert - überspringe Installation', mbInformation, MB_OK);
+  // Prüfen Sie die Registry für die Installation von Python 3.12.5
+  if RegQueryStringValue(HKEY_LOCAL_MACHINE, 'Software\Python\PythonCore\3.12\InstallPath', '', InstallPath) then begin
+    MsgBox('Python 3.12.5 ist bereits installiert - überspringe Installation', mbInformation, MB_OK);
     Result := False;
-  end else if RegQueryStringValue(HKEY_CURRENT_USER, 'Software\Python\PythonCore\3.11\InstallPath', '', InstallPath) then begin
-    MsgBox('Python 3.11.5 ist bereits installiert - überspringe Installation', mbInformation, MB_OK);
+  end else if RegQueryStringValue(HKEY_CURRENT_USER, 'Software\Python\PythonCore\3.12\InstallPath', '', InstallPath) then begin
+    MsgBox('Python 3.12.5 ist bereits installiert - überspringe Installation', mbInformation, MB_OK);
     Result := False;
   end else begin
-    UserReply := MsgBox('Python 3.11.5 ist noch nicht vorhanden - wird installiert', mbConfirmation, MB_OKCANCEL);
+    UserReply := MsgBox('Python 3.12.5 ist noch nicht vorhanden - wird installiert', mbConfirmation, MB_OKCANCEL);
     if UserReply = IDOK then
       Result := True
     else

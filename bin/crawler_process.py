@@ -23,8 +23,9 @@ from selenium.common.exceptions import (
     InvalidCookieDomainException
 )
 
-from einsatz_monitor_modules import api_class, database_class, chromedriver
-
+import einsatz_monitor_modules.api_class
+import einsatz_monitor_modules.database_class
+import einsatz_monitor_modules.chromedriver
 
 process = None
 driver = None
@@ -62,7 +63,7 @@ def exit_handler():
 def main():
     while True:
         try:
-            database = database_class.Database()
+            database = einsatz_monitor_modules.database_class.Database()
             aktiv_flag = database.select_aktiv_flag("crawler")
 
             if aktiv_flag in ["running", "starting"]:
@@ -94,7 +95,7 @@ atexit.register(exit_handler)
 # funktion welche für den Webseitenaufbau zuständig ist:
 def start_website():
     global driver
-    database = database_class.Database()
+    database = einsatz_monitor_modules.database_class.Database()
 
     # Initialisiere und starte den Crawler-Prozess
     try:
@@ -103,7 +104,7 @@ def start_website():
             chrome_options.add_argument("--headless")  # Kein GUI Popup
 
         # überprüfen, ob der Chromedriver da und aktuell ist:
-        chromedriver.is_chromedriver_current()
+        einsatz_monitor_modules.chromedriver.is_chromedriver_current()
 
         service = Service(executable_path=chromedriver_path)
         driver = webdriver.Chrome(service=service, options=chrome_options)
@@ -186,7 +187,7 @@ def crawling(driver, database):
                     radioid = funkrufname + fahrzeug.replace(" ", "").replace("-", "").replace("/", "")
 
                     try:
-                        api_class.post_fahrzeug_status(radioid, status_new)
+                        einsatz_monitor_modules.api_class.post_fahrzeug_status(radioid, status_new)
                         database.update_status(fahrzeug, status_new)
                         logger.info(f"neue Statusänderung erfolgreich übergeben - {radioid} Status: {status_new}")
                     except:

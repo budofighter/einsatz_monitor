@@ -37,7 +37,7 @@ pass_file_vpn = os.path.join(basedir, "config", "pass_ovpn_wachendisplay.txt")
 einsatz_process_file = os.path.join(basedir, "bin", "einsatz_process.py" )
 python_path = os.path.join(basedir, "EinsatzHandler_venv", "Scripts", "python.exe")
 rc_file_path = os.path.join(basedir, "versioninfo.rc")
-einsatz_restart_file = os.path.join(basedir, "bin", "einsatz_monitor_modules", "einsatz_auswertung_restart.py")
+einsatz_restart_file = os.path.join(basedir, "bin", "einsatz_auswertung_restart.py")
 
 # Logging
 logger = logging.getLogger(__name__)

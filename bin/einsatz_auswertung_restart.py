@@ -6,16 +6,17 @@ import logging
 import subprocess
 import time
 import shutil
-import database_class
-import mail
+import einsatz_monitor_modules.mail
+import einsatz_monitor_modules.database_class
+
 
 # Einstellungen laden:
-database = database_class.Database()
+database = einsatz_monitor_modules.database_class.Database()
 
 if getattr(sys, 'frozen', False):
     basedir = sys._MEIPASS
 else:
-    basedir = os.path.join(os.path.dirname(__file__), "..", "..")
+    basedir = os.path.join(os.path.dirname(__file__), "..")
 
 python_path = os.path.join(basedir, "EinsatzHandler_venv", "Scripts", "python.exe")
 einsatz_process_datei = os.path.join(basedir, "bin", "einsatz_process.py")
@@ -66,11 +67,12 @@ def ueberwachungsprozess():
             if database.select_aktiv_flag("auswertung") == "running":
                 neustarten()
             elif database.select_aktiv_flag("auswertung") == "error":
-                mail.send_email("Einsatzhandler Monitoring", "Die Einsatzauswertung (Handy Alarm) wurde durch einen Errorneu gestartet", "cs@csiebold.de")
+                einsatz_monitor_modules.mail.send_email("Einsatzhandler Monitoring", "Die Einsatzauswertung (Handy Alarm) wurde durch einen Errorneu gestartet", "cs@csiebold.de")
                 neustarten()
         
 
 if __name__ == "__main__":
     prozess = None
+    logger.info("EInsatzauswertung Überwachungsprozess gestartet")
     # Starten des Überwachungsprozesses
     ueberwachungsprozess()

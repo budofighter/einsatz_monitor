@@ -3,14 +3,14 @@ import os
 import sys
 import subprocess
 import logging
-from einsatz_monitor_modules import database_class
+import einsatz_monitor_modules.database_class
 
 if getattr(sys, 'frozen', False):
     basedir = sys._MEIPASS
 else:
     basedir = os.path.join(os.path.dirname(__file__), "..")
 
-database = database_class.Database()
+database = einsatz_monitor_modules.database_class.Database()
 
 path_to_openvpn = os.path.join(basedir, "resources", "openvpn", "openvpn.exe")
 
