@@ -95,13 +95,13 @@
        <bool>true</bool>
       </property>
       <property name="tabPosition">
-       <enum>QTabWidget::North</enum>
+       <enum>QTabWidget::TabPosition::North</enum>
       </property>
       <property name="tabShape">
-       <enum>QTabWidget::Rounded</enum>
+       <enum>QTabWidget::TabShape::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <property name="iconSize">
        <size>
@@ -110,7 +110,7 @@
        </size>
       </property>
       <property name="elideMode">
-       <enum>Qt::ElideMiddle</enum>
+       <enum>Qt::TextElideMode::ElideMiddle</enum>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -350,7 +350,7 @@
           <item row="6" column="0">
            <spacer name="verticalSpacer_5">
             <property name="orientation">
-             <enum>Qt::Vertical</enum>
+             <enum>Qt::Orientation::Vertical</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -560,7 +560,7 @@
            <number>4</number>
           </property>
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
          </widget>
         </item>
@@ -583,7 +583,7 @@
           <item row="0" column="0">
            <spacer name="horizontalSpacer">
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -644,10 +644,10 @@
         <item row="0" column="0">
          <widget class="QToolBox" name="toolBox">
           <property name="frameShape">
-           <enum>QFrame::Box</enum>
+           <enum>QFrame::Shape::Box</enum>
           </property>
           <property name="frameShadow">
-           <enum>QFrame::Sunken</enum>
+           <enum>QFrame::Shadow::Sunken</enum>
           </property>
           <property name="currentIndex">
            <number>0</number>
@@ -657,8 +657,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>630</width>
-             <height>276</height>
+             <width>628</width>
+             <height>277</height>
             </rect>
            </property>
            <attribute name="label">
@@ -678,29 +678,25 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
-             <widget class="QPushButton" name="pushButton_help_settings_funkrufname">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16</width>
-                <height>16</height>
-               </size>
-              </property>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_35">
               <property name="text">
-               <string/>
+               <string>Externes Script:</string>
               </property>
+             </widget>
+            </item>
+            <item row="5" column="2">
+             <widget class="QComboBox" name="comboBox_feuersoftware">
+              <item>
+               <property name="text">
+                <string>Nein</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Ja</string>
+               </property>
+              </item>
              </widget>
             </item>
             <item row="1" column="2">
@@ -728,38 +724,6 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="0" colspan="3">
-             <widget class="QLabel" name="label_33">
-              <property name="font">
-               <font>
-                <family>MS Shell Dlg 2</family>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>1. Einstellungen Allgemein</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_settings_funkrufname">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>93</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Funkrufname:</string>
-              </property>
-             </widget>
-            </item>
             <item row="3" column="2">
              <widget class="QComboBox" name="comboBox">
               <item>
@@ -774,10 +738,23 @@
               </item>
              </widget>
             </item>
-            <item row="5" column="2">
+            <item row="0" column="0" colspan="3">
+             <widget class="QLabel" name="label_33">
+              <property name="font">
+               <font>
+                <family>MS Shell Dlg 2</family>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>1. Einstellungen Allgemein</string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="2">
              <spacer name="verticalSpacer_2">
               <property name="orientation">
-               <enum>Qt::Vertical</enum>
+               <enum>Qt::Orientation::Vertical</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
@@ -822,30 +799,47 @@ QPushButton:hover {
               </property>
              </widget>
             </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="Autostart">
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_settings_funkrufname">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>93</width>
+                <height>0</height>
+               </size>
+              </property>
               <property name="text">
-               <string>Autostart:</string>
+               <string>Funkrufname:</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="3">
-             <spacer name="horizontalSpacer_3">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+            <item row="1" column="1">
+             <widget class="QPushButton" name="pushButton_help_settings_funkrufname">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
-              <property name="sizeHint" stdset="0">
+              <property name="minimumSize">
                <size>
-                <width>40</width>
-                <height>20</height>
+                <width>0</width>
+                <height>0</height>
                </size>
               </property>
-             </spacer>
-            </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="label_35">
+              <property name="maximumSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
               <property name="text">
-               <string>Externes Script:</string>
+               <string/>
               </property>
              </widget>
             </item>
@@ -871,6 +865,13 @@ QPushButton:hover {
               </property>
              </widget>
             </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="Autostart">
+              <property name="text">
+               <string>Autostart:</string>
+              </property>
+             </widget>
+            </item>
             <item row="4" column="3">
              <widget class="QPushButton" name="pushButton_brows_exScript">
               <property name="maximumSize">
@@ -884,6 +885,85 @@ QPushButton:hover {
               </property>
              </widget>
             </item>
+            <item row="0" column="3">
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Orientation::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="6" column="2">
+             <widget class="QComboBox" name="comboBox_fireplan">
+              <item>
+               <property name="text">
+                <string>Nein</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Ja</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="label_39">
+              <property name="text">
+               <string>Feuersoftware:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="0">
+             <widget class="QLabel" name="label_40">
+              <property name="text">
+               <string>Fireplan:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QPushButton" name="pushButton_help_feuersoftware">
+              <property name="minimumSize">
+               <size>
+                <width>10</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="1">
+             <widget class="QPushButton" name="pushButton_help_fireplan">
+              <property name="minimumSize">
+               <size>
+                <width>10</width>
+                <height>15</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
            </layout>
           </widget>
           <widget class="QWidget" name="OpenVPN">
@@ -891,8 +971,8 @@ QPushButton:hover {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>630</width>
-             <height>276</height>
+             <width>315</width>
+             <height>132</height>
             </rect>
            </property>
            <attribute name="label">
@@ -1025,7 +1105,7 @@ QPushButton:hover {
             <item row="4" column="2">
              <spacer name="verticalSpacer_3">
               <property name="orientation">
-               <enum>Qt::Vertical</enum>
+               <enum>Qt::Orientation::Vertical</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
@@ -1211,8 +1291,8 @@ QPushButton:hover {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>630</width>
-             <height>276</height>
+             <width>389</width>
+             <height>241</height>
             </rect>
            </property>
            <attribute name="label">
@@ -1272,7 +1352,7 @@ QPushButton:hover {
             <item row="11" column="2">
              <spacer name="verticalSpacer_4">
               <property name="orientation">
-               <enum>Qt::Vertical</enum>
+               <enum>Qt::Orientation::Vertical</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
@@ -1447,7 +1527,7 @@ QPushButton:hover {
             <item row="8" column="0" colspan="4">
              <widget class="Line" name="line_2">
               <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+               <enum>Qt::Orientation::Horizontal</enum>
               </property>
              </widget>
             </item>
@@ -1635,8 +1715,8 @@ QPushButton:hover {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>630</width>
-             <height>276</height>
+             <width>440</width>
+             <height>259</height>
             </rect>
            </property>
            <property name="whatsThis">
@@ -1795,7 +1875,7 @@ QPushButton:hover {
             <item row="9" column="2">
              <spacer name="verticalSpacer">
               <property name="orientation">
-               <enum>Qt::Vertical</enum>
+               <enum>Qt::Orientation::Vertical</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
@@ -1915,8 +1995,8 @@ QPushButton:hover {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>630</width>
-             <height>276</height>
+             <width>408</width>
+             <height>122</height>
             </rect>
            </property>
            <attribute name="label">
@@ -1969,8 +2049,8 @@ QPushButton:hover {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>596</width>
-                 <height>1279</height>
+                 <width>523</width>
+                 <height>1228</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_12">
@@ -2040,7 +2120,7 @@ QPushButton:hover {
                    <item row="4" column="1">
                     <spacer name="verticalSpacer_6">
                      <property name="orientation">
-                      <enum>Qt::Vertical</enum>
+                      <enum>Qt::Orientation::Vertical</enum>
                      </property>
                      <property name="sizeHint" stdset="0">
                       <size>
@@ -2078,10 +2158,10 @@ QPushButton:hover {
                    </font>
                   </property>
                   <property name="frameShadow">
-                   <enum>QFrame::Sunken</enum>
+                   <enum>QFrame::Shadow::Sunken</enum>
                   </property>
                   <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
+                   <enum>Qt::Orientation::Horizontal</enum>
                   </property>
                  </widget>
                 </item>
@@ -2148,10 +2228,10 @@ QPushButton:hover {
                 <item row="13" column="0">
                  <spacer name="verticalSpacer_12">
                   <property name="orientation">
-                   <enum>Qt::Vertical</enum>
+                   <enum>Qt::Orientation::Vertical</enum>
                   </property>
                   <property name="sizeType">
-                   <enum>QSizePolicy::Fixed</enum>
+                   <enum>QSizePolicy::Policy::Fixed</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
@@ -2164,10 +2244,10 @@ QPushButton:hover {
                 <item row="15" column="0">
                  <spacer name="verticalSpacer_13">
                   <property name="orientation">
-                   <enum>Qt::Vertical</enum>
+                   <enum>Qt::Orientation::Vertical</enum>
                   </property>
                   <property name="sizeType">
-                   <enum>QSizePolicy::Fixed</enum>
+                   <enum>QSizePolicy::Policy::Fixed</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
@@ -2180,10 +2260,10 @@ QPushButton:hover {
                 <item row="4" column="0">
                  <spacer name="verticalSpacer_8">
                   <property name="orientation">
-                   <enum>Qt::Vertical</enum>
+                   <enum>Qt::Orientation::Vertical</enum>
                   </property>
                   <property name="sizeType">
-                   <enum>QSizePolicy::Fixed</enum>
+                   <enum>QSizePolicy::Policy::Fixed</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
@@ -2196,10 +2276,10 @@ QPushButton:hover {
                 <item row="17" column="0">
                  <spacer name="verticalSpacer_14">
                   <property name="orientation">
-                   <enum>Qt::Vertical</enum>
+                   <enum>Qt::Orientation::Vertical</enum>
                   </property>
                   <property name="sizeType">
-                   <enum>QSizePolicy::Fixed</enum>
+                   <enum>QSizePolicy::Policy::Fixed</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
@@ -2225,10 +2305,10 @@ QPushButton:hover {
                 <item row="2" column="0">
                  <spacer name="verticalSpacer_7">
                   <property name="orientation">
-                   <enum>Qt::Vertical</enum>
+                   <enum>Qt::Orientation::Vertical</enum>
                   </property>
                   <property name="sizeType">
-                   <enum>QSizePolicy::Fixed</enum>
+                   <enum>QSizePolicy::Policy::Fixed</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
@@ -2281,10 +2361,10 @@ QPushButton:hover {
                 <item row="9" column="0">
                  <spacer name="verticalSpacer_10">
                   <property name="orientation">
-                   <enum>Qt::Vertical</enum>
+                   <enum>Qt::Orientation::Vertical</enum>
                   </property>
                   <property name="sizeType">
-                   <enum>QSizePolicy::Fixed</enum>
+                   <enum>QSizePolicy::Policy::Fixed</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
@@ -2297,10 +2377,10 @@ QPushButton:hover {
                 <item row="19" column="0">
                  <spacer name="verticalSpacer_15">
                   <property name="orientation">
-                   <enum>Qt::Vertical</enum>
+                   <enum>Qt::Orientation::Vertical</enum>
                   </property>
                   <property name="sizeType">
-                   <enum>QSizePolicy::Fixed</enum>
+                   <enum>QSizePolicy::Policy::Fixed</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
@@ -2313,10 +2393,10 @@ QPushButton:hover {
                 <item row="7" column="0">
                  <spacer name="verticalSpacer_9">
                   <property name="orientation">
-                   <enum>Qt::Vertical</enum>
+                   <enum>Qt::Orientation::Vertical</enum>
                   </property>
                   <property name="sizeType">
-                   <enum>QSizePolicy::Fixed</enum>
+                   <enum>QSizePolicy::Policy::Fixed</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
@@ -2409,10 +2489,10 @@ QPushButton:hover {
                 <item row="11" column="0">
                  <spacer name="verticalSpacer_11">
                   <property name="orientation">
-                   <enum>Qt::Vertical</enum>
+                   <enum>Qt::Orientation::Vertical</enum>
                   </property>
                   <property name="sizeType">
-                   <enum>QSizePolicy::Fixed</enum>
+                   <enum>QSizePolicy::Policy::Fixed</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
@@ -2481,7 +2561,7 @@ QPushButton:hover {
             <item row="1" column="3">
              <spacer name="horizontalSpacer_2">
               <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+               <enum>Qt::Orientation::Horizontal</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
@@ -2505,15 +2585,15 @@ QPushButton:hover {
         <item row="0" column="1">
          <widget class="QToolBox" name="falsch">
           <property name="currentIndex">
-           <number>0</number>
+           <number>4</number>
           </property>
           <widget class="QWidget" name="page">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>634</width>
-             <height>305</height>
+             <width>632</width>
+             <height>276</height>
             </rect>
            </property>
            <attribute name="label">
@@ -2546,7 +2626,7 @@ QPushButton:hover {
                  <string>Main-Logfile</string>
                 </property>
                 <property name="textFormat">
-                 <enum>Qt::AutoText</enum>
+                 <enum>Qt::TextFormat::AutoText</enum>
                 </property>
                </widget>
               </item>
@@ -2566,7 +2646,7 @@ QPushButton:hover {
                  <number>5</number>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarAlwaysOn</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOn</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -2582,8 +2662,8 @@ QPushButton:hover {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>294</width>
-             <height>120</height>
+             <width>284</width>
+             <height>121</height>
             </rect>
            </property>
            <attribute name="label">
@@ -2627,10 +2707,10 @@ QPushButton:hover {
               <item row="1" column="0" colspan="3">
                <widget class="QTextBrowser" name="textEdit_log_vpn">
                 <property name="contextMenuPolicy">
-                 <enum>Qt::DefaultContextMenu</enum>
+                 <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
                 </property>
                 <property name="layoutDirection">
-                 <enum>Qt::LeftToRight</enum>
+                 <enum>Qt::LayoutDirection::LeftToRight</enum>
                 </property>
                 <property name="autoFillBackground">
                  <bool>true</bool>
@@ -2642,10 +2722,10 @@ QPushButton:hover {
                  <number>1</number>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarAlwaysOn</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOn</enum>
                 </property>
                 <property name="autoFormatting">
-                 <set>QTextEdit::AutoNone</set>
+                 <set>QTextEdit::AutoFormattingFlag::AutoNone</set>
                 </property>
                 <property name="html">
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -2668,8 +2748,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>371</width>
-             <height>152</height>
+             <width>361</width>
+             <height>153</height>
             </rect>
            </property>
            <attribute name="label">
@@ -2716,13 +2796,13 @@ li.checked::marker { content: &quot;\2612&quot;; }
                  <string notr="true">background-color: white;border: 2px solid #a0a0a0a0;</string>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarAlwaysOn</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOn</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="autoFormatting">
-                 <set>QTextEdit::AutoNone</set>
+                 <set>QTextEdit::AutoFormattingFlag::AutoNone</set>
                 </property>
                </widget>
               </item>
@@ -2742,8 +2822,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>345</width>
-             <height>122</height>
+             <width>335</width>
+             <height>123</height>
             </rect>
            </property>
            <attribute name="label">
@@ -2790,13 +2870,89 @@ li.checked::marker { content: &quot;\2612&quot;; }
                  <string notr="true">background-color: white;border: 2px solid #a0a0a0a0;</string>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarAlwaysOn</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOn</enum>
                 </property>
                </widget>
               </item>
              </layout>
             </item>
            </layout>
+          </widget>
+          <widget class="QWidget" name="page_3">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>632</width>
+             <height>276</height>
+            </rect>
+           </property>
+           <attribute name="label">
+            <string>Fireplan-Logfile:</string>
+           </attribute>
+           <widget class="QWidget" name="gridLayoutWidget">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>631</width>
+              <height>271</height>
+             </rect>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_16">
+             <item row="1" column="1">
+              <widget class="QPushButton" name="pushButton_logs_reset_fireplan">
+               <property name="text">
+                <string>Reset</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_41">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="font">
+                <font>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Fireplan-Logfile</string>
+               </property>
+               <property name="textFormat">
+                <enum>Qt::TextFormat::AutoText</enum>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QPushButton" name="pushButton_open_log_fireplan">
+               <property name="text">
+                <string>Open Log</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0" colspan="3">
+              <widget class="QTextBrowser" name="textEdit_log_firepan">
+               <property name="styleSheet">
+                <string notr="true">background-color: white; border: 2px solid #a0a0a0a0;</string>
+               </property>
+               <property name="lineWidth">
+                <number>5</number>
+               </property>
+               <property name="verticalScrollBarPolicy">
+                <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOn</enum>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
           </widget>
          </widget>
         </item>
@@ -2813,7 +2969,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <x>0</x>
      <y>0</y>
      <width>674</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="sizePolicy">

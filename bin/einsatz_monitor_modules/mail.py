@@ -63,7 +63,7 @@ def pull_mails():
                                     with open(filepath, "wb") as file:
                                         file.write(part.get_payload(decode=True))
                                     # E-Mail als gelesen markieren
-                                    imap.store(str(latest_unread_id), '+FLAGS', '\Seen')
+                                    imap.store(str(latest_unread_id), '+FLAGS', r'\Seen')
                                     logger.debug("E-Mailanhänge erfolgreich heruntergeladen und als gelesen markiert")
                                     return filename
     except Exception as e:

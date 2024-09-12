@@ -74,11 +74,11 @@ class Einsatz:
     def parse_alarm(self, inhalt):
         for line in inhalt:
             if "Meldebild" in line:
-                self.meldebild = re.sub("\s{2,}", "#", line).strip().split("#")[1]
+                self.meldebild = re.sub(r"\s{2,}", "#", line).strip().split("#")[1]
             elif "Stichwort" in line:
                 print(line)
                 try:
-                    self.stichwort_raw = re.sub("\s{2,}", "#", line).strip().split("#")[1]
+                    self.stichwort_raw = re.sub(r"\s{2,}", "#", line).strip().split("#")[1]
                     self.stichwort = STICHWORT_MAPPING.get(self.stichwort_raw, self.stichwort_raw)
                 except IndexError:
                     logger.exception("Error in Stichwort parsing")
@@ -90,47 +90,43 @@ class Einsatz:
                     logger.exception("error")
             elif "Objekt" in line and not "GEO" in line:
                 try:
-                    self.objekt = re.sub("\s{2,}", "#", line).strip().split("#")[1]
+                    self.objekt = re.sub(r"\s{2,}", "#", line).strip().split("#")[1]
                 except:
                     pass
             elif "Bemerkung" in line and not "410" in line:
                 try:
                     if self.bemerkung1 == "":
-                        self.bemerkung1 = re.sub("\s{2,}", "#", line).strip().split("#")[1]
+                        self.bemerkung1 = re.sub(r"\s{2,}", "#", line).strip().split("#")[1]
                     else:
-                        self.bemerkung2 = re.sub("\s{2,}", "#", line).strip().split("#")[1]
+                        self.bemerkung2 = re.sub(r"\s{2,}", "#", line).strip().split("#")[1]
                 except:
                     pass
             elif "Mit Sondersignal" in line or "Ohne Sondersignal" in line:
                 try:
-                    self.sondersignal = re.sub("\s{2,}", "#", line).strip()
+                    self.sondersignal = re.sub(r"\s{2,}", "#", line).strip()
                 except:
                     pass
             elif ("Ort" in line) and not ("Ortsteil" in line) and not ("alarmiert" in line) and not (
                     "Transportbericht" in line):
                 try:
-                    self.ort_raw = re.sub("\s{2,}", "#", line).strip().split("#")[1]
+                    self.ort_raw = re.sub(r"\s{2,}", "#", line).strip().split("#")[1]
                     self.ort = self.ort_raw.split("[")[0].strip()
                     self.plz = self.ort_raw.split("[")[1].strip("]")
                 except:
                     pass
             elif "Straße" in line:
                 try:
-                    self.strasse_raw = re.sub("\s{2,}", "#", line).strip().split("#")[1]
-                    self.strasse = re.sub("(\s?\/\s?)", "-", self.strasse_raw)
+                    self.strasse_raw = re.sub(r"\s{2,}", "#", line).strip().split("#")[1]
+                    self.strasse = re.sub(r"(\s?\/\s?)", "-", self.strasse_raw)
                 except:
                     pass
             elif "Ortsteil" in line:
                 try:
-                    self.ortsteil = re.sub("\s{2,}", "#", line).strip().split("#")[1]
+                    self.ortsteil = re.sub(r"\s{2,}", "#", line).strip().split("#")[1]
                 except:
                     pass
             elif "GEO" in line:
                 try:
-                    #self.geo_raw = re.sub("\s{2,}", "#", line).strip().split("#")[1]
-                    #self.geo1 = self.geo_raw.split("-")[1]
-                    #self.geo2 = self.geo_raw.split("-")[2]
-                     # Regex-Muster zur Extraktion der GEO-Information
                     pattern = r"GEO-([\d.]+)-([\d.]+)"
                     match = re.search(pattern, line)
                 
@@ -148,7 +144,7 @@ class Einsatz:
                 except:
                     pass
             elif "EinsatzNrn" in line:
-                match = re.search("(F\d+)", line)
+                match = re.search(r"(F\d+)", line)
                 if match:
                     self.einsatznummer = match.group(1)
                 else:

@@ -26,6 +26,7 @@ from selenium.common.exceptions import (
 import einsatz_monitor_modules.api_class
 import einsatz_monitor_modules.database_class
 import einsatz_monitor_modules.chromedriver
+import einsatz_monitor_modules.fireplan_api
 
 process = None
 driver = None
@@ -101,6 +102,7 @@ def start_website():
     try:
         chrome_options = Options()
         chrome_options.add_argument("--disable-search-engine-choice-screen") # deaktivieren der Suchauswahl zu beginn
+        chrome_options.add_experimental_option('excludeSwitches', ['enable-logging']) # deaktiviert USB-Überwachungs Ausgaben
         if database.select_config("headless_browser") == "Ja":
             chrome_options.add_argument("--headless")  # Kein GUI Popup
 
@@ -186,13 +188,24 @@ def crawling(driver, database):
                 if not status_new == str(status_old):
                     funkrufname = database.select_config("funkrufname").replace(" ", "").replace("-", "").replace("/", "")
                     radioid = funkrufname + fahrzeug.replace(" ", "").replace("-", "").replace("/", "")
+                    if database.select_config("auswertung_feuersoftware") == "Ja":
+                        try:
+                            r = einsatz_monitor_modules.api_class.post_fahrzeug_status(radioid, status_new)
+                            database.update_status(fahrzeug, status_new)
+                            logger.info(f"neue Statusänderung erfolgreich an Feuersoftware übergeben {r} - {radioid} Status: {status_new}")
+                        except:
+                            logger.error(f"crawling: Übergabe an ConnectAPI war nicht möglich. {r}")
+                    if database.select_config("auswertung_fireplan") == "Ja":
+                        try:
+                            secret = database.get_fireplan_config("api_token")
+                            division = database.get_fireplan_config("division")
+                            fp = einsatz_monitor_modules.fireplan_api.Fireplan(secret, division)
+                            opta = database.translate_fireplan_setting(radioid)
+                            r = fp.send_fms_status(opta, status_new)
+                            logger.info(f"neue Statusänderung erfolgreich an Fireplan übergeben {r} - {opta} Status: {status_new}")
+                        except:
+                              logger.error(f"crawling: Übergabe an Fireplan API war nicht möglich. {r}")                          
 
-                    try:
-                        einsatz_monitor_modules.api_class.post_fahrzeug_status(radioid, status_new)
-                        database.update_status(fahrzeug, status_new)
-                        logger.info(f"neue Statusänderung erfolgreich übergeben - {radioid} Status: {status_new}")
-                    except:
-                        logger.error("crawling: Übergabe an ConnectAPI war nicht möglich.")
 
             # Überprüfen, ob das Element mit dem Wachendisplay-Text aktualisiert wurde, bevor es weiter geht
             WebDriverWait(driver, 60).until(
@@ -249,6 +262,3 @@ class CrawlingFailedException(Exception):
 
 if __name__ == "__main__":
     main()
-
-
-

@@ -14,6 +14,17 @@ def create_message_box(title, informative_text, detailed_text=None):
 
     msg.exec()
 
+def help_fireplan():
+        create_message_box(
+        "Einstellung: Auswertung Fireplan",
+        "Durch das Stellen auf Ja wird die Auswertung an die Fireplan API übergeben."
+    )
+
+def help_feuersoftware():
+        create_message_box(
+        "Einstellung: Auswertung Feuersoftware",
+        "Durch das Stellen auf Ja wird die Auswertung an die Feuersoftware API übergeben."
+    )
 def help_settings_funkrufname():
     create_message_box(
         "Einstellung: Funkrufname",

@@ -117,6 +117,8 @@ class MainWindow(QtWidgets.QMainWindow):
             "pushButton_settings_help_smtp_server",
             "pushButton_settings_help_smtp_user",
             "pushButton_settings_help_smtp_password",
+            "pushButton_help_fireplan",
+            "pushButton_help_feuersoftware",
         ]
         for button_name in button_names:
             button = getattr(self.ui, button_name)
@@ -199,11 +201,15 @@ class MainWindow(QtWidgets.QMainWindow):
             ('pushButton_logs_reset_vpnlog', self.reset_log_vpn),
             ('pushButton_logs_reset_crawlerlog', self.reset_log_crawler),
             ('pushButton_logs_reset_emlog', self.reset_log_em),
+            ('pushButton_logs_reset_fireplan', self.reset_log_fireplan),
             ('pushButton_open_log_main', self.open_main_log),
             ('pushButton_open_log_crawler', self.open_crawler_log),
             ('pushButton_open_log_vpn', self.open_ovpn_log),
             ('pushButton_open_log_em', self.open_em_log),
+            ('pushButton_open_log_fireplan', self.open_fireplan_log),
             ('pushButton_logs_fahrzeugliste', self.pushButton_logs_fahrzeugliste),
+            ('pushButton_help_fireplan', help_fireplan),
+            ('pushButton_help_feuersoftware', help_feuersoftware),
         ]
 
         # Verbinde die Buttons mit ihren Methoden
@@ -214,10 +220,6 @@ class MainWindow(QtWidgets.QMainWindow):
         grundeinrichtung_action.setStatusTip('Startet die Grundeinrichtung')
         grundeinrichtung_action.triggered[bool].connect(self.wizard)
         self.ui.menu.addAction(grundeinrichtung_action)
-
-
-
-
 
         # Exit:
         exit_action = QAction(self.style().standardIcon(QStyle.StandardPixmap.SP_DialogCancelButton), '&Exit', self)
@@ -349,6 +351,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
         exScript_input = self.ui.lineEdit_settings_exScript.text()
         self.save_settings("ex_script", exScript_input)
+
+        fireplan_input = self.ui.comboBox_fireplan.currentText()
+        self.save_settings("auswertung_fireplan", fireplan_input)
+
+        feuersoftware_input = self.ui.comboBox_feuersoftware.currentText()
+        self.save_settings("auswertung_feuersoftware", feuersoftware_input)
 
         # Spezielle Validierung für Funkrufname
         input_to_save  = self.ui.lineEdit_settings_funkrufname.text()
@@ -527,6 +535,7 @@ class MainWindow(QtWidgets.QMainWindow):
         "vpn": "logfile_ovpn.txt",
         "crawler": "logfile_crawler.txt",
         "em": "logfile_EM.txt",
+        "fireplan": "logfile_fireplan.txt"
     }
 
     def log_reload(self):
@@ -546,6 +555,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.textEdit_log_crawler.setText("".join(change_sort))
         elif log_file == self.LOG_FILES["em"]:
             self.ui.textEdit_log_EM.setText("".join(change_sort))
+        elif log_file == self.LOG_FILES["fireplan"]:
+            self.ui.textEdit_log_firepan.setText("".join(change_sort))
 
     def read_log(self, logfile):
         with open(os.path.join(logfile_path, logfile), "r", encoding="utf-8") as file:
@@ -567,6 +578,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def reset_log_em(self):
         self.reset_log(self.LOG_FILES["em"])
+
+    def reset_log_fireplan(self):
+        self.reset_log(self.LOG_FILES["fireplan"]) 
 
     def open_log_file(self, log_file):
         # Erstelle das Fenster
@@ -598,6 +612,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def open_em_log(self):
         self.open_log_file(self.LOG_FILES["em"])
+
+    def open_fireplan_log(self):
+        self.open_log_file(self.LOG_FILES["fireplan"])
 
     def pushButton_logs_fahrzeugliste(self):
         dialog = QDialog()
@@ -679,7 +696,6 @@ class MainWindow(QtWidgets.QMainWindow):
                                 keyword = "Wachendisplay erfolgreich geladen"
                             else:
                                 keyword = None
-
                             if keyword and any(keyword in line for line in last_lines):
                                 self.set_led(status_widget, 'green')
                                 database.update_aktiv_flag(application_type, "running")
@@ -765,6 +781,8 @@ class MainWindow(QtWidgets.QMainWindow):
             ("lineEdit_settings_fahrzeuge_abt4", "fahrzeuge_abt4"),
             ("lineEdit_settings_fahrzeuge_abt5", "fahrzeuge_abt5"),
             ("lineEdit_settings_fahrzeuge_abt6", "fahrzeuge_abt6"),
+            ("comboBox_feuersoftware", "auswertung_feuersoftware"),
+            ("comboBox_fireplan", "auswertung_fireplan")
         ]
 
         for ui_element, config_key in config_keys:

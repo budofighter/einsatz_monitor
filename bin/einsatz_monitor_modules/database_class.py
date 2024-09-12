@@ -43,6 +43,8 @@ class Database:
                 self.cursor_obj.execute("""CREATE TABLE IF NOT EXISTS config_db (einstellung TEXT UNIQUE, wert TEXT);""")
                 self.cursor_obj.execute("""CREATE TABLE IF NOT EXISTS pid_db (dienst TEXT UNIQUE, aktiv_flag Integer);""")
                 self.cursor_obj.execute("""CREATE TABLE IF NOT EXISTS status_db (fahrzeug TEXT UNIQUE, status INTEGER);""")
+                self.cursor_obj.execute("""CREATE TABLE IF NOT EXISTS fp_config_db (setting TEXT UNIQUE, value TEXT);""")
+                self.cursor_obj.execute("""CREATE TABLE IF NOT EXISTS fp_translation (value TEXT UNIQUE, translation TEXT);""")
 
                 config_data = [("connect_api_fahrzeuge", ""), ("url_wachendisplay", ""),("wachendisplay_content_id", ""),("funkrufname",
                 ""),("user_wachendisplay", ""),("passwort_wachendisplay", ""),("ovpn_user", ""),("ovpn_passwort", ""),
@@ -50,14 +52,18 @@ class Database:
                 ("dag_alternativ", ""), ("kdo_alarm",""), ("email_username", "") , ("email_password",
                 ""), ("email_server",""), ("token_test", ""), ("token_abt1", ""), ("token_abt2", ""), ("token_abt3", ""),
                 ("token_abt4", ""), ("token_abt5", ""), ("token_abt6", ""), ("fahrzeuge_abt2", ""), ("fahrzeuge_abt3", ""),
-                ("fahrzeuge_abt4", ""), ("fahrzeuge_abt5", ""), ("fahrzeuge_abt6", ""), ("headless_browser","Ja"), ("ex_script", ""), ("smtp_server", ""), ("smtp_user", ""), ("smtp_password", "")]
+                ("fahrzeuge_abt4", ""), ("fahrzeuge_abt5", ""), ("fahrzeuge_abt6", ""), ("headless_browser","Ja"), ("ex_script", ""), 
+                ("smtp_server", ""), ("smtp_user", ""), ("smtp_password", ""), ("auswertung_feuersoftware", "Nein"), ("auswertung_fireplan", "Nein")]
 
                 self.cursor_obj.executemany("INSERT or IGNORE INTO config_db(einstellung, wert) VALUES (?, ?)",
                                             config_data)
 
-
                 pid_data = [("monitoring", "off"), ("vpn", "off"), ("crawler", "off"), ("auswertung", "off"), ("wachendisplay", "off"), ("alarm_server", "off"), ("testmode", "off")]
                 self.cursor_obj.executemany("INSERT or IGNORE INTO pid_db(dienst,aktiv_flag) VALUES (?, ?)", pid_data)
+
+                fp_config_data = [("api_token", ""), ("division", "")]
+                self.cursor_obj.executemany("INSERT or IGNORE INTO fp_config_db(setting,value) VALUES (?, ?)", fp_config_data)
+
 
                 self.con.commit()
 
@@ -194,5 +200,27 @@ class Database:
 
             # Commit die Änderungen
             self.con.commit()
+        except Error as e:
+            logger.error(e)
+
+
+# fireplan DB
+    def get_fireplan_config(self, setting):
+        try:
+            with self.con:
+                self.cursor_obj.execute('SELECT value FROM fp_config_db WHERE setting = ?', (setting,))
+                rueckgabe = self.cursor_obj.fetchone()
+            return rueckgabe[0]
+        except Error as e:
+            logger.error(e)
+
+    def translate_fireplan_setting(self, setting):
+        try:
+            with self.con:
+                # Anpassung der SQL-Abfrage, um den LIKE-Operator zu verwenden
+                self.cursor_obj.execute('SELECT translation FROM fp_translation WHERE ? LIKE "%" || value || "%"', (setting,))
+                rueckgabe = self.cursor_obj.fetchone()
+            if rueckgabe:
+                return rueckgabe[0]
         except Error as e:
             logger.error(e)

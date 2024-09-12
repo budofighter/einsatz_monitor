@@ -4,13 +4,14 @@ import sys
 import os
 import logging
 import time
+import re
 from datetime import datetime as dt
 import einsatz_monitor_modules.mail 
 import einsatz_monitor_modules.Xpdf
 import einsatz_monitor_modules.api_class 
 import einsatz_monitor_modules.einsatz_auswertung_class 
 import einsatz_monitor_modules.database_class
-import einsatz_monitor_modules.fireplan_api_class
+import einsatz_monitor_modules.fireplan_api
 
 if getattr(sys, 'frozen', False):
     basedir = sys._MEIPASS
@@ -148,56 +149,56 @@ try:
                 if einsatz.geo_lw != "":
                     post_operation_args['position'] = {'Latitude': einsatz.geo_bw, 'Longitude': einsatz.geo_lw}
 
-                for token in token_list:
-                    if not token:
-                        continue
-                    api = einsatz_monitor_modules.api_class.PublicAPI(token)
-                    r = api.post_operation(**post_operation_args)
-
+                if database.select_config("auswertung_feuersoftware") == "Ja":
+                    logger.info("Auswertung Feuersoftware aktiv: Alarmierung start")
+                    for token in token_list:
+                        if not token:
+                            continue
+                        api = einsatz_monitor_modules.api_class.PublicAPI(token)
+                        r = api.post_operation(**post_operation_args)
 
                 # Alarmierung an FirePlanAPI:
-                fireplan_alarm_data = {
-                    "ric": einsatz.alarm_ric,
-                    "subRIC": "",  # Falls benötigt, sonst leer lassen
-                    "einsatznrlst": einsatz.einsatznummer,
-                    "strasse": einsatz.strasse,
-                    "hausnummer": "",  # Falls verfügbar, sonst leer lassen
-                    "ort": einsatz.ort,
-                    "ortsteil": einsatz.ortsteil,
-                    "objektname": einsatz.objekt,
-                    "koordinaten": f"{einsatz.geo_bw},{einsatz.geo_lw}" if einsatz.geo_lw else "",
-                    "einsatzstichwort": einsatz.stichwort,
-                    "zusatzinfo": einsatz.meldebild
-                }
+            
+                if database.select_config("auswertung_fireplan") == "Ja":
+                    logger.info("Auswertung Fireplan aktiv: Alarmierung start")
 
-                # Beispielhaft: API-Schlüssel
-                FIREPLAN_API_KEY = "byeJoNAy7lPX1GPBt8JN5WBaIqxLZclzQprif13Qh9L"
+                    translated_list = []
+                    ric_array = einsatz.alarm_ric.split()
+                    for item in ric_array:
+                        translated_value = database.translate_fireplan_setting(item)
+                        translated_list.append(translated_value)
+                    
+                    # Straße und Hausnummer trennen:
+                    match = re.match(r"(.+)\s(\d+\w*([-\/]\d+\w*)?)$", einsatz.strasse)
+                    if match:
+                        strasse_only = match.group(1)
+                        hausnummer = match.group(2)
+                    
+                    secret = database.get_fireplan_config("api_token")
+                    division = database.get_fireplan_config("division")
+                    fp = einsatz_monitor_modules.fireplan_api.Fireplan(secret, division)
 
-                # Initialisiere die FirePlanAPI
-                fireplan_api = einsatz_monitor_modules.fireplan_api_class.FirePlanAPI(api_key=FIREPLAN_API_KEY, standort="Bad Säckingen")
+                    for item in translated_list:
+                        fireplan_alarm_data = {
+                            "ric": item,
+                            "subRIC": "A",
+                            "einsatznrlst": einsatz.einsatznummer,
+                            "strasse": strasse_only,
+                            "hausnummer": hausnummer,  
+                            "ort": einsatz.ort,
+                            "ortsteil": einsatz.ortsteil,
+                            "objektname": einsatz.objekt,
+                            "koordinaten": f"{einsatz.geo_bw},{einsatz.geo_lw}" if einsatz.geo_lw else "",
+                            "einsatzstichwort": einsatz.stichwort,
+                            "zusatzinfo": einsatz.meldebild
+                        }
+                        fp.alarm(data=fireplan_alarm_data)
 
-
-                try:
-                    response = fireplan_api.post_alarmierung(fireplan_alarm_data)
-                    logger.info(f"Alarmierung an FirePlanAPI erfolgreich: {response}")
-                except Exception as e:
-                    logger.error(f"Fehler bei der Alarmierung an FirePlanAPI: {e}")
-
-
-
-                # Modul FWBS übergabe
-                #if testmode:
-                #    logger.info("Testmode, daher keine Übergabe an Externes Script")
-                #else:
-                #    exScript_path = database.select_config("ex_script")
-                #    print(exScript_path)
-                #    if exScript_path != "":
-                #        args = [python_path] + [exScript_path] + [einsatz.stichwort, einsatz.meldebild, einsatz.strasse, einsatz.ort, einsatz.alarm_ric]
-                #        subprocess.Popen(args)
-                #        logger.info("\nExternes Script wurde aufgerufen.\n####################################################\n\n")
             database.update_aktiv_flag("auswertung", "running")
         time.sleep(1)
    
 except Exception as e:
     logger.exception(f"Ein Fehler im einsatz_process.py ist aufgetreten, wodurch die exception ausgelöst wurde: {e}")
     database.update_aktiv_flag("auswertung", "error")
+
+

@@ -62,7 +62,7 @@ def neustarten():
 
 def ueberwachungsprozess():
     while True:
-        time.sleep(60) 
+        time.sleep(60)
         if database.select_aktiv_flag("auswertung") != "processing": 
             if database.select_aktiv_flag("auswertung") == "running":
                 neustarten()
@@ -70,7 +70,6 @@ def ueberwachungsprozess():
                 einsatz_monitor_modules.mail.send_email("Einsatzhandler Monitoring", "Die Einsatzauswertung (Handy Alarm) wurde durch einen Errorneu gestartet", "cs@csiebold.de")
                 neustarten()
         
-
 if __name__ == "__main__":
     prozess = None
     logger.info("EInsatzauswertung Überwachungsprozess gestartet")
