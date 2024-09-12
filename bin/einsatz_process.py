@@ -1,25 +1,27 @@
 # Optimiert 30.03.23
 import subprocess
 import sys
+import os
+import logging
 import time
 from datetime import datetime as dt
-from einsatz_monitor_modules import mail, Xpdf
-from einsatz_monitor_modules.api_class import *
-from einsatz_monitor_modules.einsatz_auswertung_class import *
-from einsatz_monitor_modules.database_class import *
-
-
-
-
-python_path = os.path.join(basedir, "EinsatzHandler_venv", "Scripts", "python.exe")
+import einsatz_monitor_modules.mail 
+import einsatz_monitor_modules.Xpdf
+import einsatz_monitor_modules.api_class 
+import einsatz_monitor_modules.einsatz_auswertung_class 
+import einsatz_monitor_modules.database_class
+import einsatz_monitor_modules.fireplan_api_class
 
 if getattr(sys, 'frozen', False):
     basedir = sys._MEIPASS
 else:
     basedir = os.path.join(os.path.dirname(__file__), "..")
 
+python_path = os.path.join(basedir, "EinsatzHandler_venv", "Scripts", "python.exe")
+
+
 # Zugangsdaten:
-database = database_class.Database()
+database = einsatz_monitor_modules.database_class.Database()
 tmp_path = os.path.abspath(os.path.join(basedir , "tmp"))
 XPDF_PATH = os.path.abspath(os.path.join(basedir, "resources", "pdftotext.exe"))
 python_path = os.path.join(basedir, "EinsatzHandler_venv", "Scripts", "python.exe")
@@ -32,7 +34,7 @@ file_handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(message
 logger.addHandler(file_handler)
 
 # xpdf überprüfen:
-Xpdf.XpdfHandler()
+einsatz_monitor_modules.Xpdf.XpdfHandler()
 
 def get_token_list(einsatz, testmode):
     token_list = []
@@ -66,7 +68,7 @@ try:
         testmode = database.select_config("testmode") != "False"
 
         # E-Mails abholen
-        pdfs = mail.pull_mails()
+        pdfs = einsatz_monitor_modules.mail.pull_mails()
         if pdfs:
             if isinstance(pdfs, str):
                 pdfs = [pdfs]
@@ -95,7 +97,7 @@ try:
 
                 # Textdatei verarbeiten:
                 # EinsatzObjekt erstellen:
-                einsatz = Einsatz(alarm_number + ".txt")
+                einsatz = einsatz_monitor_modules.einsatz_auswertung_class.Einsatz(alarm_number + ".txt")
                 # Textdatei in Liste einlesen:
                 einsatz_text = einsatz.get_text_to_list()
                 # Parsing:
@@ -149,19 +151,50 @@ try:
                 for token in token_list:
                     if not token:
                         continue
-                    api = PublicAPI(token)
+                    api = einsatz_monitor_modules.api_class.PublicAPI(token)
                     r = api.post_operation(**post_operation_args)
 
+
+                # Alarmierung an FirePlanAPI:
+                fireplan_alarm_data = {
+                    "ric": einsatz.alarm_ric,
+                    "subRIC": "",  # Falls benötigt, sonst leer lassen
+                    "einsatznrlst": einsatz.einsatznummer,
+                    "strasse": einsatz.strasse,
+                    "hausnummer": "",  # Falls verfügbar, sonst leer lassen
+                    "ort": einsatz.ort,
+                    "ortsteil": einsatz.ortsteil,
+                    "objektname": einsatz.objekt,
+                    "koordinaten": f"{einsatz.geo_bw},{einsatz.geo_lw}" if einsatz.geo_lw else "",
+                    "einsatzstichwort": einsatz.stichwort,
+                    "zusatzinfo": einsatz.meldebild
+                }
+
+                # Beispielhaft: API-Schlüssel
+                FIREPLAN_API_KEY = "byeJoNAy7lPX1GPBt8JN5WBaIqxLZclzQprif13Qh9L"
+
+                # Initialisiere die FirePlanAPI
+                fireplan_api = einsatz_monitor_modules.fireplan_api_class.FirePlanAPI(api_key=FIREPLAN_API_KEY, standort="Bad Säckingen")
+
+
+                try:
+                    response = fireplan_api.post_alarmierung(fireplan_alarm_data)
+                    logger.info(f"Alarmierung an FirePlanAPI erfolgreich: {response}")
+                except Exception as e:
+                    logger.error(f"Fehler bei der Alarmierung an FirePlanAPI: {e}")
+
+
+
                 # Modul FWBS übergabe
-                if testmode:
-                    logger.info("Testmode, daher keine Übergabe an Externes Script")
-                else:
-                    exScript_path = database.select_config("ex_script")
-                    print(exScript_path)
-                    if exScript_path != "":
-                        args = [python_path] + [exScript_path] + [einsatz.stichwort, einsatz.meldebild, einsatz.strasse, einsatz.ort, einsatz.alarm_ric]
-                        subprocess.Popen(args)
-                        logger.info("\nExternes Script wurde aufgerufen.\n####################################################\n\n")
+                #if testmode:
+                #    logger.info("Testmode, daher keine Übergabe an Externes Script")
+                #else:
+                #    exScript_path = database.select_config("ex_script")
+                #    print(exScript_path)
+                #    if exScript_path != "":
+                #        args = [python_path] + [exScript_path] + [einsatz.stichwort, einsatz.meldebild, einsatz.strasse, einsatz.ort, einsatz.alarm_ric]
+                #        subprocess.Popen(args)
+                #        logger.info("\nExternes Script wurde aufgerufen.\n####################################################\n\n")
             database.update_aktiv_flag("auswertung", "running")
         time.sleep(1)
    

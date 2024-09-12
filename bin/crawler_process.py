@@ -100,6 +100,7 @@ def start_website():
     # Initialisiere und starte den Crawler-Prozess
     try:
         chrome_options = Options()
+        chrome_options.add_argument("--disable-search-engine-choice-screen") # deaktivieren der Suchauswahl zu beginn
         if database.select_config("headless_browser") == "Ja":
             chrome_options.add_argument("--headless")  # Kein GUI Popup
 
