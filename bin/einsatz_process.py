@@ -173,6 +173,9 @@ try:
                     if match:
                         strasse_only = match.group(1)
                         hausnummer = match.group(2)
+                    else:
+                        strasse_only = "keine Straße übergeben"
+                        hausnummer = "keine Nummer übergeben"
                     
                     secret = database.get_fireplan_config("api_token")
                     division = database.get_fireplan_config("division")
@@ -182,15 +185,15 @@ try:
                         fireplan_alarm_data = {
                             "ric": item,
                             "subRIC": "A",
-                            "einsatznrlst": einsatz.einsatznummer,
-                            "strasse": strasse_only,
-                            "hausnummer": hausnummer,  
-                            "ort": einsatz.ort,
-                            "ortsteil": einsatz.ortsteil,
-                            "objektname": einsatz.objekt,
+                            "einsatznrlst": einsatz.einsatznummer if einsatz.einsatznummer else "keine Nummer übergeben",
+                            "strasse": strasse_only if strasse_only else "keine Straße übergeben",
+                            "hausnummer": hausnummer if hausnummer else "",  
+                            "ort": einsatz.ort if einsatz.ort else "",
+                            "ortsteil": einsatz.ortsteil if einsatz.ortsteil else "",
+                            "objektname": einsatz.objekt if einsatz.objekt else "",
                             "koordinaten": f"{einsatz.geo_bw},{einsatz.geo_lw}" if einsatz.geo_lw else "",
-                            "einsatzstichwort": einsatz.stichwort,
-                            "zusatzinfo": einsatz.meldebild
+                            "einsatzstichwort": einsatz.stichwort if einsatz.stichwort else "kein Stichwort übergeben",
+                            "zusatzinfo": einsatz.meldebild if einsatz.meldebild else "kein Meldebild übergeben"
                         }
                         fp.alarm(data=fireplan_alarm_data)
 

@@ -3,6 +3,7 @@ import requests
 import cerberus
 import sys
 import os
+import pytz
 from datetime import datetime, timezone
 
 
@@ -79,7 +80,8 @@ class Fireplan:
         headers = self.headers
 
         # Aktuelle Zeit in UTC im ISO 8601-Format setzen
-        status_time = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+        cet = pytz.timezone('Europe/Berlin')
+        status_time = datetime.now(cet).strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
 
         payload = {
             "fzkennung": kennung,

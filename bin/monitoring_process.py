@@ -83,7 +83,7 @@ def check_statusauswertung():
         status = database.select_aktiv_flag("crawler")
         if status == "error":
             logger.info("Statusauswertung ist abgebrochen. Daher wird dieser neu gestartet")
-            einsatz_monitor_modules.mail.send_email("Einsatzhandler Monitoring", "Die Statusauswertung wurde neu gestartet", "cs@csiebold.de")
+            #einsatz_monitor_modules.mail.send_email("Einsatzhandler Monitoring", "Die Statusauswertung wurde neu gestartet", "cs@csiebold.de")
             # Setze den Status auf 0
             database.update_aktiv_flag("crawler", "off")
             # Warte 20 Sekunden

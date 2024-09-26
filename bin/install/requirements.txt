@@ -5,3 +5,4 @@ psutil
 webdriver_manager>=4.0.2
 packaging
 cerberus
+pytz

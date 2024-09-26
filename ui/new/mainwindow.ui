@@ -101,7 +101,7 @@
        <enum>QTabWidget::TabShape::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <property name="iconSize">
        <size>
@@ -658,7 +658,7 @@
              <x>0</x>
              <y>0</y>
              <width>628</width>
-             <height>277</height>
+             <height>272</height>
             </rect>
            </property>
            <attribute name="label">
@@ -971,8 +971,8 @@ QPushButton:hover {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>315</width>
-             <height>132</height>
+             <width>312</width>
+             <height>138</height>
             </rect>
            </property>
            <attribute name="label">
@@ -1291,8 +1291,8 @@ QPushButton:hover {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>389</width>
-             <height>241</height>
+             <width>381</width>
+             <height>252</height>
             </rect>
            </property>
            <attribute name="label">
@@ -1715,8 +1715,8 @@ QPushButton:hover {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>440</width>
-             <height>259</height>
+             <width>436</width>
+             <height>276</height>
             </rect>
            </property>
            <property name="whatsThis">
@@ -1995,8 +1995,8 @@ QPushButton:hover {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>408</width>
-             <height>122</height>
+             <width>404</width>
+             <height>123</height>
             </rect>
            </property>
            <attribute name="label">
@@ -2050,7 +2050,7 @@ QPushButton:hover {
                  <x>0</x>
                  <y>0</y>
                  <width>523</width>
-                 <height>1228</height>
+                 <height>1253</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_12">
@@ -2585,7 +2585,7 @@ QPushButton:hover {
         <item row="0" column="1">
          <widget class="QToolBox" name="falsch">
           <property name="currentIndex">
-           <number>4</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="page">
            <property name="geometry">
@@ -2639,9 +2639,6 @@ QPushButton:hover {
               </item>
               <item row="2" column="0" colspan="3">
                <widget class="QTextBrowser" name="textEdit_log_main">
-                <property name="styleSheet">
-                 <string notr="true">background-color: white; border: 2px solid #a0a0a0a0;</string>
-                </property>
                 <property name="lineWidth">
                  <number>5</number>
                 </property>
@@ -2662,8 +2659,8 @@ QPushButton:hover {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>284</width>
-             <height>121</height>
+             <width>632</width>
+             <height>276</height>
             </rect>
            </property>
            <attribute name="label">
@@ -2748,8 +2745,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>361</width>
-             <height>153</height>
+             <width>632</width>
+             <height>276</height>
             </rect>
            </property>
            <attribute name="label">
@@ -2792,9 +2789,6 @@ li.checked::marker { content: &quot;\2612&quot;; }
               </item>
               <item row="1" column="0" colspan="3">
                <widget class="QTextBrowser" name="textEdit_log_crawler">
-                <property name="styleSheet">
-                 <string notr="true">background-color: white;border: 2px solid #a0a0a0a0;</string>
-                </property>
                 <property name="verticalScrollBarPolicy">
                  <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOn</enum>
                 </property>
@@ -2822,8 +2816,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>335</width>
-             <height>123</height>
+             <width>632</width>
+             <height>276</height>
             </rect>
            </property>
            <attribute name="label">
@@ -2866,9 +2860,6 @@ li.checked::marker { content: &quot;\2612&quot;; }
               </item>
               <item row="1" column="0" colspan="3">
                <widget class="QTextBrowser" name="textEdit_log_EM">
-                <property name="styleSheet">
-                 <string notr="true">background-color: white;border: 2px solid #a0a0a0a0;</string>
-                </property>
                 <property name="verticalScrollBarPolicy">
                  <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOn</enum>
                 </property>
@@ -2937,9 +2928,6 @@ li.checked::marker { content: &quot;\2612&quot;; }
              </item>
              <item row="2" column="0" colspan="3">
               <widget class="QTextBrowser" name="textEdit_log_firepan">
-               <property name="styleSheet">
-                <string notr="true">background-color: white; border: 2px solid #a0a0a0a0;</string>
-               </property>
                <property name="lineWidth">
                 <number>5</number>
                </property>
