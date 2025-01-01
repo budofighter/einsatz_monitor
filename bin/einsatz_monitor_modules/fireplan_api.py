@@ -68,12 +68,23 @@ class Fireplan:
         headers = self.headers
 
         response = requests.post(url, headers=headers, json=data)
+
+        # Prüfe zunächst den HTTP-Statuscode
         if response.status_code == 200:
-            logger.info(data)
-            logger.info("Alarm erfolgreich gesendet.")
+            logger.info("# Neuer Alarm: Die Anfrage wurde an Fireplan übergeben.")
+
+            # Jetzt zusätzlich prüfen, ob die Rückmeldung "SUCCESS" enthält
+            if "SUCCESS" in response.text: 
+                logger.info(f"# Alarm erfolgreich angelegt. Rückmeldung: {response.text}")
+            else:
+                logger.warning(f"# Alarm wurde nicht angelegt! Rückmeldung: {response.text}")
         else:
-            logger.error(f"Fehler beim Senden des Alarms. Statuscode: {response.status_code}")
+            logger.error(f"# Neuer Alarm: Fehler beim Senden des Alarms. Statuscode: {response.status_code}")
             logger.error(response.text)
+        logger.info(data)
+        logger.info("#########")
+
+
 
     def send_fms_status(self, kennung, status):
         url = "https://data.fireplan.de/api/FMSStatus"
@@ -94,5 +105,5 @@ class Fireplan:
         if response.status_code == 200:
             logger.info(f"FMS Status erfolgreich gesendet: {payload}")
         else:
-            logger.info(f"Fehler beim Senden des FMS Status. Statuscode: {response.status_code}")
-            logger.info(response.text)
+            logger.error(f"Fehler beim Senden des FMS Status. Statuscode: {response.status_code}")
+            logger.error(response.text)
