@@ -714,6 +714,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     # Methode Autostart
     def autostart(self):
+        # das ist ein Test
         self.start_einsatzauswertung()
         QTimer.singleShot(30000, self.start_vpn)
         QTimer.singleShot(60000, self.start_status_auswertung_local)
