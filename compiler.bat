@@ -1,5 +1,5 @@
 @echo off
-cd C:\Users\chris\PycharmProjects\einsatz_monitor
+cd C:\Users\chris\Documents\VScode\einsatz_monitor
 
 echo ##### Step 0: Copy EinsatzHandler.spec to current directory
 copy .\bin\install\EinsatzHandler.spec .\
