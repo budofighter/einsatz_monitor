@@ -66,6 +66,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         logger.info("Programm gestartet.")
 
+        self._vpn_start_time = None
+        self._crawler_start_time = None
+
         # erst mal alle Error, PIDS und Status auf rot serten
         database.reset_active_flag()
 
@@ -139,11 +142,6 @@ class MainWindow(QtWidgets.QMainWindow):
         # Verwenden Sie die neue Funktion, um die Einstellungen zu Beginn einzulesen:
 
         self.set_ui_elements_from_database(self.ui)
-
-        # Autostart:
-        if self.ui.comboBox.currentText() == "Ja":
-            self.autostart()
-
 
         # Logs zu Beginn auslesen:
         self.log_reload()
@@ -228,12 +226,6 @@ class MainWindow(QtWidgets.QMainWindow):
         exit_action.triggered[bool].connect(QApplication.instance().quit)
         self.ui.menu.addAction(exit_action)
 
-    # Autostart:
-    def showEvent(self, event):
-        super().showEvent(event)
-        # Führen Sie hier den Autostart durch
-        if self.ui.comboBox.currentText() == "Ja":
-            self.autostart()
 
     # ####### Methoden auf der Statusseite:
     # Methode, um das OpenVPN modul zu starten,  bzw. zu stoppen, wenn der openvpn Prozess schon ausgeführt wird.
@@ -714,11 +706,96 @@ class MainWindow(QtWidgets.QMainWindow):
 
     # Methode Autostart
     def autostart(self):
-        # das ist ein Test 2
+        """Startet die Skripte/Prozesse in einer definierten Reihenfolge 
+        und wartet jeweils, bis der vorherige Schritt wirklich 'running' ist."""
+        logger.info("Autostart gestartet.")
+        
+        # Schritt 1: Einsatzauswertung sofort starten
         self.start_einsatzauswertung()
-        QTimer.singleShot(30000, self.start_vpn)
-        QTimer.singleShot(60000, self.start_status_auswertung_local)
-        logging.info("Autostart durchgeführt")
+        logger.info("Einsatzauswertung gestartet. Jetzt VPN starten ...")
+
+        # Schritt 2: VPN starten und warten, bis es auf 'running' steht
+        self.autostart_step_vpn()
+
+    def autostart_step_vpn(self):
+        self.start_vpn()
+        logger.info("VPN wurde im Autostart gestartet. Warte, bis es auf 'running' steht...")
+
+        self._vpn_start_time = time.time()  # <-- Zeit merken, wann der Prozess gestartet wurde
+        
+        # Lege einen Timer an, der alle 5 Sekunden prüft, ob das VPN läuft
+        self._vpn_check_timer = QTimer()
+        self._vpn_check_timer.setInterval(5000)
+        self._vpn_check_timer.timeout.connect(self.check_vpn_status)
+        self._vpn_check_timer.start()
+
+    def check_vpn_status(self):
+        # 1) Timeout prüfen
+        if time.time() - self._vpn_start_time > 120:
+            # Zu lange gewartet, Prozess wird abgebrochen
+            logger.error("VPN-Start hat das Timeout (120s) überschritten.")
+            self._vpn_check_timer.stop()
+            self._vpn_check_timer.deleteLater()
+            
+            # Status auf error setzen oder was immer du möchtest:
+            database.update_aktiv_flag("vpn", "error")
+
+            # Fehlermeldung ausgeben:
+            msg = QMessageBox()
+            msg.setWindowTitle("Fehler - VPN Timeout")
+            msg.setIcon(QMessageBox.Icon.Critical)
+            msg.setText("VPN konnte nicht binnen 120s gestartet werden.")
+            msg.exec()
+
+            # Optional: Danach NICHT weiter mit Crawler usw.
+            return
+
+        # 2) Wenn kein Timeout: Prüfen, ob VPN „running“ ist
+        status = database.select_aktiv_flag("vpn")
+        if status == "running":
+            logger.info("VPN läuft nun, fahre mit dem Crawler fort...")
+            self._vpn_check_timer.stop()
+            self._vpn_check_timer.deleteLater()
+            self.autostart_step_crawler()
+        else:
+            logger.info(f"VPN noch nicht 'running' (aktuell: {status}), warte weitere 5 Sekunden...")
+
+
+    def autostart_step_crawler(self):
+        self.start_status_auswertung_local()
+        logger.info("Crawler wurde gestartet. Warte, bis er tatsächlich läuft ...")
+
+        self._crawler_start_time = time.time()  # <-- Merke dir den Startzeitpunkt
+
+        self._crawler_check_timer = QTimer()
+        self._crawler_check_timer.setInterval(5000)
+        self._crawler_check_timer.timeout.connect(self.check_crawler_status)
+        self._crawler_check_timer.start()
+
+    def check_crawler_status(self):
+        # Erst Timeout prüfen
+        if time.time() - self._crawler_start_time > 120:
+            logger.error("Crawler-Start hat das Timeout (120s) überschritten.")
+            self._crawler_check_timer.stop()
+            self._crawler_check_timer.deleteLater()
+            
+            database.update_aktiv_flag("crawler", "error")
+
+            msg = QMessageBox()
+            msg.setWindowTitle("Fehler - Crawler Timeout")
+            msg.setIcon(QMessageBox.Icon.Critical)
+            msg.setText("Der Crawler ist binnen 60s nicht auf 'running' gegangen.")
+            msg.exec()
+            return
+
+        status = database.select_aktiv_flag("crawler")
+        if status == "running":
+            logger.info("Crawler läuft nun. Autostart vollständig abgeschlossen!")
+            self._crawler_check_timer.stop()
+            self._crawler_check_timer.deleteLater()
+        else:
+            logger.info(f"Crawler noch nicht 'running' (aktuell: {status}), warte weitere 5 Sekunden...")
+
 
     # Methode um alle Subprozesse des Programms nach einem bestimmen Prozess zu durchsuchen
     def check_child_process(self, process_name):
@@ -797,6 +874,9 @@ class MainWindow(QtWidgets.QMainWindow):
 try:
     window = MainWindow()
     window.show()
+    # Falls in der DB "autostart" = Ja, rufst du autostart() auf:
+    if database.select_config("autostart") == "Ja":
+        QTimer.singleShot(0, window.autostart)
     sys.exit(app.exec())
 except Exception as e:
     logger.error("Ein Fehler ist aufgetreten: %s", e)
