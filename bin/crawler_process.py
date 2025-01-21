@@ -6,6 +6,9 @@ import re
 import logging
 import pickle
 import atexit
+import requests
+import json
+from requests.structures import CaseInsensitiveDict
 
 from contextlib import contextmanager
 
@@ -204,7 +207,38 @@ def crawling(driver, database):
                             r = fp.send_fms_status(opta, status_new)
                             logger.info(f"neue Statusänderung erfolgreich an Fireplan übergeben {r} - {opta} Status: {status_new}")
                         except:
-                              logger.error(f"crawling: Übergabe an Fireplan API war nicht möglich. {r}")                          
+                              logger.error(f"crawling: Übergabe an Fireplan API war nicht möglich. {r}")
+                    if database.select_config("auswertung_fwbs_api") == "Ja":
+                        try:
+                            # Konfiguration aus der Datenbank abrufen
+                            token = database.select_config("fwbs_token")
+                            user = database.select_config("fwbs_user")
+                            password = database.select_config("fwbs_password")
+                            address = database.select_config("fwbs_api")
+                            opta = database.translate_fireplan_setting(radioid)
+
+                            # Header für den API-Aufruf
+                            headers = CaseInsensitiveDict()
+                            headers["Content-Type"] = "application/json"
+                            headers["X-Api-Key"] = token
+
+                            # JSON-Daten für die Anfrage
+                            data = json.dumps({
+                                "opta": opta,
+                                "status": status_new
+                            })
+
+                            # API-Aufruf mit Verzeichnisschutz
+                            r = requests.post(address, headers=headers, data=data, auth=(user, password))
+
+                            # Antwort prüfen
+                            if r.status_code == 200:
+                                logger.info(f"Neue Statusänderung erfolgreich an Fwbs_API übergeben: {r.status_code} - {opta} Status: {status_new}")
+                            else:
+                                logger.error(f"Fwbs_API Fehler: {r.status_code} - {r.text}")
+
+                        except Exception as e:
+                            logger.error(f"Crawling: Übergabe an Fwbs_API war nicht möglich. Fehler: {str(e)}")
 
 
             # Überprüfen, ob das Element mit dem Wachendisplay-Text aktualisiert wurde, bevor es weiter geht

@@ -53,7 +53,8 @@ class Database:
                 ""), ("email_server",""), ("token_test", ""), ("token_abt1", ""), ("token_abt2", ""), ("token_abt3", ""),
                 ("token_abt4", ""), ("token_abt5", ""), ("token_abt6", ""), ("fahrzeuge_abt2", ""), ("fahrzeuge_abt3", ""),
                 ("fahrzeuge_abt4", ""), ("fahrzeuge_abt5", ""), ("fahrzeuge_abt6", ""), ("headless_browser","Ja"), ("ex_script", ""), 
-                ("smtp_server", ""), ("smtp_user", ""), ("smtp_password", ""), ("auswertung_feuersoftware", "Nein"), ("auswertung_fireplan", "Nein")]
+                ("smtp_server", ""), ("smtp_user", ""), ("smtp_password", ""), ("auswertung_feuersoftware", "Nein"), ("auswertung_fireplan", "Nein"), 
+                ("fwbs_api", ""), ("fwbs_user",""), ("fwbs_password",""), ("fwbs_token",""), ("auswertung_fwbs_api","Nein")]
 
                 self.cursor_obj.executemany("INSERT or IGNORE INTO config_db(einstellung, wert) VALUES (?, ?)",
                                             config_data)
